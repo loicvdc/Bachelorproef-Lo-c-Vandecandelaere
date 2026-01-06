@@ -15,37 +15,22 @@
 \section{Inleiding}%
 \label{sec:inleiding}
 
-Waarover zal je bachelorproef gaan? Introduceer het thema en zorg dat volgende zaken zeker duidelijk aanwezig zijn:
+Veel organisaties maken vandaag nog gebruik van legacy-applicaties die ontwikkeld zijn met Cool:Gen, een modelgedreven ontwikkeltool die in het verleden wijdverspreid werd ingezet voor bedrijfskritische systemen. Hoewel deze applicaties doorgaans stabiel functioneren, vormt de verouderde technologie in combinatie met een sterk afnemende beschikbaarheid van Cool:Gen-expertise een belangrijk knelpunt voor onderhoud, performantie-optimalisatie en verdere evolutie. Binnen de context van deze bachelorproef vormt een concrete Cool:Gen-applicatie binnen een industriële bedrijfsomgeving de uitgangssituatie voor het onderzoek.
 
-\begin{itemize}
-  \item kaderen thema
-  \item de doelgroep
-  \item de probleemstelling en (centrale) onderzoeksvraag
-  \item de onderzoeksdoelstelling
-\end{itemize}
+De doelgroep van deze bachelorproef bestaat uit IT-professionals binnen deze organisatie, in het bijzonder applicatiebeheerders, softwareontwikkelaars en technische architecten die instaan voor het onderhoud en de modernisering van Cool:Gen-gebaseerde systemen. Zij worden geconfronteerd met de uitdaging om bestaande applicaties toekomstbestendig te maken, zonder functionele regressie en met een beheersbaar migratieproces.
 
-Denk er aan: een typische bachelorproef is \textit{toegepast onderzoek}, wat betekent dat je start vanuit een concrete probleemsituatie in bedrijfscontext, een \textbf{casus}. Het is belangrijk om je onderwerp goed af te bakenen: je gaat voor die \textit{ene specifieke probleemsituatie} op zoek naar een goede oplossing, op basis van de huidige kennis in het vakgebied.
+De centrale probleemstelling in deze casus is dat de huidige Cool:Gen-applicatie sterk afhankelijk is van specifieke tooling en schaarse kennis, wat leidt tot verhoogde onderhoudsrisico’s en beperkte flexibiliteit bij aanpassingen of optimalisaties. Bovendien ontbreekt een gestructureerde en herbruikbare aanpak om dergelijke applicaties op een gecontroleerde manier te analyseren en te migreren. Vanuit deze probleemstelling wordt volgende centrale onderzoeksvraag geformuleerd: Hoe kan een generiek en herbruikbaar framework worden opgesteld om Cool:Gen-applicaties systematisch te analyseren, reverse-engineeren en migreren naar hedendaagse programmeertalen, en in welke mate ondersteunt dit framework een correcte en efficiënte migratie?
 
-De doelgroep moet ook concreet en duidelijk zijn, dus geen algemene of vaag gedefinieerde groepen zoals \emph{bedrijven}, \emph{developers}, \emph{Vlamingen}, enz. Je richt je in elk geval op it-professionals, een bachelorproef is geen populariserende tekst. Eén specifiek bedrijf (die te maken hebben met een concrete probleemsituatie) is dus beter dan \emph{bedrijven} in het algemeen.
-
-Formuleer duidelijk de onderzoeksvraag! De begeleiders lezen nog steeds te veel voorstellen waarin we geen onderzoeksvraag terugvinden.
-
-Schrijf ook iets over de doelstelling. Wat zie je als het concrete eindresultaat van je onderzoek, naast de uitgeschreven scriptie? Is het een proof-of-concept, een rapport met aanbevelingen, \ldots Met welk eindresultaat kan je je bachelorproef als een succes beschouwen?
+De onderzoeksdoelstelling van deze bachelorproef is het ontwerpen en valideren van een praktisch toepasbaar, technologieneutraal en high-level migratieframework dat IT-professionals ondersteunt bij het moderniseren van Cool:Gen-applicaties. Het framework richt zich expliciet op procesmatige en methodologische stappen, zoals analyse, besluitvorming en validatie, en omvat geen code-generatie, automatische migratie of uitwerking tot op programmeer- of syntaxniveau. Het concrete eindresultaat bestaat uit een gestructureerd stappenplan, aangevuld met richtlijnen, beslissingscriteria en evaluatiemethoden, en wordt gevalideerd via een proof-of-concept op basis van de geselecteerde casus. De bachelorproef kan als succesvol worden beschouwd wanneer het framework aantoont dat het migratieproces op een controleerbare, herhaalbare en transparante manier kan worden uitgevoerd, met behoud van functionele correctheid en aantoonbare kwaliteitsverbeteringen.
 
 %---------- Stand van zaken ---------------------------------------------------
 
 \section{Literatuurstudie}%
 \label{sec:literatuurstudie}
 
-Hier beschrijf je de \emph{state-of-the-art} rondom je gekozen onderzoeksdomein, d.w.z.\ een inleidende, doorlopende tekst over het onderzoeksdomein van je bachelorproef. Je steunt daarbij heel sterk op de professionele \emph{vakliteratuur}, en niet zozeer op populariserende teksten voor een breed publiek. Wat is de huidige stand van zaken in dit domein, en wat zijn nog eventuele open vragen (die misschien de aanleiding waren tot je onderzoeksvraag!)?
+Binnen het onderzoeksdomein van Cool:Gen is de beschikbare academische en professionele literatuur beperkt. Dit is voornamelijk te verklaren door de ouderdom van de technologie en het afgenomen gebruik ervan in moderne softwareontwikkeling. Specifiek onderzoek naar de migratie van Cool:Gen-applicaties is schaars, wat de noodzaak onderstreept van praktijkgericht en toegepast onderzoek binnen dit domein. De belangrijkste formele bron voor dit onderzoek is de officiële documentatie van Broadcom, met name CA Gen Tutorial (Release 8.5) \textcite{Broadcom2013}. Deze documentatie biedt inzicht in de architectuur, ontwikkelprincipes en functionele opbouw van Cool:Gen-applicaties en vormt daarmee de basis voor de analyse en reverse engineering binnen deze bachelorproef. Daarnaast wordt gebruikgemaakt van interne documentatie die ter beschikking wordt gesteld door ArcelorMittal, waarin de specifieke implementatie en context van Cool:Gen binnen de organisatie wordt toegelicht. Deze combinatie van officiële productdocumentatie en bedrijfsspecifieke informatie maakt het mogelijk om de technologie correct te interpreteren binnen de gekozen casus.
 
-Je mag de titel van deze sectie ook aanpassen (literatuurstudie, stand van zaken, enz.). Zijn er al gelijkaardige onderzoeken gevoerd? Wat concluderen ze? Wat is het verschil met jouw onderzoek?
-
-Verwijs bij elke introductie van een term of bewering over het domein naar de vakliteratuur, bijvoorbeeld~\autocite{Hykes2013}! Denk zeker goed na welke werken je refereert en waarom.
-
-Draag zorg voor correcte literatuurverwijzingen! Een bronvermelding hoort thuis \emph{binnen} de zin waar je je op die bron baseert, dus niet er buiten! Maak meteen een verwijzing als je gebruik maakt van een bron. Doe dit dus \emph{niet} aan het einde van een lange paragraaf. Baseer nooit teveel aansluitende tekst op eenzelfde bron.
-
-Als je informatie over bronnen verzamelt in JabRef, zorg er dan voor dat alle nodige info aanwezig is om de bron terug te vinden (zoals uitvoerig besproken in de lessen Research Methods).
+Aangezien literatuur specifiek gericht op Cool:Gen-migraties beperkt is, wordt dit onderzoek verder ondersteund door bestaande studies en publicaties rond legacy-systemen en softwaremodernisering in bredere zin. Verschillende auteurs benadrukken dat verouderde systemen een aanzienlijke uitdaging vormen op het vlak van onderhoudbaarheid, veiligheid en integratie met moderne technologieën \textcite{StrategicMigration2024}. Daarnaast tonen praktijkgerichte publicaties aan dat organisaties steeds vaker geconfronteerd worden met kennisverlies en technologische afhankelijkheid bij legacy-platformen, wat migratie of modernisering noodzakelijk maakt \textcite{Hartholt2024}. Deze literatuur biedt waardevolle inzichten in algemene migratiestrategieën, evaluatiecriteria en risico’s, die als inspiratie en theoretisch kader dienen voor het opstellen van het voorgestelde migratieframework. Door deze algemene kennis toe te passen op de specifieke context van Cool:Gen, wordt een brug geslagen tussen bestaande migratieonderzoeken en de concrete probleemstelling van deze bachelorproef.
 
 % Voor literatuurverwijzingen zijn er twee belangrijke commando's:
 % \autocite{KEY} => (Auteur, jaartal) Gebruik dit als de naam van de auteur
@@ -54,23 +39,32 @@ Als je informatie over bronnen verzamelt in JabRef, zorg er dan voor dat alle no
 %   functie heeft in de zin (bv. ``Uit onderzoek door Doll & Hill (1954) bleek
 %   ...'')
 
-Je mag deze sectie nog verder onderverdelen in subsecties als dit de structuur van de tekst kan verduidelijken.
 
 %---------- Methodologie ------------------------------------------------------
 \section{Methodologie}%
 \label{sec:methodologie}
 
-Hier beschrijf je hoe je van plan bent het onderzoek te voeren. Welke onderzoekstechniek ga je toepassen om elk van je onderzoeksvragen te beantwoorden? Gebruik je hiervoor literatuurstudie, interviews met belanghebbenden (bv.~voor requirements-analyse), experimenten, simulaties, vergelijkende studie, risico-analyse, PoC, \ldots?
+Het onderzoek vertrekt vanuit een bestaande Cool:Gen-applicatie als casus, binnen Arcelor Mittal, die fungeert als representatief voorbeeld voor de problematiek van Cool:Gen-gebaseerde legacy-systemen.
 
-Valt je onderwerp onder één van de typische soorten bachelorproeven die besproken zijn in de lessen Research Methods (bv.\ vergelijkende studie of risico-analyse)? Zorg er dan ook voor dat we duidelijk de verschillende stappen terug vinden die we verwachten in dit soort onderzoek!
+\subsection{Probleemanalyse en contextstudie}
 
-Vermijd onderzoekstechnieken die geen objectieve, meetbare resultaten kunnen opleveren. Enquêtes, bijvoorbeeld, zijn voor een bachelorproef informatica meestal \textbf{niet geschikt}. De antwoorden zijn eerder meningen dan feiten en in de praktijk blijkt het ook bijzonder moeilijk om voldoende respondenten te vinden. Studenten die een enquête willen voeren, hebben meestal ook geen goede definitie van de populatie, waardoor ook niet kan aangetoond worden dat eventuele resultaten representatief zijn.
+In een eerste fase wordt de huidige probleemsituatie in kaart gebracht door middel van documentanalyse en overleg met betrokken IT-professionals binnen de organisatie. Hierbij wordt de rol van Cool:Gen binnen de bestaande applicatielandschappen onderzocht. De officiële Cool:Gen-documentatie van Broadcom en interne bedrijfsdocumentatie vormen de primaire informatiebronnen voor deze analyse.
 
-Uit dit onderdeel moet duidelijk naar voor komen dat je bachelorproef ook technisch voldoen\-de diepgang zal bevatten. Het zou niet kloppen als een bachelorproef informatica ook door bv.\ een student marketing zou kunnen uitgevoerd worden.
+\subsection{Reverse engineering van de Cool:Gen-applicatie}
 
-Je beschrijft ook al welke tools (hardware, software, diensten, \ldots) je denkt hiervoor te gebruiken of te ontwikkelen.
+In de tweede fase wordt een systematische reverse-engineering uitgevoerd op de geselecteerde Cool:Gen-applicatie. Het doel van deze fase is het reconstrueren van de functionele werking, architecturale structuur en onderliggende bedrijfslogica van de applicatie. Hierbij wordt nagegaan welke componenten, datastromen en afhankelijkheden aanwezig zijn, zonder in te gaan op technische implementatiedetails op programmeerniveau. De resultaten van deze fase worden gedocumenteerd in de vorm van overzichtsmodellen en beschrijvingen, die als input dienen voor het ontwerp van het migratieframework.
 
-Probeer ook een tijdschatting te maken. Hoe lang zal je met elke fase van je onderzoek bezig zijn en wat zijn de concrete \emph{deliverables} in elke fase?
+\subsection{Ontwerp van het migratieframework}
+
+Op basis van de inzichten uit de probleemanalyse en de reverse-engineeringfase wordt een high-level, technologieneutraal migratieframework ontworpen. Dit framework beschrijft de opeenvolgende fasen van een migratietraject, zoals analyse, besluitvorming, validatie en evaluatie. De nadruk ligt op procesmatige richtlijnen en beslissingscriteria, eerder dan op technische implementatie of codegeneratie. Het framework wordt opgesteld met het oog op herbruikbaarheid voor andere Cool:Gen-applicaties binnen vergelijkbare contexten.
+
+\subsection{Validatie via casestudy}
+
+De toepasbaarheid van het framework wordt gevalideerd aan de hand van een proof-of-concept binnen de geselecteerde casus. Hierbij wordt het framework toegepast om het migratieproces van de Cool:Gen-applicatie te structureren en te evalueren. De validatie focust op de hanteerbaarheid van het stappenplan, de volledigheid van de beslissingscriteria en de mate waarin het framework ondersteuning biedt aan IT-professionals.
+
+\subsection{Evaluatie en reflectie}
+
+Tot slot wordt het migratieframework geëvalueerd aan de hand van vooraf gedefinieerde kwaliteitscriteria, zoals controleerbaarheid, herhaalbaarheid en functionele correctheid van het migratieproces. Daarnaast wordt gereflecteerd over de beperkingen van het framework en worden aanbevelingen geformuleerd voor verdere toepassing en toekomstig onderzoek.
 
 %---------- Verwachte resultaten ----------------------------------------------
 \section{Verwacht resultaat, conclusie}%
