@@ -15,11 +15,11 @@
 \section{Inleiding}%
 \label{sec:inleiding}
 
-Veel organisaties maken vandaag nog gebruik van legacy-applicaties die ontwikkeld zijn met Cool:Gen, een modelgedreven ontwikkeltool die in het verleden wijdverspreid werd ingezet voor bedrijfskritische systemen. Hoewel deze applicaties doorgaans stabiel functioneren, vormt de verouderde technologie in combinatie met een sterk afnemende beschikbaarheid van Cool:Gen-expertise een belangrijk knelpunt voor onderhoud, performantie-optimalisatie en verdere evolutie. Binnen de context van deze bachelorproef vormt een concrete Cool:Gen-applicatie binnen een industriële bedrijfsomgeving de uitgangssituatie voor het onderzoek.
+Veel organisaties maken vandaag nog gebruik van legacy-applicaties die ontwikkeld zijn met Cool:Gen, een modelgedreven ontwikkeltool die in het verleden wijdverspreid werd ingezet voor bedrijfskritische systemen. Hoewel deze applicaties doorgaans stabiel functioneren, vormt de verouderde technologie in combinatie met een sterk afnemende beschikbaarheid van Cool:Gen-expertise een belangrijk knelpunt voor onderhoud, performantie-optimalisatie en verdere evolutie. \hl{Binnen de context van deze bachelorproef vormt een concrete Cool:Gen-applicatie binnen een industriële bedrijfsomgeving (Arcelor Mittal) de uitgangssituatie voor het onderzoek.}
 
 De doelgroep van deze bachelorproef bestaat uit IT-professionals binnen deze organisatie, in het bijzonder applicatiebeheerders, softwareontwikkelaars en technische architecten die instaan voor het onderhoud en de modernisering van Cool:Gen-gebaseerde systemen. Zij worden geconfronteerd met de uitdaging om bestaande applicaties toekomstbestendig te maken, zonder functionele regressie en met een beheersbaar migratieproces.
 
-De centrale probleemstelling in deze casus is dat de huidige Cool:Gen-applicatie sterk afhankelijk is van specifieke tooling en schaarse kennis, wat leidt tot verhoogde onderhoudsrisico’s en beperkte flexibiliteit bij aanpassingen of optimalisaties. Bovendien ontbreekt een gestructureerde en herbruikbare aanpak om dergelijke applicaties op een gecontroleerde manier te analyseren en te migreren. Vanuit deze probleemstelling wordt volgende centrale onderzoeksvraag geformuleerd: Hoe kan een generiek en herbruikbaar framework worden opgesteld om Cool:Gen-applicaties systematisch te analyseren, reverse-engineeren en migreren naar hedendaagse programmeertalen, en in welke mate ondersteunt dit framework een correcte en efficiënte migratie?
+De centrale probleemstelling in deze casus is dat de huidige Cool:Gen-applicatie sterk afhankelijk is van specifieke tooling en schaarse kennis, wat leidt tot verhoogde onderhoudsrisico’s en beperkte flexibiliteit bij aanpassingen of optimalisaties. Bovendien ontbreekt een gestructureerde en herbruikbare aanpak om dergelijke applicaties op een gecontroleerde manier te analyseren en te migreren. Vanuit deze probleemstelling wordt volgende centrale onderzoeksvraag geformuleerd: \hl {Hoe kan een generiek en herbruikbaar high-level migratieframework worden opgesteld om Cool:Gen-applicaties systematisch te analyseren, reverse-engineeren en migreren naar een andere programmeertaal, en in welke mate ondersteunt dit framework een correcte en efficiënte migratie?}
 
 De onderzoeksdoelstelling van deze bachelorproef is het ontwerpen en valideren van een praktisch toepasbaar, technologieneutraal en high-level migratieframework dat IT-professionals ondersteunt bij het moderniseren van Cool:Gen-applicaties. Het framework richt zich expliciet op procesmatige en methodologische stappen, zoals analyse, besluitvorming en validatie, en omvat geen code-generatie, automatische migratie of uitwerking tot op programmeer- of syntaxniveau. Het concrete eindresultaat bestaat uit een gestructureerd stappenplan, aangevuld met richtlijnen, beslissingscriteria en evaluatiemethoden, en wordt gevalideerd via een proof-of-concept op basis van de geselecteerde casus. De bachelorproef kan als succesvol worden beschouwd wanneer het framework aantoont dat het migratieproces op een controleerbare, herhaalbare en transparante manier kan worden uitgevoerd, met behoud van functionele correctheid en aantoonbare kwaliteitsverbeteringen.
 
@@ -48,7 +48,7 @@ Het onderzoek vertrekt vanuit een bestaande Cool:Gen-applicatie als casus, binne
 
 \subsection{Probleemanalyse en contextstudie}
 
-In een eerste fase wordt de huidige probleemsituatie in kaart gebracht door middel van documentanalyse en overleg met betrokken IT-professionals binnen de organisatie. Hierbij wordt de rol van Cool:Gen binnen de bestaande applicatielandschappen onderzocht. De officiële Cool:Gen-documentatie van Broadcom en interne bedrijfsdocumentatie vormen de primaire informatiebronnen voor deze analyse.
+In een eerste fase wordt de huidige probleemsituatie in kaart gebracht door middel van documentanalyse en overleg met betrokken IT-professionals binnen de organisatie. \hl {Welke rol speelt Cool:Gen binnen het applicatielandschap? Welke functionele en architecturale componenten bevat de Cool:Gen-applicatie?} Zijn twee centrale vragen. De officiële Cool:Gen-documentatie van Broadcom en interne bedrijfsdocumentatie vormen de primaire informatiebronnen voor deze analyse.
 
 \subsection{Reverse engineering van de Cool:Gen-applicatie}
 
@@ -60,7 +60,7 @@ Op basis van de inzichten uit de probleemanalyse en de reverse-engineeringfase w
 
 \subsection{Validatie via casestudy}
 
-De toepasbaarheid van het framework wordt gevalideerd aan de hand van een proof-of-concept binnen de geselecteerde casus. Hierbij wordt het framework toegepast om het migratieproces van de Cool:Gen-applicatie te structureren en te evalueren. De validatie focust op de hanteerbaarheid van het stappenplan, de volledigheid van de beslissingscriteria en de mate waarin het framework ondersteuning biedt aan IT-professionals.
+De toepasbaarheid van het framework wordt gevalideerd aan de hand van een proof-of-concept binnen de geselecteerde casus. Hierbij wordt het framework toegepast om het migratieproces van de Cool:Gen-applicatie te structureren en te evalueren. De validatie focust op de hanteerbaarheid van het stappenplan, de volledigheid van de beslissingscriteria en de mate waarin het framework ondersteuning biedt aan IT-professionals. \hl{Zijn alle stappen aanwezig om een succesvolle migratie te doen? In welke mate ondersteunt het voorgestelde framework een gecontroleerde, herhaalbare en efficiënte migratie?}
 
 \subsection{Evaluatie en reflectie}
 
@@ -70,9 +70,5 @@ Tot slot wordt het migratieframework geëvalueerd aan de hand van vooraf gedefin
 \section{Verwacht resultaat, conclusie}%
 \label{sec:verwachte_resultaten}
 
-Hier beschrijf je welke resultaten je verwacht. Als je metingen en simulaties uitvoert, kan je hier al mock-ups maken van de grafieken samen met de verwachte conclusies. Benoem zeker al je assen en de onderdelen van de grafiek die je gaat gebruiken. Dit zorgt ervoor dat je concreet weet welk soort data je moet verzamelen en hoe je die moet meten.
-
-Wat heeft de doelgroep van je onderzoek aan het resultaat? Op welke manier zorgt jouw bachelorproef voor een meerwaarde?
-
-Hier beschrijf je wat je verwacht uit je onderzoek, met de motivatie waarom. Het is \textbf{niet} erg indien uit je onderzoek andere resultaten en conclusies vloeien dan dat je hier beschrijft: het is dan juist interessant om te onderzoeken waarom jouw hypothesen niet overeenkomen met de resultaten.
+Een belangrijk resultaat van dit onderzoek is de ontwikkeling van een high-level migratieframework dat IT-professionals binnen de organisatie ondersteunt bij het gecontroleerd migreren van Cool:Gen-applicaties naar andere programmeertalen, met behoud van functionele correctheid. Daarnaast wordt verwacht dat toepassing van dit framework bijdraagt aan verbeteringen op het vlak van performantie en onderhoudbaarheid van de gemigreerde applicatie. Deze verbeteringen zullen worden geëvalueerd aan de hand van objectieve metingen en vergelijkingen vóór en na de migratie, waardoor de impact van het voorgestelde framework op de kwaliteit van de applicatie aantoonbaar kan worden gemaakt.
 
