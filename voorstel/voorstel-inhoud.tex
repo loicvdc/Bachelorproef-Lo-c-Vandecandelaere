@@ -15,22 +15,48 @@
 \section{Inleiding}%
 \label{sec:inleiding}
 
-Veel organisaties maken vandaag nog gebruik van legacy-applicaties die ontwikkeld zijn met Cool:Gen, een modelgedreven ontwikkeltool die in het verleden wijdverspreid werd ingezet voor bedrijfskritische systemen. Hoewel deze applicaties doorgaans stabiel functioneren, vormt de verouderde technologie in combinatie met een sterk afnemende beschikbaarheid van Cool:Gen-expertise een belangrijk knelpunt voor onderhoud, performantie-optimalisatie en verdere evolutie. \hl{Binnen de context van deze bachelorproef vormt een concrete Cool:Gen-applicatie binnen een industriële bedrijfsomgeving (Arcelor Mittal) de uitgangssituatie voor het onderzoek.}
+Veel organisaties maken vandaag nog gebruik van legacyapplicaties die ontwikkeld zijn met CA Gen, een modelgedreven ontwikkeltool die in het verleden werd ingezet voor uiteenlopende toepassingen. Hoewel deze applicaties doorgaans stabiel functioneren, vormt de verouderde technologie, in combinatie met een sterk afnemende beschikbaarheid van CA Gen-expertise, een belangrijk knelpunt voor onderhoud en verdere evolutie. Binnen de context van deze bachelorproef vormt een concrete CA Gen-applicatie binnen een industriële bedrijfsomgeving (ArcelorMittal) de uitgangssituatie voor het onderzoek.
 
-De doelgroep van deze bachelorproef bestaat uit IT-professionals binnen deze organisatie, in het bijzonder applicatiebeheerders, softwareontwikkelaars en technische architecten die instaan voor het onderhoud en de modernisering van Cool:Gen-gebaseerde systemen. Zij worden geconfronteerd met de uitdaging om bestaande applicaties toekomstbestendig te maken, zonder functionele regressie en met een beheersbaar migratieproces.
+De doelgroep van deze bachelorproef bestaat uit IT-professionals binnen deze organisatie, in het bijzonder applicatiebeheerders, softwareontwikkelaars en technische architecten die instaan voor het onderhoud en de modernisering van CA Gen-gebaseerde systemen.
 
-De centrale probleemstelling in deze casus is dat de huidige Cool:Gen-applicatie sterk afhankelijk is van specifieke tooling en schaarse kennis, wat leidt tot verhoogde onderhoudsrisico’s en beperkte flexibiliteit bij aanpassingen of optimalisaties. Bovendien ontbreekt een gestructureerde en herbruikbare aanpak om dergelijke applicaties op een gecontroleerde manier te analyseren en te migreren. Vanuit deze probleemstelling wordt volgende centrale onderzoeksvraag geformuleerd: \hl {Hoe kan een generiek en herbruikbaar high-level migratieframework worden opgesteld om Cool:Gen-applicaties systematisch te analyseren, reverse-engineeren en migreren naar een andere programmeertaal, en in welke mate ondersteunt dit framework een correcte en efficiënte migratie?}
+De centrale probleemstelling in deze casus is dat de huidige CA Gen-applicatie sterk afhankelijk is van specifieke tooling en schaarse kennis, wat leidt tot verhoogde onderhoudsrisico’s en een beperkte flexibiliteit bij aanpassingen of optimalisaties. Daarnaast ontbreekt een gestructureerde en herbruikbare aanpak om dergelijke applicaties op een gecontroleerde manier te analyseren en te migreren.
 
-De onderzoeksdoelstelling van deze bachelorproef is het ontwerpen en valideren van een praktisch toepasbaar, technologieneutraal en high-level migratieframework dat IT-professionals ondersteunt bij het moderniseren van Cool:Gen-applicaties. Het framework richt zich expliciet op procesmatige en methodologische stappen, zoals analyse, besluitvorming en validatie, en omvat geen code-generatie, automatische migratie of uitwerking tot op programmeer- of syntaxniveau. Het concrete eindresultaat bestaat uit een gestructureerd stappenplan, aangevuld met richtlijnen, beslissingscriteria en evaluatiemethoden, en wordt gevalideerd via een proof-of-concept op basis van de geselecteerde casus. De bachelorproef kan als succesvol worden beschouwd wanneer het framework aantoont dat het migratieproces op een controleerbare, herhaalbare en transparante manier kan worden uitgevoerd, met behoud van functionele correctheid en aantoonbare kwaliteitsverbeteringen.
+Vanuit deze probleemstelling wordt de volgende centrale onderzoeksvraag geformuleerd:
+
+Hoe kan een herbruikbaar framework worden opgesteld om CA Gen-applicaties succesvol te migreren naar PL/I-code?
+
+Om deze centrale onderzoeksvraag te beantwoorden, worden onderstaande deelvragen onderzocht.
+
+Deelvragen binnen het probleemdomein
+
+Wat zijn de belangrijkste kenmerken en architecturale eigenschappen van CA Gen-applicaties?
+
+Welke functionaliteiten, afhankelijkheden en technische componenten zijn typisch aanwezig binnen een CA Gen-applicatie?
+
+Welke beperkingen en valkuilen brengt het gebruik van CA Gen met zich mee in het kader van onderhoud en modernisering?
+
+Deelvragen binnen het oplossingsdomein
+
+Welke stappen zijn noodzakelijk om een CA Gen-applicatie op een gestructureerde manier te analyseren en voor te bereiden op migratie?
+
+Hoe kan CA Gen-functionaliteit systematisch worden vertaald naar PL/I-code?
+
+Welke richtlijnen en best practices kunnen ontwikkelaars ondersteunen tijdens het migratieproces?
+
+In welke mate is het voorgestelde migratieframework herbruikbaar voor andere programmeertalen dan PL/I?
+
+Het doel van deze bachelorproef is het opstellen van een duidelijk en praktisch stappenplan dat ontwikkelaars binnen een organisatie kunnen gebruiken om CA Gen-applicaties te migreren naar PL/I-code. Een secundair doel is het evalueren van de toepasbaarheid van dit stappenplan voor andere programmeertalen. Het onderzoek wordt als geslaagd beschouwd wanneer het stappenplan volledig, duidelijk en praktisch toepasbaar is, en ontwikkelaars effectief begeleidt doorheen het volledige migratietraject.
 
 %---------- Stand van zaken ---------------------------------------------------
 
 \section{Literatuurstudie}%
 \label{sec:literatuurstudie}
 
-Binnen het onderzoeksdomein van Cool:Gen is de beschikbare academische en professionele literatuur beperkt. Dit is voornamelijk te verklaren door de ouderdom van de technologie en het afgenomen gebruik ervan in moderne softwareontwikkeling. Specifiek onderzoek naar de migratie van Cool:Gen-applicaties is schaars, wat de noodzaak onderstreept van praktijkgericht en toegepast onderzoek binnen dit domein. De belangrijkste formele bron voor dit onderzoek is de officiële documentatie van Broadcom, met name CA Gen Tutorial (Release 8.5) \textcite{Broadcom2013}. Deze documentatie biedt inzicht in de architectuur, ontwikkelprincipes en functionele opbouw van Cool:Gen-applicaties en vormt daarmee de basis voor de analyse en reverse engineering binnen deze bachelorproef. Daarnaast wordt gebruikgemaakt van interne documentatie die ter beschikking wordt gesteld door ArcelorMittal, waarin de specifieke implementatie en context van Cool:Gen binnen de organisatie wordt toegelicht. Deze combinatie van officiële productdocumentatie en bedrijfsspecifieke informatie maakt het mogelijk om de technologie correct te interpreteren binnen de gekozen casus.
+Binnen het onderzoeksdomein van CA Gen is de beschikbare academische en professionele literatuur beperkt. Dit is voornamelijk te verklaren door de ouderdom van de technologie en het afgenomen gebruik ervan in moderne softwareontwikkeling. Specifiek onderzoek naar de migratie van CA Gen-applicaties is schaars, wat de noodzaak onderstreept van praktijkgericht en toegepast onderzoek binnen dit domein. De belangrijkste formele bron voor dit onderzoek is de officiële documentatie van Broadcom, met name CA Gen Tutorial (Release 8.5) \textcite{Broadcom2013}. Deze documentatie biedt inzicht in de architectuur, ontwikkelprincipes en functionele opbouw van CA Gen-applicaties en vormt daarmee de basis voor de analyse en reverse engineering binnen deze bachelorproef. Daarnaast wordt gebruikgemaakt van interne documentatie die ter beschikking wordt gesteld door ArcelorMittal, waarin de specifieke implementatie en context van CA Gen binnen de organisatie wordt toegelicht. Deze combinatie van officiële productdocumentatie en bedrijfsspecifieke informatie maakt het mogelijk om de technologie correct te interpreteren binnen de gekozen casus.
 
-Aangezien literatuur specifiek gericht op Cool:Gen-migraties beperkt is, wordt dit onderzoek verder ondersteund door bestaande studies en publicaties rond legacy-systemen en softwaremodernisering in bredere zin. Verschillende auteurs benadrukken dat verouderde systemen een aanzienlijke uitdaging vormen op het vlak van onderhoudbaarheid, veiligheid en integratie met moderne technologieën \textcite{StrategicMigration2024}. Daarnaast tonen praktijkgerichte publicaties aan dat organisaties steeds vaker geconfronteerd worden met kennisverlies en technologische afhankelijkheid bij legacy-platformen, wat migratie of modernisering noodzakelijk maakt \textcite{Hartholt2024}. Deze literatuur biedt waardevolle inzichten in algemene migratiestrategieën, evaluatiecriteria en risico’s, die als inspiratie en theoretisch kader dienen voor het opstellen van het voorgestelde migratieframework. Door deze algemene kennis toe te passen op de specifieke context van Cool:Gen, wordt een brug geslagen tussen bestaande migratieonderzoeken en de concrete probleemstelling van deze bachelorproef.
+Aangezien literatuur specifiek gericht op CA Gen-migraties beperkt is, wordt dit onderzoek verder ondersteund door bestaande studies en publicaties rond legacy-systemen en softwaremodernisering in bredere zin. Verschillende auteurs benadrukken dat verouderde systemen een aanzienlijke uitdaging vormen op het vlak van onderhoudbaarheid, veiligheid en integratie met moderne technologieën \textcite{StrategicMigration2024}. Daarnaast tonen praktijkgerichte publicaties aan dat organisaties steeds vaker geconfronteerd worden met kennisverlies en technologische afhankelijkheid bij 
+
+legacy-platformen, wat migratie of modernisering noodzakelijk maakt \textcite{Hartholt2024}. Deze literatuur biedt waardevolle inzichten in algemene migratiestrategieën, evaluatiecriteria en risico’s, die als inspiratie en theoretisch kader dienen voor het opstellen van het voorgestelde migratieframework. Door deze algemene kennis toe te passen op de specifieke context van CA Gen, wordt een brug geslagen tussen bestaande migratieonderzoeken en de concrete probleemstelling van deze bachelorproef.
 
 % Voor literatuurverwijzingen zijn er twee belangrijke commando's:
 % \autocite{KEY} => (Auteur, jaartal) Gebruik dit als de naam van de auteur
@@ -44,31 +70,31 @@ Aangezien literatuur specifiek gericht op Cool:Gen-migraties beperkt is, wordt d
 \section{Methodologie}%
 \label{sec:methodologie}
 
-Het onderzoek vertrekt vanuit een bestaande Cool:Gen-applicatie als casus, binnen Arcelor Mittal, die fungeert als representatief voorbeeld voor de problematiek van Cool:Gen-gebaseerde legacy-systemen.
+Het onderzoek vertrekt vanuit een bestaande CA Gen-applicatie als casus, binnen Arcelor Mittal, die fungeert als representatief voorbeeld voor de problematiek van CA Gen-gebaseerde legacy-systemen.
 
 \subsection{Probleemanalyse en contextstudie}
 
-In een eerste fase wordt de huidige probleemsituatie in kaart gebracht door middel van documentanalyse en overleg met betrokken IT-professionals binnen de organisatie. \hl {Welke rol speelt Cool:Gen binnen het applicatielandschap? Welke functionele en architecturale componenten bevat de Cool:Gen-applicatie?} Zijn twee centrale vragen. De officiële Cool:Gen-documentatie van Broadcom en interne bedrijfsdocumentatie vormen de primaire informatiebronnen voor deze analyse.
+In een eerste fase wordt de huidige probleemsituatie in kaart gebracht door middel van documentanalyse en overleg met betrokken \newline IT-professionals binnen de organisatie. Welke rol speelt CA Gen binnen het applicatielandschap? Welke functionele en architecturale componenten bevat de CA Gen-applicatie? Zijn er database- of 
+API-afhankelijkheden? Kan de database van CA Gen vervangen worden door DB2? De officiële CA Gen-documentatie van Broadcom en interne bedrijfsdocumentatie vormen de primaire informatiebronnen voor deze analyse.
 
-\subsection{Reverse engineering van de Cool:Gen-applicatie}
+\subsection{Reverse engineering van de CA Gen-applicatie}
 
-In de tweede fase wordt een systematische reverse-engineering uitgevoerd op de geselecteerde Cool:Gen-applicatie. Het doel van deze fase is het reconstrueren van de functionele werking, architecturale structuur en onderliggende bedrijfslogica van de applicatie. Hierbij wordt nagegaan welke componenten, datastromen en afhankelijkheden aanwezig zijn, zonder in te gaan op technische implementatiedetails op programmeerniveau. De resultaten van deze fase worden gedocumenteerd in de vorm van overzichtsmodellen en beschrijvingen, die als input dienen voor het ontwerp van het migratieframework.
+In de tweede fase wordt een systematische reverse-engineering uitgevoerd op de geselecteerde CA Gen-applicatie. In deze fase worden alle functionaliteiten en afhankelijkheden in kaart gebracht, eventueel aangevuld met visuele ondersteuning. Daarnaast worden de belangrijkste valkuilen van CA Gen geanalyseerd en beschreven.
 
 \subsection{Ontwerp van het migratieframework}
 
-Op basis van de inzichten uit de probleemanalyse en de reverse-engineeringfase wordt een high-level, technologieneutraal migratieframework ontworpen. Dit framework beschrijft de opeenvolgende fasen van een migratietraject, zoals analyse, besluitvorming, validatie en evaluatie. De nadruk ligt op procesmatige richtlijnen en beslissingscriteria, eerder dan op technische implementatie of codegeneratie. Het framework wordt opgesteld met het oog op herbruikbaarheid voor andere Cool:Gen-applicaties binnen vergelijkbare contexten.
+Op basis van de inzichten uit de probleemanalyse en de reverse-engineeringfase wordt een high-level migratieframework ontworpen. Dit framework beschrijft de opeenvolgende fasen van een migratietraject. Het stappenplan zal bestaan uit tekst, figuren en veelvoorkomende fouten, met als doel zoveel mogelijk verwarring te vermijden.
 
 \subsection{Validatie via casestudy}
 
-De toepasbaarheid van het framework wordt gevalideerd aan de hand van een proof-of-concept binnen de geselecteerde casus. Hierbij wordt het framework toegepast om het migratieproces van de Cool:Gen-applicatie te structureren en te evalueren. De validatie focust op de hanteerbaarheid van het stappenplan, de volledigheid van de beslissingscriteria en de mate waarin het framework ondersteuning biedt aan IT-professionals. \hl{Zijn alle stappen aanwezig om een succesvolle migratie te doen? In welke mate ondersteunt het voorgestelde framework een gecontroleerde, herhaalbare en efficiënte migratie?}
+Het framework zal eerst getest worden door IT-professionals binnen het bedrijf of het duidelijk, leesbaar en effectief toepasselijk is. Ten tweede zal de correctheid van het framework getest worden aan de hand van een proof-of-concept. Als de gemigreerde code, gebruik makende van het framework, functioneel hetzelfde werkt als het origineel, wordt het gezien als een succes.
 
 \subsection{Evaluatie en reflectie}
 
-Tot slot wordt het migratieframework geëvalueerd aan de hand van vooraf gedefinieerde kwaliteitscriteria, zoals controleerbaarheid, herhaalbaarheid en functionele correctheid van het migratieproces. Daarnaast wordt gereflecteerd over de beperkingen van het framework en worden aanbevelingen geformuleerd voor verdere toepassing en toekomstig onderzoek.
-
+Tot slot wordt het migratieframework toegepast op andere aspecten van dezelfde applicatie en gecontroleerd of alles samen nog werkt. Een secundair doel is om te kijken of het framework ook werkt voor Cobol.
 %---------- Verwachte resultaten ----------------------------------------------
 \section{Verwacht resultaat, conclusie}%
 \label{sec:verwachte_resultaten}
 
-Een belangrijk resultaat van dit onderzoek is de ontwikkeling van een high-level migratieframework dat IT-professionals binnen de organisatie ondersteunt bij het gecontroleerd migreren van Cool:Gen-applicaties naar andere programmeertalen, met behoud van functionele correctheid. Daarnaast wordt verwacht dat toepassing van dit framework bijdraagt aan verbeteringen op het vlak van performantie en onderhoudbaarheid van de gemigreerde applicatie. Deze verbeteringen zullen worden geëvalueerd aan de hand van objectieve metingen en vergelijkingen vóór en na de migratie, waardoor de impact van het voorgestelde framework op de kwaliteit van de applicatie aantoonbaar kan worden gemaakt.
+Een duidelijk en makkelijk te volgen stappenplan dat het migreren van CA Gen applictaties naar andere code evident maakt.
 
