@@ -26,5 +26,26 @@
 %% Maak voor elke fase (behalve het literatuuronderzoek) een NIEUW HOOFDSTUK aan
 %% en geef het een gepaste titel.
 
-\lipsum[21-25]
+Het onderzoek vertrekt vanuit een bestaande CA Gen-applicatie als casus, binnen Arcelor Mittal, die fungeert als representatief voorbeeld voor de problematiek van CA Gen-gebaseerde legacy-systemen.
+
+\subsection{Probleemanalyse en contextstudie}
+
+In een eerste fase wordt de huidige probleemsituatie in kaart gebracht door middel van documentanalyse en overleg met betrokken IT-professionals binnen de organisatie. Welke rol speelt CA Gen binnen het applicatielandschap? Welke functionele en architecturale componenten bevat de CA Gen-applicatie? Zijn er database- of 
+API-afhankelijkheden? Kan de database van CA Gen vervangen worden door DB2? De officiële CA Gen-documentatie van Broadcom en interne bedrijfsdocumentatie vormen de primaire informatiebronnen voor deze analyse. Dit zal een week duren.
+
+\subsection{Reverse engineering van de CA Gen-applicatie}
+
+In de tweede fase wordt een systematische reverse-engineering uitgevoerd op de geselecteerde CA Gen-applicatie. In deze fase worden alle functionaliteiten en afhankelijkheden in kaart gebracht, eventueel door middel van een technische analyse. Daarnaast worden de belangrijkste valkuilen van CA Gen geanalyseerd en beschreven. Deze analyse zal 2 weken duren.
+
+\subsection{Ontwerp van het migratieframework}
+
+Op basis van de inzichten uit de probleemanalyse en de reverse-engineeringfase wordt een high-level migratieframework ontworpen. Dit framework beschrijft de opeenvolgende fasen van een migratietraject. Het stappenplan zal bestaan uit tekst, figuren en veelvoorkomende fouten, met als doel zoveel mogelijk verwarring te vermijden. Deze stap zal ongeveer 7 weken duren.
+
+\subsection{Validatie via casestudy}
+
+De huidige applicatie produceert een sequentiële file met segmenten erin. De applicatie moet na migratie ook een file hebben als output, exact dezelfde output zou de perfecte uitkomst zijn. Hier wordt 4 weken voor gerekend.
+
+\subsection{Evaluatie en reflectie}
+
+Tot slot wordt het migratieframework toegepast op andere aspecten van dezelfde applicatie en gecontroleerd of alles samen nog werkt. Een secundair doel is om te kijken of het framework ook werkt voor Cobol.
 
