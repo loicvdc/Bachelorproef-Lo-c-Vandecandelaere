@@ -29,21 +29,21 @@
 Het onderzoek vertrekt vanuit een bestaande CA Gen-applicatie als casus, binnen Arcelor Mittal, die fungeert als representatief voorbeeld voor de problematiek van 
 CA Gen-gebaseerde legacy-systemen.
 
-\subsection{Probleemanalyse en contextstudie}
+\section{Probleemanalyse en contextstudie}
 
 In een eerste fase wordt de huidige probleemsituatie in kaart gebracht door middel van documentanalyse en overleg met betrokken IT-professionals binnen de organisatie. 
 Welke rol speelt CA Gen binnen het applicatielandschap? Welke functionele en architecturale componenten bevat de CA Gen-applicatie? Zijn er database- of 
 API-afhankelijkheden? De CA Gen-code moet geanalyseerd worden en dient grondig verstaan te worden, verder moet de PL/I code van gelijkaardige applicaties bekeken worden.
 De officiële CA Gen-documentatie van Broadcom en interne bedrijfsdocumentatie vormen de primaire informatiebronnen voor deze analyse. Dit zal 3 weken duren.
 
-\subsection{Ontwerp van het migratieframework}
+\section{Ontwerp van het migratieframework}
 
 Op basis van de inzichten uit de probleemanalyse en de reverse-engineeringfase wordt een high-level migratieframework ontworpen. Eerst moet er gezocht worden naar een duidelijk
 template of layout waaruit dit framework zal opgesteld worden. Vervolgens komen er verschillende iteraties van de volgende drie processen: onderzoek/programmeerwerk, vertaling
 naar framework en controleren. Ondertussen wordt er ook gewerkt aan de PoC, daarvoor moeten de volgende programma's aangepast/aangemaakt worden: generieke MAIN-module, specifieke 
 MAIN-module, specifieke bestellings- en materiaalmodule met domeinspecifieke logica. Dit zal ongeveer 8 weken duren.
 
-\subsection{Validatie via casestudy}
+\section{Validatie via casestudy}
 
 De huidige applicatie produceert een sequentiële file met segmenten erin. De applicatie moet na migratie ook een file hebben als output, 
 exact dezelfde output zou de perfecte uitkomst zijn. Hier wordt 3 weken voor gerekend. Daarnaast moet het framework eens gelezen worden door een expert
