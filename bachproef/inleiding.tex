@@ -10,17 +10,33 @@ Dit bachelorproefonderzoek behandelt de problematiek rond CA Gen-gebaseerde lega
 \section{\IfLanguageName{dutch}{Probleemstelling}{Problem Statement}}%
 \label{sec:probleemstelling}
 
-Dit onderzoek speelt zich af in de context van het bedrijf Arcelor Mittal, daar draaien nog veel CA Gen-gebaseerde applicaties. Het framework moet developpers in de toekomst helpen om deze applicaties systematisch om te zetten naar PL/I.
+Dit onderzoek speelt zich af in de context van het bedrijf Arcelor Mittal, daar draaien nog veel CA Gen-gebaseerde applicaties. De applicatie waar we het in dit onderzoek over gaan hebben is de Batch Annealing Facility, of afgekort BAF-applicatie. Batch annealing is een warmte behandelingstechniek waarbij meerdere rollen ijzer in een oven worden geplaatst. Zodra de rol in de oven ligt, wordt deze afgesloten en ontstaat er een vacuüm. Door batch annealing word het metaal doorgaans zachter. Dit resulteert in een rol met verbeterde vormeigenschappen. Dit is slechts één van de vele metaalbewerkingen die Arcelor Mittal doet. Maar om te gaan van gesmolten ijzer tot een volwaardige rol die klaar is om op te sturen, moet een zo efficiënt mogelijk lijnplanning opgesteld worden. Met behulp van de mainframe moet een overzicht gemaakt worden met alle planbare materialen waaruit, op basis van een aantal parameters en regels, de meest optimale planning gedistilleerd kan worden. Dit gebeurt nu grotendeels in PL/I, waar er algemene en specifieke modules geschreven zijn voor de lijnplanning. Wanneer een aanvraag gedaan wordt vanuit de planningstool worden eerst de algemene modules aangesproken, deze beginnen met het opstellen van de algemene segmenten, en waar nodig roepen deze de specifieke modules aan de specifieke segmenten op te stellen. Alle modules waren oorspronkelijk geschreven in CA Gen, en ondertussen zijn ze allemaal gemigreerd naar PL/I behalve de BAF, dit is echter over een grote tijdsspanne gebeurd en door verschillende mensen waardoor er nooit een algemeen document is opgesteld geweest hoe dit in zijn werk gegaan is. Dit hoopt deze bachelorproef op te lossen.
 
 \section{\IfLanguageName{dutch}{Onderzoeksvraag}{Research question}}%
 \label{sec:onderzoeksvraag}
 
-De centrale onderzoeksvraag luidt als volgt: Hoe kan een high-level framework worden opgesteld om CA Gen-applicaties succesvol te migreren naar PL/I code? Maar belangrijke deelvragen zijn bevoorbeeld: “Welke delen van de pseudocode kan je rechtstreeks vertalen?”.
+De centrale probleemstelling in deze casus is dat de huidige CA Gen-applicatie sterk afhankelijk is van specifieke tooling en schaarse kennis, wat leidt tot verhoogde onderhoudsrisico’s en een beperkte flexibiliteit bij aanpassingen of optimalisaties. Daarnaast ontbreekt een gestructureerde en herbruikbare aanpak om dergelijke applicaties op een gecontroleerde manier te analyseren en te migreren.
+Vanuit deze probleemstelling wordt de volgende centrale onderzoeksvraag geformuleerd:
+Hoe kan een high-level framework worden opgesteld om CA Gen-applicaties succesvol te migreren naar PL/I-code?
+Om deze centrale onderzoeksvraag te beantwoorden, worden onderstaande deelvragen onderzocht.
+Deelvragen binnen het probleemdomein
+Wat zijn de belangrijkste kenmerken en architecturale eigenschappen van CA Gen-applicaties?
+Welke functionaliteiten, afhankelijkheden en technische componenten zijn typisch aanwezig binnen een CA Gen-applicatie?
+Welke beperkingen en valkuilen brengt het gebruik van CA Gen met zich mee in het kader van onderhoud en modernisering?
+Deelvragen binnen het oplossingsdomein
+Welke stappen zijn noodzakelijk om een CA Gen-applicatie op een gestructureerde manier te analyseren en voor te bereiden op migratie?
+Hoe kan CA Gen-functionaliteit systematisch worden vertaald naar PL/I-code?
+Welke richtlijnen en best practices kunnen ontwikkelaars ondersteunen tijdens het migratieproces?
+In welke mate is het voorgestelde migratieframework herbruikbaar voor andere programmeertalen dan PL/I?
 
 \section{\IfLanguageName{dutch}{Onderzoeksdoelstelling}{Research objective}}%
 \label{sec:onderzoeksdoelstelling}
 
-Het doel van dit onderzoek is een high-level framework te maken die een hulplijn moeten bieden tijdens het migratieproces. Dit zal bewezen worden met een proof-of-concept.
+Het doel van dit onderzoek is een high-level framework te maken die een hulplijn moeten bieden tijdens het migratieproces. De bruikbaarheid van het framework wordt geëvalueerd aan de hand van een proof-of-concept (PoC). In deze PoC wordt de CA Gen-module TPPBAMT gemigreerd naar PL/I. Deze module genereert de specifieke segmenten van alle planbare materialen voor de BAF-planning.
+
+De PoC wordt als geslaagd beschouwd wanneer de gemigreerde PL/I-implementatie, op basis van identieke invoerdata, dezelfde functionele output produceert als de oorspronkelijke CA Gen-implementatie. De resultaten worden vergeleken door de gegenereerde outputbestanden of databaseresultaten van beide systemen naast elkaar te analyseren.
+
+Daarnaast wordt het framework geëvalueerd door IT-professionals binnen de organisatie op vlak van duidelijkheid, volledigheid en praktische toepasbaarheid.
 
 \section{\IfLanguageName{dutch}{Opzet van deze bachelorproef}{Structure of this bachelor thesis}}%
 \label{sec:opzet-bachelorproef}
