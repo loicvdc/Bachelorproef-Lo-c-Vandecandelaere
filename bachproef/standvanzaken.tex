@@ -18,3 +18,19 @@
      \item Een host encyclopedie die draait op z/OS gebruike makende van TSO
      \item Een Client Server Encyclopedie (CSE) that draait op een netwerk gebruik makende van één of meerdere werkstations
  \end{itemize}
+ De host encyclopedie is een DB2 database dat informatie opslaat dat de Gen Host componenten creëren op meerdere werkstations. Met deze encyclopedie kan je alle kritieke taken controleren vanuit een centrale locatie. Met deze encyclopedie kan heel veel gaan doen, maar in deze context is het belangrijkste de “Check in”, ofwel het uploaden van een model, en de “Check out” ofwel het downloaden van een model.
+ 
+ \section{\IfLanguageName{dutch}{Modellen}{Models}}%
+ \label{sec:Modellen}
+ CA Gen werkt dus fundamenteel anders dan klassieke programmeertalen. In plaats van rechtstreeks code te schrijven, bouw je een applicatie op via modellen. Die modellen vormen de kern van hoe applicaties worden ontworpen, gegenereerd en onderhouden. CA Gen-modellen zijn abstracte beschrijvingen van een applicatie waarin zowel de functionele logica, datadefinities als gedrag worden vastgelegd, zonder dat er onmiddellijk programmeercode geschreven wordt. Je kan ze zien als een blauwdruk van een applicatie waaruit automatisch code wordt gegenereerd. Volgende soorten modellen bestaan:
+ \begin{itemize}
+     \item Business models (functionele modellen). 
+     Dit zijn de belangrijkste modellen. Deze gaan beschrijven wat de applicatie gaat doen, welke logica uitgevoerd wordt en hoe data verwerkt zal worden zoals bijvoorbeeld berekeningen. Dit gebeurt in een gestructureerde pseudocode waarover later meer.
+     \item Data models (datamodellen).
+     Deze modellen definiëren entiteiten (bijvoorbeel een klant), attributen (velden) of relaties tussen entiteiten. Dit is vergelijkbaar met een ER-diagram. Deze modellen bepalen ook hoe data uiteindelijk in DB2 wordt opgeslagen.
+     \item Action diagrams
+     Een action diagram beschrijft de stap-voor-stap logica, hoe data verwerkt wordt en welke acties uitgevoerd worden. Dit ook in een pseudocode.
+ \end{itemize}
+ Het werken met deze modellen zorgt voor abstractie, je werkt op een hoger niveau dan code wat ervoor zorgt dat code kan gegenereerd worden in verschillende programmeertalen. Anderzijds is deze gegenereerde code wel heel moeilijk te verstaan zonder de modellen.
+ 
+ 
