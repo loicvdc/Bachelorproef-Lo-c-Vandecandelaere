@@ -11,6 +11,11 @@ Dit bachelorproefonderzoek behandelt de problematiek rond CA Gen-gebaseerde lega
 \label{sec:probleemstelling}
 
 Dit onderzoek speelt zich af in de context van het bedrijf Arcelor Mittal, daar draaien nog veel CA Gen-gebaseerde applicaties. De applicatie waar we het in dit onderzoek over gaan hebben is de Batch Annealing Facility, of afgekort BAF-applicatie. Batch annealing is een warmte behandelingstechniek waarbij meerdere rollen ijzer in een oven worden geplaatst. Zodra de rol in de oven ligt, wordt deze afgesloten en ontstaat er een vacuüm. Door batch annealing word het metaal doorgaans zachter. Dit resulteert in een rol met verbeterde vormeigenschappen. Dit is slechts één van de vele metaalbewerkingen die Arcelor Mittal doet. Maar om te gaan van gesmolten ijzer tot een volwaardige rol die klaar is om op te sturen, moet een zo efficiënt mogelijk lijnplanning opgesteld worden. Met behulp van de mainframe moet een overzicht gemaakt worden met alle planbare materialen waaruit, op basis van een aantal parameters en regels, de meest optimale planning gedistilleerd kan worden. Dit gebeurt nu grotendeels in PL/I, waar er algemene en specifieke modules geschreven zijn voor de lijnplanning. Wanneer een aanvraag gedaan wordt vanuit de planningstool worden eerst de algemene modules aangesproken, deze beginnen met het opstellen van de algemene segmenten, en waar nodig roepen deze de specifieke modules aan de specifieke segmenten op te stellen. Alle modules waren oorspronkelijk geschreven in CA Gen, en ondertussen zijn ze allemaal gemigreerd naar PL/I behalve de BAF, dit is echter over een grote tijdsspanne gebeurd en door verschillende mensen waardoor er nooit een algemeen document is opgesteld geweest hoe dit in zijn werk gegaan is. Dit hoopt deze bachelorproef op te lossen.
+\begin{figure}
+    \includegraphics[width:\linewidth]{PLAPO BAF SCHEMATISCH.png}
+    \caption{Voorstelling PLAPO}
+    \label{fig:Plapo}
+\end{figure}
 
 \section{\IfLanguageName{dutch}{Onderzoeksvraag}{Research question}}%
 \label{sec:onderzoeksvraag}
