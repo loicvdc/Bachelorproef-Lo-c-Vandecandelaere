@@ -51,4 +51,51 @@
      \item Tekort aan vaardigheden: De behoefte aan expertise op het gebied van nieuwe frameworks en architecturen.
  \end{itemize}
  
+ \section{\IfLanguageName{dutch}{Syntax mapping}{Syntax mapping}}%
+ \label{sec:Syntax}
+ Zoals eerder vermeld maakt CA Gen gebruik van een vorm van gestructureerde pseudocode waarin de volledige applicatielogica wordt gedefinieerd. Deze pseudocode vormt de basis voor de automatische generatie van programmacode.
+ 
+ In dit onderdeel wordt voor de meest voorkomende CA Gen-expressies en constructies toegelicht hoe deze systematisch kunnen worden vertaald naar equivalente structuren in PL/I. Hierbij wordt gefocust op het correct interpreteren van de onderliggende logica en het behouden van functionele equivalentie tussen de oorspronkelijke CA Gen-implementatie en de PL/I-code. Dit wordt gedemonstreerd aan de hand van enkele echte voorbeelden.
+ 
+ \subsection{Variabelen}
+ Variabele in CA Gen verschillen op een aantal belangrijke punten van variabelen in klassieke programmeertalen. Omdat CA Gen modelgedreven werkt, zijn variabelen sterk gekoppeld aan het datamodel en de context waarin ze gebruikt worden. In CA Gen zijn variabelen gegevenshouders die gebruikt worden binnen action diagrams en procedures om waarden tijdelijk of persisten op te slaan tijdens de uitvoering van een applicatie. Volgende soorten variabelen bestaan:
+ \begin{itemize}
+     \item De meest voorkomende variabelen zijn attribute-based variabelen, deze zijn afgeleid van een entiteit of datamodel en hebben een vaste structuur en datatype. Voorbeelden hiervan zijn 'Customer.Name' of 'Material.ID'. Deze variabelen zijn rechtstreeks gelinkt aan de database-structuur.
+     \item Local variables: deze worden gebruikt binnen procedures en action diagrams. Variabelen van deze soort bestaan slechts tijdelijk (enkel tijdens de uitvoering) en worden bijvoorbeeld gebruikt voor berekeningen of tussenresultaten.
+     \item Parameter-variabelen worden gebruikt als I/O voor procedure calls of module-interactie.
+     \item CA Gen voorziet ook systeemvariabelen zoals statuscodes en foutcodes.
+ \end{itemize}
+ 
+ \subsection{SET...TO}
+ In CA Gen gebeurt het toekennen van een waarde aan een variabele via de sleutelwoorden SET en TO. 
+ De syntactische structuur die hierbij wordt gehanteerd is als volgt: SET \{variabelenaam\} TO \{waarde\}. Hierbij verwijst {variabelenaam} naar de doelvariabele waaraan een nieuwe waarde wordt toegekend, terwijl {waarde} een constante, een andere variabele of het resultaat van een expressie kan zijn. De PL/I equivalent van de SET-instructies uit figuur \ref{fig:Vb 1 CA Gen-code} zou er als volgt uitzien:
+ \begin{verbatim}
+     DCL 1 INT_PLN_PLNPRDO_PRODUCTIE_ORDER,
+         2 ID_BS_PRD FIXED              BIN(31);
+     DCL 1 INT_MAT_MATERIAALEENHEID,
+         2 NUMMER FIXED                 BIN(31),
+         2 CODERING_IDENTIFICATIENUMMER CHAR(7);
+     DCL FLAG                           CHAR(8);
+        
+     INT_PLN_PLNPRDO_PRODUCTIE_ORDER.ID_BS_PRD = 0;
+     INT_MAT_MATERIAALEENHEID.NUMMER = 0; 
+     INT_MAT_MATERIAALEENHEID.CODERING_IDENTIFICATIENUMMER = '';
+     FLAG = '';         
+ \end{verbatim}
+ 
+ \subsection{FOR-loop}
+ Iteren over indexen wordt in CA Gen gedaan met de FOR-loop waarbij SUBSCRIPT OF staat voor de index van de variabele die daarop volgt. Met de kernwoorden FROM, TO, BY kan je dan weer instellen bij welke waarde je start, hoe groot de waarde kan worden en de stapgrootte. In PL/I zou de loop van figuur \ref{fig:Vb 1 CA Gen-code} er als volgt uit zien:
+ 
+ \begin{verbatim}
+       DO GRL_MAT_PRDO = 1 TO MAX(GRL_MAT_PRDO) BY 1;
+            
+       END;
+ \end{verbatim}
+ 
+ \begin{figure}
+     \includegraphics[width:\linewidth]{for loop + var.png}
+     \caption{Voorbeeld 1 CA Gen-code}
+     \label{fig:Vb 1 CA Gen-code}
+ \end{figure}
+ 
  
