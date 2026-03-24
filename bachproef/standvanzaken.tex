@@ -51,6 +51,27 @@
      \item Tekort aan vaardigheden: De behoefte aan expertise op het gebied van nieuwe frameworks en architecturen.
  \end{itemize}
  
+ \section{\IfLanguageName{dutch}{CA Gen Views}{CA Gen Views}}%
+ \label{sec:Views}
+ Het begrip view is essentieel voor hoe data door de applicatie stroomt en hoe de database wordt aangesproken. Er wordt doorgaans een onderscheid gemaakt tussen data-views (in Action Diagrams) en UI-views (in de ontwikkelomgeving). Hieronder volgt een overzicht van de verschillende typen views die je in de logica tegenkomt:
+ \newline
+ 
+ \begin{easylist}
+     § Functionele categorieën
+     §§ Import Views: De inputvariabelen. Deze data wordt meegegeven aan het Action Block door de aanroepende logica.
+     §§ Export Views: De outputvariabelen. Deze data word door het Action Block teruggegeven aan de aanroepende logica.
+     §§ Local Views: Tijdelijke variabelen die alleen binnen het betreffende Action Block bestaan.
+     \newline
+     § Inhoudelijke categorieën
+     §§ Entity Views: Deze zijn direct gekoppeld aan een Entity Type uit het datamodel. Ze worden gebruikt om gegevens uit de database te verwerken.
+     §§ Work Views: Deze zijn gebasseerd op een Work Set. Dit zijn variabelen die niet in de database staan, zoals tellers, flags of tijdelijke berekeningen.
+     §§ Entity Action Views: Een specifiek type view dat gebruikt wordt binnen de database-statements zoals READ, CREATE, UPDATE en DELETE. Ze dienen als buffer voor de database-operatie.
+     \newline
+     § Structurele categorieën
+     §§ Group Views: Dit zijn “repeating views” of arrays. Een Group View bevat één of meer Entity- of Work Views en stelt de applicatie in staat om lijsten met records te verwerken.
+     §§ Recursive Views: Hoewel minder vaak gebruikt, kunnen views recursief worden gedefinieerd voor boomstructuren of hiërarchische data.
+ \end{easylist}
+ 
  \section{\IfLanguageName{dutch}{Syntax mapping}{Syntax mapping}}%
  \label{sec:Syntax}
  Zoals eerder vermeld maakt CA Gen gebruik van een vorm van gestructureerde pseudocode waarin de volledige applicatielogica wordt gedefinieerd. Deze pseudocode vormt de basis voor de automatische generatie van programmacode.
@@ -61,7 +82,7 @@
  Variabele in CA Gen verschillen op een aantal belangrijke punten van variabelen in klassieke programmeertalen. Omdat CA Gen modelgedreven werkt, zijn variabelen sterk gekoppeld aan het datamodel en de context waarin ze gebruikt worden. In CA Gen zijn variabelen gegevenshouders die gebruikt worden binnen action diagrams en procedures om waarden tijdelijk of persisten op te slaan tijdens de uitvoering van een applicatie. Volgende soorten variabelen bestaan:
  \begin{itemize}
      \item De meest voorkomende variabelen zijn attribute-based variabelen, deze zijn afgeleid van een entiteit of datamodel en hebben een vaste structuur en datatype. Voorbeelden hiervan zijn 'Customer.Name' of 'Material.ID'. Deze variabelen zijn rechtstreeks gelinkt aan de database-structuur.
-     \item Local variables: deze worden gebruikt binnen procedures en action diagrams. Variabelen van deze soort bestaan slechts tijdelijk (enkel tijdens de uitvoering) en worden bijvoorbeeld gebruikt voor berekeningen of tussenresultaten.
+     \item Local variables: deze worden gebruikt binnen procedures en action diagrams. Variabelen van deze soort bestaan slechts tijdelijk (enkel tijdens de uitvoering) en worden bijvoorbeeld gebruikt voor berekeningen of tussenresultaten. De lokale variabelen worden gedefinieerd aan het begin van de action diagram onder 'IMPORTS'.
      \item Parameter-variabelen worden gebruikt als I/O voor procedure calls of module-interactie.
      \item CA Gen voorziet ook systeemvariabelen zoals statuscodes en foutcodes.
  \end{itemize}
@@ -98,4 +119,59 @@
      \label{fig:Vb 1 CA Gen-code}
  \end{figure}
  
+ \subsection{WHILE-loop}
+ Een WHILE-loop in CA Gen wordt als volgt gedefinieerd: WHILE \{conditie\} ... REPEAT \{code\}. De lus gaat de code na de repeat uitvoeren tot de conditie niet meer geldig is. Nog een keyword dat in veel loops wordt gebruikt is 'ESCAPE', dit wil zeggen dat je uit de loop stapt en de pijl duidt aan tot welk niveau je terugkeert. De code uit figuur \ref{fig:Vb 2 CA Gen-code} zou worden vertaald naar: 
+ 
+ \begin{verbatim}
+     /* WHILE */
+     DO WHILE (INT_AFF_WERKVELDEN.NR_VKM <= INT_AFF_WERKVELDEN.Q_VKM);
+       /* REPEAT */
+       GRL_TTIS = 1;
+       INT_AFF_MATERIAALEENHEID.NR_BS_AFF    = INT_AFF_TTI.NR_BS;
+       INT_AFF_MATERIAALEENHEID.NR_PO_BS_AFF = INT_AFF_TTI.NR_PO_BS;
+       
+       IF INT_AFF_MATERIAALEENHEID.FRM_AFD_PRD ^= “SID”
+       THEN
+         /* ESCAPE */
+         LEAVE;
+     END;
+ \end{verbatim}
+ 
+ \begin{figure}
+     \includegraphics[width:\linewidth]{while-loop.png}
+     \caption{Voorbeeld 1 CA Gen-code}
+     \label{fig:Vb 2 CA Gen-code}
+ \end{figure}
+ 
+ \subsection{USE}
+ Het USE-statement is een van de meest fundamentele commando's in een Action Diagram. Het stelt je in staat om de logica van het ene Action Block aan te roepen vanuit een ander. Het USE-statement fungeert als een subroutine-call. In plaats van alle logica in één groot blok te schrijven, splits je functionaliteiten op in kleinere, herbruikbare eenheden.
+ \begin{itemize}
+     \item Common Action Blocks (CABs): Logica die binnen de CA Gen-encyclopedie is gedefinieerd.
+     \item External Action Blocks (EABs): Logica die buiten Gen is geschreven (bijvoorbeeld PL/I).
+ \end{itemize}
+ Een belangrijk concept bij een USE-statement is View Matching. Je kan niet zomaar variabelen overal gebruiken, je moet expliciet definiëren welke data “naar binnen” gaat en welke “naar buiten” komt.
+ \begin{itemize}
+     \item Import Matching: Je koppelt views uit het aanroepende blok aan de Import Views van het aangeroepen block.
+     \item Export Matching: Je koppelt de Export Views aan het aangeroepen blok terug aan de views in het aanroepende blok.
+ \end{itemize}
+ Wat mag je niet doen met het USE-statement:
+ \begin{itemize}
+     \item Local Views: Deze kunnen niet gematcht worden met een ander blok.
+     \item Recursive Calls: Ca Gen laat standaard geen directe recursie toe.
+     \item Performance: Te veel geneste USE-statements.
+ \end{itemize}
+ De exitstate van een Action Block geeft aan of de blok juist is afgehandeld. Hiervoor is geen directe tegenhanger in PL/I.
+ De code in figuur \ref{fig:Vb 3 CA Gen-code} zou er in PL/I zo uit zien:
+ 
+ \begin{verbatim}
+     
+     CALL(SID_WERKVELD, GRI_PRDO);
+     
+ \end{verbatim}
+ 
+ \begin{figure}
+     \includegraphics[width:\linewidth]{USE.png}
+     \caption{Voorbeeld 1 CA Gen-code}
+     \label{fig:Vb 3 CA Gen-code}
+ \end{figure}
  
