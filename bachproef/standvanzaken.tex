@@ -12,6 +12,75 @@
  CA Gen is een Computer Aided Software Engineering (CASE)-tool en een vierde generatie ontwikkelomgeving (4GL), oorspronkelijk ontwikkeld in 1987. CA Gen is doorheen de jaren onder verschillende namen bekend geweest, waaronder IEF (Information Engineering Facility), Composer by IEF, Composer, COOL:Gen, Advantage:Gen en AllFusion Gen. Met deze CASE-tool kunnen ontwikkelaars op modelgedreven wijze applicaties ontwerpen via grafische modellering en gestructureerde specificaties, zonder rechtstreeks traditionele programmeersyntax te schrijven. Op basis van deze modellen genereert CA Gen automatisch broncode in verschillende programmeertalen, zoals C en COBOL, en voor diverse platformen. CA Gen ondersteunt onder meer component-based software engineering en verschillende architectuurvormen, waaronder client-server-, batch-, online- en webapplicaties. De tool combineert functioneel ontwerp, datamodellering, technische implementatie en deployment binnen één geïntegreerde ontwikkelomgeving. Volgens \textcite{BenefitsCASE2021} maakt het gebruiken van een CASE-tool complexiteit beheerbaarder, verbeterd documentatie en leidt tot aanzienlijke kosten- en tijdsbesparing voor organisaties.
  Alle modellen en gegenereerde artefacten worden opgeslagen in één of meerdere zogenaamde encyclopedieën op het mainframe. Deze encyclopedieën maken gebruik van een DB2-database voor de opslag van metadata en modelinformatie. Binnen ArcelorMittal bevat de encyclopedie verschillende modellen, waarbij elk model een business- of technisch model representeert. De businessmodellen bevatten de logica en specificaties die nodig zijn om een applicatie te genereren, implementeren en testen. 
  
+ \section{\IfLanguageName{dutch}{Computer Aided Software Engineering}{Computer Aided Software Engineering}}%
+ \label{sec:CASE}
+ Computer-aided software engineering (CASE) is de implementatie van door de computer ondersteunde tools en methoden binnen softwareontwikkeling. CASE wordt ingezet om software van hoge kwaliteit en zonder defecten te garanderen. Het waarborgt een gedisciplineerde aanpak met vaste controlepunten (checkpoints) en helpt ontwerpers, ontwikkelaars, testers en managers om de projectmijlpalen tijdens het ontwikkelproces te bewaken.
+ 
+ CASE kan daarnaast dienen als een centraal depot voor projectgerelateerde documentatie, zoals bedrijfsplannen, requirements (vereisten) en ontwerpspecificaties. Een van de belangrijkste voordelen van het gebruik van CASE is de uiteindelijke oplevering van het product; dit sluit vaak beter aan bij de reële behoeften in de praktijk, omdat het garandeert dat klanten nauw betrokken blijven bij het proces.
+ 
+ Het concept CASE omvat een brede set arbeidsbesparende instrumenten voor softwareontwikkeling. Het creëert een raamwerk voor het organiseren van projecten en draagt bij aan het verhogen van de productiviteit. Jaren geleden was de belangstelling voor CASE-tools groter dan nu; tegenwoordig zijn deze tools vaak opgegaan in andere functies, veelal als reactie op de veranderende behoeften van softwareontwikkelaars. Bovendien kreeg het concept CASE na de initiële introductie een aanzienlijke hoeveelheid kritiek te verduren.
+ 
+ Wat zijn CASE-tools?
+ De kerngedachte achter CASE-tools is dat ingebouwde programma's kunnen helpen bij het analyseren van systemen in ontwikkeling, om zo de kwaliteit te verhogen en betere resultaten te behalen. Gedurende de jaren '90 werd de term 'CASE-tool' onderdeel van het software-lexicon, en grote bedrijven zoals IBM maakten gebruik van dit soort tools bij de creatie van software.
+ 
+ Diverse instrumenten zijn geïntegreerd in CASE en worden CASE-tools genoemd. Deze worden gebruikt om verschillende fasen en mijlpalen in de levenscyclus van softwareontwikkeling (SDLC) te ondersteunen.
+ 
+ Typen CASE-tools:
+ \begin{itemize}
+     \item Diagramtools: Deze helpen bij de schematische en grafische weergave van gegevens en systeemprocessen. Ze representeren systeemonderdelen, de beheersstroom (control flow) en de gegevensstroom (data flow) tussen verschillende softwarecomponenten en systeemstructuren in beeldvorm. Voorbeeld: Flow Chart Maker voor geavanceerde stroomdiagrammen.
+     \item Beeldscherm- en rapportgeneratoren: Deze helpen bij het begrijpen van de gegevensvereisten en de onderlinge relaties.
+     \item Analysetools: Deze richten zich op inconsistente of onjuiste specificaties in diagrammen en gegevensstromen. Ze helpen bij het verzamelen van vereisten en controleren automatisch op onregelmatigheden, onnauwkeurigheden in diagrammen, redundantie van gegevens of foutieve omissies.
+     \item Centrale repository: Biedt een centraal opslagpunt voor diagrammen, rapporten en documenten gerelateerd aan het projectmanagement.
+     \item Documentatiegeneratoren: Helpen bij het genereren van gebruikers- en technische documentatie volgens de geldende standaarden. Het creëert documenten voor zowel technische gebruikers als eindgebruikers.
+     \item Codegeneratoren: Ondersteunen de automatische generatie van code (inclusief definities) op basis van ontwerpen, documenten en diagrammen.
+     \item Codegeneratoren: Ondersteunen de automatische generatie van code (inclusief definities) op basis van ontwerpen, documenten en diagrammen.
+     \item Tools voor Analyse en Ontwerp: Bieden instrumenten voor het modelleren van de systeemarchitectuur en het systeemgedrag tijdens de analyse- en ontwerpfasen.
+     \item Tools voor Databasebeheer: Faciliteren de constructie, het ontwerp en de administratie van databases.
+     \item Tools voor Documentatie: Vereenvoudigen het proces van het creëren, organiseren en onderhouden van projectdocumentatie.
+ \end{itemize}
+ \begin{figure}
+     \includegraphics[width:\textwidth]{computer_aided_software_engineering_case_features-f.png}
+     \caption{Enkele voorbeelden van CASE-tools}
+     \label{fig:CASE_SCHEMATISCH}
+ \end{figure}
+ Voordelen van de CASE-aanpak:
+ \begin{itemize}
+     \item Verbeterde documentatie: Het maken en onderhouden van uitgebreide documentatie wordt eenvoudiger. Omdat automatisch gegenereerde documentatie meestal nauwkeuriger en actueler is, is de kans op fouten en misverstanden door verouderd materiaal kleiner.
+     \item Hergebruik van componenten: CASE-tools stimuleren een modulaire en componentgebaseerde aanpak. Hierdoor kunnen teams de ontwikkeltijd verkorten door geteste oplossingen te hergebruiken.
+     \item Snellere ontwikkelcycli: Door taken zoals testen en codegeneratie te automatiseren, neemt de ontwikkeltijd af. Dit leidt tot een snellere oplevering die beter aansluit bij strakke deadlines en veranderende behoeften.
+     \item Betere resultaten: Door repetitieve taken te automatiseren, kunnen engineers zich concentreren op complexere en creatievere aspecten van softwareontwikkeling, wat de algehele output ten goede komt.
+     \item Uniformiteit en standaardisatie: CASE-tools dwingen standaarden af voor codeconventies, documentatieformaten en ontwerppatronen, wat resulteert in consistente en onderhoudbare software.
+ \end{itemize}
+ Nadelen van de CASE-aanpak:
+ \begin{itemize}
+     \item Kosten: Het gebruik van CASE-tools is zeer kostbaar. Kleine softwarebedrijven investeren er vaak niet in, omdat zij menen dat de voordelen alleen gerechtvaardigd zijn bij de ontwikkeling van zeer grote systemen.
+     \item Leercurve: In de beginfase kan de productiviteit van programmeurs dalen omdat zij tijd nodig hebben om de technologie onder de knie te krijgen. Trainingen en on-site ondersteuning door consultants zijn vaak noodzakelijk om dit proces te versnellen.
+     \item Tool-mix: Het is essentieel om een juiste selectie van tools samen te stellen. De integratie van CASE-tools en gegevens over verschillende platforms heen is cruciaal om daadwerkelijk kostenvoordeel te behalen.
+ \end{itemize}
+ \autocite{GeeksForGeeks2024} & \autocite{RahulThibodeau2024}
+ 
+ \section{\IfLanguageName{dutch}{Migraties}{Migrations}}%
+ \label{sec:MIGRATIE}
+ Volgens \textcite{Orosz2022} is complexiteit van migraties door drie hoofdbenaderingen te identificeren, elk met een eigen risicoprofiel en impact op de continuïteit van de bedrijfsvoering:
+ \begin{itemize}
+     \item De "Big Bang" Migratie: Bij deze aanpak wordt het volledige systeem in één enkel moment vervangen door de nieuwe oplossing.
+     \begin{itemize}
+         \item Kenmerken: Hoge efficiëntie in theorie, maar in de praktijk extreem risicovol voor complexe omgevingen zoals CA Gen.
+         \item Relevantie: Hoewel aantrekkelijk vanwege de kortere dubbele onderhoudsperiode, waarschuwt \textcite{Orosz2022} voor de "point of no return" en de enorme druk op validatie en testen vlak voor de livegang.
+     \end{itemize}
+     \item De Inkrementele Migratie (Gefaseerde aanpak)
+     Dit is de meest aanbevolen methode voor bedrijfskritische systemen. Hierbij wordt de migratie opgedeeld in kleinere, beheersbare brokken (bijvoorbeeld per module, functie of subdomein).
+     \begin{itemize}
+         \item Strangler Fig Pattern: Een cruciaal concept waarbij de nieuwe PL/I-functionaliteit geleidelijk de oude CA Gen-logica "omsingelt" en vervangt, totdat de legacy-kern volledig is uitgefaseerd.
+         \item Voordeel: Risico's worden gespreid en er kan voortdurend  worden bijgestuurd op basis van de prestaties in productie.
+     \end{itemize}
+     \item De "Parallel Run"
+     Hierbij draaien zowel het oude CA Gen-systeem als het nieuwe PL/I-systeem gelijktijdig met dezelfde input. De resultaten worden vergeleken om functionele equivalentie aan te tonen.
+     \begin{itemize}
+         \item Toepassing: Dit is bijzonder relevant voor dit  framework, aangezien logistieke berekeningen in PL/I exact moeten matchen met de oorspronkelijke CA Gen-output.
+     \end{itemize}
+ \end{itemize}
+ 
  \section{\IfLanguageName{dutch}{Host encyclopedie}{Host Encyclopedia}}%
  \label{sec:Host Encyclopedie}
  Een Gen-encyclopedie is een centrale opslagplaats van objecten waarmee meerdere gebruikers tegelijkertijd aan meerdere ontwikkelingsprojecten kunnen werken. CA Gen biedt de volgende twee types encyclopedie aan:
@@ -19,38 +88,7 @@
      \item Een host encyclopedie die draait op z/OS gebruike makende van TSO
      \item Een Client Server Encyclopedie (CSE) that draait op een netwerk gebruik makende van één of meerdere werkstations
  \end{itemize}
- De host encyclopedie is een DB2 database dat informatie opslaat dat de Gen Host componenten creëren op meerdere werkstations. Met deze encyclopedie kan je alle kritieke taken controleren vanuit een centrale locatie. Met deze encyclopedie kan heel veel gaan doen, maar in deze context is het belangrijkste de “Check in”, ofwel het uploaden van een model, en de “Check out” ofwel het downloaden van een model.
- 
- \section{\IfLanguageName{dutch}{Modellen}{Models}}%
- \label{sec:Modellen}
- CA Gen werkt dus fundamenteel anders dan klassieke programmeertalen. In plaats van rechtstreeks code te schrijven, bouw je een applicatie op via modellen. Die modellen vormen de kern van hoe applicaties worden ontworpen, gegenereerd en onderhouden. CA Gen-modellen zijn abstracte beschrijvingen van een applicatie waarin zowel de functionele logica, datadefinities als gedrag worden vastgelegd, zonder dat er onmiddellijk programmeercode geschreven wordt. Je kan ze zien als een blauwdruk van een applicatie waaruit automatisch code wordt gegenereerd. Volgende soorten modellen bestaan:
- \begin{itemize}
-     \item Business models (functionele modellen). 
-     Dit zijn de belangrijkste modellen. Deze gaan beschrijven wat de applicatie gaat doen, welke logica uitgevoerd wordt en hoe data verwerkt zal worden zoals bijvoorbeeld berekeningen. Dit gebeurt in een gestructureerde pseudocode waarover later meer.
-     \item Data models (datamodellen).
-     Deze modellen definiëren entiteiten (bijvoorbeel een klant), attributen (velden) of relaties tussen entiteiten. Dit is vergelijkbaar met een ER-diagram. Deze modellen bepalen ook hoe data uiteindelijk in DB2 wordt opgeslagen.
-     \item Action diagrams
-     Een action diagram beschrijft de stap-voor-stap logica, hoe data verwerkt wordt en welke acties uitgevoerd worden. Dit ook in een pseudocode.
- \end{itemize}
- Het werken met deze modellen zorgt voor abstractie, je werkt op een hoger niveau dan code wat ervoor zorgt dat code kan gegenereerd worden in verschillende programmeertalen. Anderzijds is deze gegenereerde code wel heel moeilijk te verstaan zonder de modellen.
- 
- \section{\IfLanguageName{dutch}{CASE migratie}{CASE migration}}%
- \label{sec:CASE}
- Zoals voorheen uitgelegd is CA Gen een CASE-tool. Een CASE migratie omvat het verplaatsen van softwaresystemen, ontwikkelomgevingen en de bijhorende data van verouderde (legacy) omgevingen naar een ander platform. Dit is een complex proces dat je toelaat om legacy-applicaties te upgraden, te herontwerpen of te migreren naar modernere technologieën, om de prestaties, onderhoudbaarheid of wendbaarheid te verbeteren. 
- Enkele belangrijke aspecten van een CASE-migratie:
- \begin{itemize}
-     \item Migratietypen: Migratie kan bestaan uit het verplaatsen, transformeren of vervangen van infrastructuur of applicaties.
-     \item Procesfasen: Een succesvolle migratie volgt doorgaans een gestructureerd proces van planning, continu of stapsgewijze uitvoering en validatie.
-     \item Migratie kan de efficiëntie van je infrastructuur/applicaties verhogen en je kosten verlagen. Als je wil is AI-integratie ook mogelijk.
-     \item Risicoreductie: Een incrementele aanpak, waarbij componenten in kleine stappen worden gemigreerd, zorgt dat het systeem operationeel blijft, waardoor de verstoring van de bedrijfsvoering tot een minimum wordt beperkt.
- \end{itemize}
- 
- Veelvoorkomende migratie-uitdagingen:
- \begin{itemize}
-     \item Complexiteit: Systemen die gebasseerd zijn op verouderde 4GL-talen vereisen vaak aanzienlijke herontwikkeling om over te stappen naar moderne architecturen.
-     \item Compatibiliteit: Het waarborgen dat oude componenten tijdens de overgang blijven functioneren naast de nieuwe.
-     \item Tekort aan vaardigheden: De behoefte aan expertise op het gebied van nieuwe frameworks en architecturen.
- \end{itemize}
+ De host encyclopedie is een DB2 database dat informatie opslaat  dat de Gen Host componenten creëren op meerdere werkstations. Met deze encyclopedie kan je alle kritieke taken controleren vanuit een centrale locatie. Met deze encyclopedie kan heel veel gaan doen, maar in deze context is het belangrijkste de “Check in”, ofwel het uploaden van een model, en de “Check out” ofwel het downloaden van een model.
  
  \section{\IfLanguageName{dutch}{CA Gen Views}{CA Gen Views}}%
  \label{sec:Views}
