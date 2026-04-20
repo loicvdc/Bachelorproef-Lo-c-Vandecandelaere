@@ -215,11 +215,21 @@
  \end{figure}
  
  \subsection{SQL}
- Ook SQL werkt in CA Gen anders dan in klassieke programmeertalen. Ontwikkelaars schrijven doorgaans geen expliciete SQL-queries, maar gebruiken model- en view-gebaseerde operaties die door CA Gen automatisch vertaald worden naar SQL (meestal voor DB2 op mainframe). In plaats daarvan gebruikt de ontwikkelaar logische commando's op basis van het datamodel. Een klassieke “SELECT” is in CA Gen bijvoorbeeld “READ” of “READ EACH”.
+ Ook SQL werkt in CA Gen anders dan in klassieke programmeertalen. Ontwikkelaars schrijven doorgaans geen expliciete SQL-queries, maar gebruiken model- en view-gebaseerde operaties die door CA Gen automatisch vertaald worden naar SQL (meestal voor DB2 op mainframe). In plaats daarvan gebruikt de ontwikkelaar logische commando's op basis van het datamodel. Zo wordt
+ \begin{itemize}
+     \item READ/READ EACH vertaald naar SQL SELECT
+     \item CREATE vertaald naar  SQL INSERT
+     \item UPDATE en DELETE zijn identiek in CA GEN en SQL
+ \end{itemize}
+ Deze abstractie zorgt dat de logica onafhankelijk blijft van de specifieke SQL-dialecten van verschillende databases. Wanneer standaard Entity Actions niet volstaan, bijvoorbeeld bij complexe JOIN-operaties, subquery's of het gebruik van specifieke databasefuncties, wordt uitgeweken naar External Action Blocks (EAB).
+ In een EAB kan een ontwikkelaar handmatig SQL implementeren in talen zoals COBOL of PL/I. 
  
  \begin{verbatim}
      
-
+      SELECT *
+      FROM MATWR JOIN MAT
+      WHERE MATWR.TY_WR_EH_MAT = 'P'
+      SORT BY MATWR.DT_WR_EH_MAT ASC,...
      
  \end{verbatim}
  
