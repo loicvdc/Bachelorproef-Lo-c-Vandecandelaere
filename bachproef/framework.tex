@@ -1,0 +1,369 @@
+%%=============================================================================
+%% Migratieframework CA Gen naar PL/I
+%%=============================================================================
+
+\chapter{\IfLanguageName{dutch}{Migratieframework CA Gen naar PL/I}{Migration framework CA Gen to PL/I}}%
+\label{ch:framework}
+
+Dit hoofdstuk vormt de kern van de bachelorproef en presenteert het uitgewerkte high\-level framework dat 
+ontwikkelaars moet begeleiden bij het migreren van CA~Gen\-applicaties naar PL/I. Waar Hoofdstuk~\ref{ch:stand-van-zaken} 
+de theoretische achtergrond en concrete syntactische voorbeelden behandelt, en Hoofdstuk~\ref{ch:methodologie} 
+de gevolgde onderzoeksaanpak beschrijft, wordt het framework hier opgebouwd rond vier kerncomponenten: 
+(1)~een gestructureerde \emph{analysefase}, (2)~een geconsolideerde set \emph{vertaalrichtlijnen}, 
+(3)~een overzicht van \emph{best practices en valkuilen} en (4)~een \emph{validatiestrategie}. Het hoofdstuk 
+sluit af met een reflectie over de herbruikbaarheid van het framework voor andere doeltalen.
+
+\section{\IfLanguageName{dutch}{Scope en uitgangspunten}{Scope and assumptions}}%
+\label{sec:framework-scope}
+
+Het framework is opgesteld vanuit de praktijkcontext van ArcelorMittal en richt zich expliciet op de 
+volgende situatie:
+
+\begin{itemize}
+    \item \textbf{Doelgroep:} IT\-professionals (applicatiebeheerders, softwareontwikkelaars, technische 
+    architecten) met basiskennis van CA~Gen en PL/I die belast zijn met het onderhoud of de modernisering 
+    van CA~Gen\-gebaseerde systemen.
+    \item \textbf{Brontechnologie:} CA~Gen\-modellen die gegenereerd worden via een host\-encyclopedie op 
+    z/OS (DB2\-gebaseerd), met een sterke focus op batch\-georiënteerde Action Blocks en embedded SQL.
+    \item \textbf{Doeltechnologie:} PL/I op het mainframe, gecompileerd volgens de bestaande conventies 
+    binnen de PLAPO\-codebase.
+    \item \textbf{Type applicaties:} batch\- en procedure\-georiënteerde modules met duidelijke 
+    View\-semantiek, sequentiële bestandsoutput en/of DB2\-interacties.
+\end{itemize}
+
+Buiten scope vallen: UI\- en online\-componenten (Screen/Window\-modellen), de ontwikkeling van een 
+geautomatiseerde codeconverter, performance\-benchmarking van handgeschreven PL/I versus 
+CA~Gen\-gegenereerde code, en uitgewerkte vertaaltabellen voor andere doeltalen dan PL/I. Het framework 
+is uitdrukkelijk \emph{high\-level}: het reikt structuur, conventies en aandachtspunten aan, maar vervangt 
+geen vakkennis of code\-review door ervaren ontwikkelaars.
+
+\section{\IfLanguageName{dutch}{Overzicht van het framework}{Framework overview}}%
+\label{sec:framework-overzicht}
+
+Het framework bestaat uit vier opeenvolgende, maar deels iteratieve componenten. Een typisch 
+migratietraject doorloopt deze componenten in volgorde, waarbij vondsten in latere fasen vaak leiden tot 
+verfijningen in eerdere fasen.
+
+\begin{enumerate}
+    \item \textbf{Analysefase} (\autoref{sec:component-analyse}) -- ontsluiting van het CA~Gen\-model en 
+    inventarisatie van Views, Action Diagrams, USE\-relaties en database\-afhankelijkheden.
+    \item \textbf{Vertaalrichtlijnen} (\autoref{sec:component-vertaling}) -- een geconsolideerde 
+    referentietabel van CA~Gen\-constructen en hun PL/I\-equivalenten, voortbouwend op de syntactische 
+    voorbeelden uit \autoref{sec:Syntax}.
+    \item \textbf{Best practices en valkuilen} (\autoref{sec:component-bestpractices}) -- een gestructureerde 
+    waarschuwingslijst die voorkomt dat eerder gemaakte migratiefouten zich herhalen.
+    \item \textbf{Validatiestrategie} (\autoref{sec:component-validatie}) -- een Parallel\-Run\-aanpak die 
+    functionele equivalentie tussen oude en nieuwe implementatie aantoont.
+\end{enumerate}
+
+\section{\IfLanguageName{dutch}{Component 1: Analysefase}{Component 1: Analysis phase}}%
+\label{sec:component-analyse}
+
+De analysefase heeft als doel het CA~Gen\-model volledig te ontsluiten vooraleer ook maar één regel 
+PL/I\-code wordt geschreven. Een onvolledige analyse is de belangrijkste oorzaak van migratiefouten en 
+herwerk verderop in het traject.
+
+\subsection{Stap 1.1 -- Encyclopedie ontsluiten}
+\label{subsec:stap-encyclopedie}
+
+De CA~Gen\-encyclopedie op z/OS bevat alle modelgegevens. Vóór de analyse moet het relevante model lokaal 
+beschikbaar zijn:
+\begin{itemize}
+    \item Identificeer het juiste businessmodel waaronder de te migreren module valt.
+    \item Voer een \emph{Check Out} uit zodat het model lokaal raadpleegbaar is in de toolset.
+    \item Documenteer de versie\-/timestamp van de check\-out, zodat latere wijzigingen aan het origineel 
+    traceerbaar blijven.
+\end{itemize}
+
+\subsection{Stap 1.2 -- View\-inventaris opstellen}
+\label{subsec:stap-views}
+
+Voor elk Action Block dat tot de migratie\-scope behoort wordt een View\-inventaris opgesteld. De typologie 
+uit \autoref{sec:Views} (Import, Export, Local, Entity, Work, Group, Recursive) wordt hierbij gebruikt als 
+indeling. \autoref{tab:view-inventaris} toont een lege template die per Action Block ingevuld moet worden.
+
+\begin{table}[h]
+\centering
+\caption[View\-inventaris template]{Template voor de View\-inventaris per Action Block.}
+\label{tab:view-inventaris}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Viewnaam} & \textbf{Categorie} & \textbf{Onderliggende structuur} & \textbf{Opmerkingen} \\
+\hline
+\textit{(naam)} & Import / Export / Local & Entity / Work / Group & \textit{(SQL\-koppeling, max.\ kardinaliteit, \dots)} \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Stap 1.3 -- Action Diagram\-stroomanalyse}
+\label{subsec:stap-actionflow}
+
+Per Action Block wordt de control\-flow uitgetekend of beschreven: hoofdlus(sen), conditionele takken, 
+ESCAPE\-niveaus en exitstates. Bijzondere aandacht gaat naar:
+\begin{itemize}
+    \item Geneste lussen en de bijbehorende Group View\-iteratie.
+    \item Plaatsen waar de exitstate gezet of gecontroleerd wordt.
+    \item Foutpaden en hun terugkoppeling naar de aanroepende module.
+\end{itemize}
+
+\subsection{Stap 1.4 -- USE\-graaf en modulegrenzen}
+\label{subsec:stap-usegraaf}
+
+Alle USE\-statements worden in kaart gebracht in de vorm van een aanroepgraaf. Voor elk USE\-statement wordt 
+genoteerd:
+\begin{itemize}
+    \item Aanroepend en aangeroepen Action Block.
+    \item Type: Common Action Block (CAB, intern) of External Action Block (EAB, extern -- typisch reeds in 
+    PL/I of COBOL).
+    \item Volledige Import\- en Export\-matching tussen views.
+    \item Of het aangeroepen blok binnen of buiten de migratiescope valt.
+\end{itemize}
+EAB's vormen vaak natuurlijke modulegrenzen: ze zijn doorgaans al beschikbaar in PL/I en kunnen in de nieuwe 
+implementatie rechtstreeks aangeroepen worden via \texttt{CALL}.
+
+\subsection{Stap 1.5 -- Database\- en interface\-afhankelijkheden}
+\label{subsec:stap-db}
+
+In deze stap wordt vastgelegd welke entiteiten en tabellen door de module benaderd worden, welke acties op 
+elk type record worden uitgevoerd (READ, READ EACH, CREATE, UPDATE, DELETE), en welke sequentiële 
+bestandsstromen gebruikt worden. Het resultaat is een datamatrix die:
+\begin{itemize}
+    \item Per tabel aangeeft of deze gelezen, geschreven of beide wordt.
+    \item Per sequentieel bestand de recordlayout en het toegangstype documenteert.
+    \item Vormt de basis voor de validatieaanpak in \autoref{sec:component-validatie}.
+\end{itemize}
+
+\subsection{Deliverable van de analysefase}
+\label{subsec:deliverable-analyse}
+
+Na afronding van Stappen 1.1 t.e.m.\ 1.5 beschikt de ontwikkelaar over een \emph{analysedossier} met:
+\begin{enumerate}
+    \item Een overzicht van alle relevante Action Blocks.
+    \item Een View\-inventaris per Action Block (cf.\ \autoref{tab:view-inventaris}).
+    \item Een control\-flow\-beschrijving en USE\-graaf.
+    \item Een datamatrix van database\- en bestandsafhankelijkheden.
+\end{enumerate}
+Dit dossier vormt het contract waaraan de PL/I\-implementatie moet voldoen.
+
+\section{\IfLanguageName{dutch}{Component 2: Vertaalrichtlijnen}{Component 2: Translation guidelines}}%
+\label{sec:component-vertaling}
+
+Component~2 vat alle vertaalregels samen die ontwikkelaars nodig hebben tijdens de implementatiefase. De 
+uitgewerkte voorbeelden (met figuren van originele CA~Gen\-code) staan in \autoref{sec:Syntax} 
+en worden hier niet herhaald; deze sectie biedt de \emph{geconsolideerde referentietabel} 
+(\autoref{tab:vertaaltabel}) en bespreekt de aandachtspunten per categorie.
+
+\subsection{Geconsolideerde mappingtabel}
+\label{subsec:mappingtabel}
+
+\begin{table}[h]
+\centering
+\caption[Vertaaltabel CA~Gen $\rightarrow$ PL/I]{Geconsolideerde vertaaltabel van CA~Gen\-constructen naar PL/I.}
+\label{tab:vertaaltabel}
+\small
+\begin{tabular}{|p{0.30\linewidth}|p{0.30\linewidth}|p{0.30\linewidth}|}
+\hline
+\textbf{CA Gen\-construct} & \textbf{PL/I\-equivalent} & \textbf{Aandachtspunt} \\
+\hline
+Attribute\-based variabele & \texttt{DCL} met geneste \texttt{1/2}\-structuur & Datatype 1\-op\-1 afleiden uit datamodel \\
+\hline
+Local variabele (IMPORTS\-blok) & \texttt{DCL} in declaratiesectie & Scope beperken tot procedure \\
+\hline
+\texttt{SET x TO y} & \texttt{x = y;} & Letten op type\-coercion bij gemengde types \\
+\hline
+\texttt{FOR SUBSCRIPT OF a FROM b TO c BY d} & \texttt{DO i = b TO c BY d;} & Index expliciet declareren \\
+\hline
+\texttt{WHILE} \dots \texttt{REPEAT} & \texttt{DO WHILE (cond);} \dots \texttt{END;} & \\
+\hline
+\texttt{ESCAPE} (n niveaus) & \texttt{LEAVE} (label gebruiken bij meerdere niveaus) & PL/I\-\texttt{LEAVE} verlaat slechts één niveau zonder label \\
+\hline
+\texttt{IF/THEN/ELSE} & \texttt{IF cond THEN \dots ELSE \dots} & \\
+\hline
+\texttt{CASE OF} & \texttt{SELECT;} \dots \texttt{WHEN \dots} \texttt{OTHERWISE \dots} \texttt{END;} & \\
+\hline
+\texttt{USE} (CAB) & \texttt{CALL module(args);} & View matching wordt expliciet via parameterstructs \\
+\hline
+\texttt{USE} (EAB) & Idem, maar module bestaat al & EAB\-interface niet wijzigen \\
+\hline
+\texttt{READ} / \texttt{READ EACH} & \texttt{EXEC SQL SELECT \dots} (cursor bij EACH) & Group View $\rightarrow$ cursor + fetch\-loop \\
+\hline
+\texttt{CREATE} & \texttt{EXEC SQL INSERT \dots} & \\
+\hline
+\texttt{UPDATE} & \texttt{EXEC SQL UPDATE \dots} & \\
+\hline
+\texttt{DELETE} & \texttt{EXEC SQL DELETE \dots} & \\
+\hline
+Group View (array) & Array of \texttt{DCL}\-structuur met \texttt{(n)} & Maximumkardinaliteit expliciet vastleggen \\
+\hline
+Exitstate & Return\-code/status\-veld in import\-/exportparameter & Geen 1\-op\-1 mapping; conventie afspreken \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Aandachtspunten per categorie}
+\label{subsec:aandachtspunten}
+
+\paragraph{Variabelen en datatypes.} Attribute\-based variabelen erven hun datatype rechtstreeks van het 
+datamodel. In PL/I dient dit type expliciet gedeclareerd te worden via \texttt{DCL} met een geneste 
+\texttt{1/2}\-structuur, conform de bestaande PLAPO\-conventie. Numerieke types worden bij voorkeur 
+gedeclareerd als \texttt{FIXED BIN(31)}; tekstvelden als \texttt{CHAR(n)} met dezelfde lengte als in CA~Gen.
+
+\paragraph{Toekenningen en expressies.} Een \texttt{SET~\dots~TO~\dots} vertaalt direct naar een 
+toewijzing. Aandacht moet gaan naar impliciete typeconversies en naar het verschil tussen het toekennen 
+van een hele structuur en een enkel veld.
+
+\paragraph{Lussen.} CA~Gen kent twee lustypes: \texttt{FOR}\-lussen op een index en \texttt{WHILE}\-lussen 
+op een conditie. PL/I biedt voor beide een variant van \texttt{DO}. Wanneer in CA~Gen een 
+\texttt{ESCAPE}\-pijl meerdere niveaus omhoog wijst, moet in PL/I een \texttt{LEAVE} met expliciet label 
+gebruikt worden om hetzelfde gedrag te bereiken.
+
+\paragraph{USE en view matching.} In CA~Gen worden views impliciet gekoppeld via View Matching. In PL/I 
+moet deze koppeling expliciet gemaakt worden door de Import\- en Export\-views als parameters van de 
+\texttt{CALL} mee te geven. De aanbeveling is om per CAB één parameterstructuur per view te definiëren 
+(\texttt{IMP\_*} voor import en \texttt{EXP\_*} voor export). EAB's blijven onveranderd en behouden hun 
+huidige PL/I\-interface.
+
+\paragraph{Database\-operaties.} CA~Gen\-entity actions worden vertaald naar expliciete \texttt{EXEC SQL}\-
+statements. Bij \texttt{READ EACH} op een Group View wordt een DB2\-cursor gebruikt met een 
+\texttt{FETCH}\-lus die ophoudt zodra \texttt{SQLCODE = 100} of de maximumkardinaliteit van de Group View 
+bereikt is. Het is essentieel om beide eindcondities te respecteren om buffer overflows te voorkomen.
+
+\paragraph{Exitstates.} CA~Gen kent een ingebouwd exitstate\-mechanisme dat in PL/I geen directe 
+tegenhanger heeft. De aanbeveling is om de exitstate als een veld op te nemen in de export\-parameterstruct, 
+met een afgesproken set codes (bv.\ \texttt{0}~=~OK, \texttt{4}~=~waarschuwing, \texttt{8}~=~fout). Deze 
+conventie sluit aan bij de bestaande PLAPO\-modules.
+
+\section{\IfLanguageName{dutch}{Component 3: Best practices en valkuilen}{Component 3: Best practices and pitfalls}}%
+\label{sec:component-bestpractices}
+
+Component~3 verzamelt aanbevelingen die voortkomen uit de analyse van eerder gemigreerde modules binnen 
+ArcelorMittal en uit de algemene literatuur over legacy\-modernisering 
+(\autocite{Orosz2022}, \autocite{StrategicMigration2024}).
+
+\subsection{Paradigmaverschuiving aanvaarden}
+\label{subsec:paradigma}
+
+CA~Gen is modelgedreven; PL/I is procedureel. Wat in CA~Gen impliciet door de generator wordt afgehandeld 
+(declaraties, view\-koppelingen, SQL\-generatie), moet in PL/I expliciet geschreven worden. Pogingen om 
+één\-op\-één te vertalen zonder rekening te houden met dit paradigmaverschil leiden tot onnodig complexe of 
+inefficiënte code.
+
+\subsection{Conventies van de bestaande codebase volgen}
+\label{subsec:conventies}
+
+De PLAPO\-codebase bevat reeds tientallen gemigreerde modules. Nieuwe modules moeten dezelfde conventies 
+volgen op vlak van:
+\begin{itemize}
+    \item Naming van procedures, parameters en variabelen.
+    \item Structuur van DCL\-blokken en commentaarheaders.
+    \item Foutafhandeling en exitstate\-codes.
+    \item Aanroep\-volgorde tussen generieke en specifieke modules.
+\end{itemize}
+Afwijkingen leiden tot onleesbare code en bemoeilijken het onderhoud.
+
+\subsection{View Matching expliciet maken}
+\label{subsec:view-matching-bp}
+
+Een veelvoorkomende fout is het impliciet meenemen van velden die in CA~Gen wel maar in PL/I niet 
+automatisch gekoppeld worden. Best practice: bij elke \texttt{CALL} alle parameters expliciet meegeven en 
+elke koppeling tussen aanroepende en aangeroepen view formeel documenteren in het analysedossier.
+
+\subsection{Embedded SQL i.p.v.\ verborgen entity actions}
+\label{subsec:sql-bp}
+
+In CA~Gen zijn \texttt{READ}\-statements compact omdat de generator de SQL afleidt uit het model. In PL/I 
+moet de SQL volledig uitgeschreven worden. Het is aan te raden om de SQL te formuleren op basis van de 
+datamatrix uit Stap~1.5 en niet op basis van een visuele interpretatie van de CA~Gen\-code, om subtiele 
+JOIN\- of filtervoorwaarden niet te missen.
+
+\subsection{Group View\-grenzen bewaken}
+\label{subsec:groupview-bp}
+
+Group Views hebben een vaste maximumkardinaliteit. Bij vertaling naar PL/I\-arrays moet deze grens zowel 
+aan de declaratiekant (\texttt{DCL ... (n)}) als aan de luskant gerespecteerd worden. Een fetch\-lus die 
+verder leest dan de array\-grens veroorzaakt geheugen\-corruptie zonder duidelijke foutmelding.
+
+\subsection{Exitstate\-semantiek behouden}
+\label{subsec:exitstate-bp}
+
+De aanroepende module verwacht specifieke exitstate\-waarden om beslissingen te nemen. Een onvolledige 
+mapping naar return\-codes leidt tot stille fouten in upstream\-modules. Aanbeveling: maak een mapping\-tabel 
+exitstate $\rightarrow$ return\-code en review deze samen met de eigenaar van de aanroepende module.
+
+\subsection{Iteratief reviewen tegen het framework}
+\label{subsec:iteratief-bp}
+
+Elke nieuwe of aangepaste module wordt na implementatie gereviewd tegen \autoref{tab:vertaaltabel} en de 
+best\-practices uit deze sectie. Gevonden afwijkingen worden teruggevoerd in het analysedossier en, indien 
+relevant, in het framework zelf.
+
+\section{\IfLanguageName{dutch}{Component 4: Validatiestrategie}{Component 4: Validation strategy}}%
+\label{sec:component-validatie}
+
+De validatie steunt op de \emph{Parallel Run}\-aanpak die door \textcite{Orosz2022} wordt aanbevolen voor 
+bedrijfskritische migraties. Beide implementaties (origineel CA~Gen en nieuw PL/I) worden gelijktijdig 
+uitgevoerd op identieke invoer; de uitvoer wordt vergeleken op functionele equivalentie.
+
+\subsection{Stap 4.1 -- Testdatasets samenstellen}
+\label{subsec:test-datasets}
+
+Er worden minimaal drie scenario's voorzien:
+\begin{enumerate}
+    \item Een \emph{standaardscenario} dat de meest voorkomende productieverkeer benadert.
+    \item Een \emph{edge\-case\-scenario} dat de Group View\-grenzen opzoekt en uitzonderlijke materiaaltypes 
+    bevat.
+    \item Een \emph{foutscenario} (lege of inconsistente input) om de foutpaden en exitstates te valideren.
+\end{enumerate}
+
+\subsection{Stap 4.2 -- Parallel uitvoeren}
+\label{subsec:parallel-run}
+
+Beide implementaties worden achtereenvolgens uitgevoerd in dezelfde testomgeving, met dezelfde 
+DB2\-snapshot en dezelfde inputbestanden. Outputbestanden en eventueel weggeschreven DB2\-rijen worden 
+veiliggesteld onder een uniek run\-ID.
+
+\subsection{Stap 4.3 -- Output vergelijken}
+\label{subsec:output-vergelijken}
+
+Sequentiële outputbestanden worden byte\-voor\-byte vergeleken; verschillen worden geclassificeerd als 
+ofwel onbeduidend (bv.\ tijdstempels), ofwel functioneel relevant. Voor DB2\-output wordt een 
+rij\-voor\-rij vergelijking gemaakt op basis van de primaire sleutel. Een migratie wordt als geslaagd 
+beschouwd wanneer alle scenario's geen functioneel relevante verschillen opleveren.
+
+\subsection{Stap 4.4 -- Expert\-review}
+\label{subsec:expert-review}
+
+Naast de geautomatiseerde validatie wordt het analysedossier en een steekproef van de PL/I\-code voorgelegd 
+aan minstens één ervaren ontwikkelaar binnen het PLAPO\-team. De review focust op leesbaarheid, naleving 
+van de conventies en correctheid van de exitstate\-mapping.
+
+\section{\IfLanguageName{dutch}{Toepassing en herbruikbaarheid}{Application and reusability}}%
+\label{sec:framework-herbruikbaarheid}
+
+De vier componenten zijn niet in dezelfde mate taal\-specifiek:
+\begin{itemize}
+    \item \textbf{Taal\-agnostisch:} Component~1 (Analyse), Component~3 (Best practices, op de 
+    paradigmaverschuiving na) en Component~4 (Validatie). Deze kunnen ongewijzigd hergebruikt worden voor 
+    migraties naar andere doeltalen.
+    \item \textbf{Taal\-specifiek:} Component~2 (Vertaalrichtlijnen). Voor een migratie naar bv.\ COBOL of 
+    een moderne taal moet een nieuwe vertaaltabel opgesteld worden, maar de \emph{structuur} van de tabel en 
+    de aandachtspuntencategorieën blijven identiek.
+\end{itemize}
+Dit maakt het framework in opzet herbruikbaar; een effectieve toepassing op een andere doeltaal vergt 
+echter steeds een eigen, gevalideerde vertaaltabel en een proof\-of\-concept op een representatieve module.
+
+\section{\IfLanguageName{dutch}{Toepassing op de PoC TPPBAMT}{Application to the PoC TPPBAMT}}%
+\label{sec:framework-poc}
+
+Het framework is parallel met dit hoofdstuk toegepast op de migratie van de CA~Gen\-module 
+\textbf{TPPBAMT} naar PL/I. Hierbij zijn opeenvolgend opgeleverd:
+\begin{enumerate}
+    \item Een \emph{generieke MAIN\-module} als entry\-point voor BAF\-planningsverzoeken.
+    \item Een \emph{specifieke BAF MAIN\-module} die de domeinspecifieke routering en parametrering 
+    afhandelt.
+    \item Een \emph{materiaalmodule} voor het ophalen en filteren van planbare materialen.
+    \item Een \emph{bestellingmodule} voor de productie\-orderlogica en segmentatie.
+    \item Een \emph{output\-generator} die het sequentiële BAF\-segmentenbestand produceert in dezelfde 
+    layout als de oorspronkelijke CA~Gen\-output.
+\end{enumerate}
+De resultaten van de bijhorende validatie worden besproken in Hoofdstuk~\ref{ch:conclusie}.
