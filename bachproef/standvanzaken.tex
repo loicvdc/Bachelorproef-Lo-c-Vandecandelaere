@@ -111,6 +111,24 @@
      §§ Recursive Views: Hoewel minder vaak gebruikt, kunnen views recursief worden gedefinieerd voor boomstructuren of hiërarchische data.
  \end{easylist}
  
+ \section{\IfLanguageName{dutch}{Wat is PL/I?}{What is PL/I?}}%
+ \label{sec:PLI}
+ PL/I (Programming Language One) is een procedurele, hoog-niveau programmeertaal die oorspronkelijk in de jaren '60 door IBM werd ontwikkeld voor zowel wetenschappelijke als commerciële toepassingen. De moderne variant op het mainframe is \emph{IBM Enterprise PL/I for z/OS}, op het moment van schrijven beschikbaar in versie~6.2~\autocite{IBM2025}. Volgens de officiële IBM-documentatie is Enterprise PL/I een compiler die ontwikkelaars in staat stelt bedrijfskritische, line-of-business PL/I-applicaties te bouwen en te onderhouden die uitvoerbaar zijn op z/OS, met directe interoperabiliteit met onder andere IBM~CICS, IBM~Db2 en IBM~IMS. Dit maakt PL/I een logische doeltaal binnen de mainframe-context van ArcelorMittal, waar diezelfde transactionele en datasystemen reeds in gebruik zijn.
+
+ In tegenstelling tot CA~Gen is PL/I geen modelgedreven omgeving maar een klassieke procedurele taal: ontwikkelaars schrijven expliciet alle declaraties, controlestructuren en database-interacties uit in broncode. De belangrijkste taalkenmerken die relevant zijn voor de migratie zijn:
+
+ \begin{itemize}
+     \item \textbf{Block-georiënteerde structuur:} een PL/I-programma bestaat uit \texttt{PROCEDURE}-blokken (\texttt{PROC OPTIONS(MAIN)} voor het hoofdprogramma) waarbinnen lokale declaraties en uitvoerbare statements gedefinieerd worden.
+     \item \textbf{Rijke datatypes:} PL/I ondersteunt onder meer \texttt{FIXED BIN}, \texttt{FIXED DEC}, \texttt{FLOAT}, \texttt{CHAR(n)}, \texttt{BIT(n)} en samengestelde structuren via genummerde \texttt{DCL 1/2/3}-niveaus. Dit laatste is essentieel om CA~Gen-views (Entity-, Work- en Group~Views) één-op-één over te zetten op PL/I-structuren en arrays.
+     \item \textbf{Controlestructuren:} \texttt{IF/THEN/ELSE}, \texttt{SELECT/WHEN/OTHERWISE}, \texttt{DO~WHILE}, \texttt{DO~UNTIL} en geïndexeerde \texttt{DO}-lussen vormen directe tegenhangers van de CA~Gen-constructies \texttt{IF}, \texttt{CASE OF}, \texttt{WHILE...REPEAT} en \texttt{FOR SUBSCRIPT OF}. Het statement \texttt{LEAVE} (eventueel met label) vervult de rol van \texttt{ESCAPE}.
+     \item \textbf{Modulariteit via \texttt{CALL}:} subroutines worden aangeroepen met \texttt{CALL procedurenaam(arg1, arg2, \dots)}. Parameters worden expliciet doorgegeven, wat aansluit bij de manier waarop in CA~Gen Import- en Export-views via View Matching gekoppeld worden.
+     \item \textbf{Embedded SQL:} via de DB2-precompiler kunnen \texttt{EXEC SQL}-statements rechtstreeks in PL/I-code opgenomen worden. Dit is de standaardmanier waarop CA~Gen-entity actions (\texttt{READ}, \texttt{CREATE}, \texttt{UPDATE}, \texttt{DELETE}) na migratie geïmplementeerd worden.
+     \item \textbf{Macro- en include-mechanismen:} via \texttt{\%INCLUDE} kunnen herbruikbare datastructuren en SQL-declaraties (DCLGEN-output) centraal beheerd worden, wat consistente datatypering tussen modules bevordert.
+     \item \textbf{Foutafhandeling:} PL/I kent het \texttt{ON}-mechanisme voor het afvangen van condities (zoals \texttt{ERROR}, \texttt{ENDFILE}, \texttt{ZERODIVIDE}). Voor SQL-fouten wordt typisch de waarde van \texttt{SQLCODE} of \texttt{SQLSTATE} gecontroleerd na elke \texttt{EXEC SQL}.
+ \end{itemize}
+
+ Binnen ArcelorMittal vormt PL/I al de standaardtaal voor de generieke en specifieke modules van de PLAPO-lijnplanning. Reeds gemigreerde modules (alle planningmodules behalve BAF) zijn in PL/I geschreven en volgen interne codeconventies voor naming, declaratiestructuur en exitstate-codes. De keuze om ook BAF naar PL/I te migreren is dan ook niet zozeer een technologische keuze, maar een bewuste afstemming op de bestaande codebase, zodat alle planningmodules op termijn in dezelfde taal en dezelfde infrastructuur draaien.
+
  \section{\IfLanguageName{dutch}{Syntax mapping}{Syntax mapping}}%
  \label{sec:Syntax}
  Zoals eerder vermeld maakt CA Gen gebruik van een vorm van gestructureerde pseudocode waarin de volledige applicatielogica wordt gedefinieerd. Deze pseudocode vormt de basis voor de automatische generatie van programmacode.
