@@ -30,22 +30,78 @@ Het onderzoek vertrekt vanuit een bestaande CA Gen-applicatie als casus, binnen 
 CA Gen-gebaseerde legacy-systemen.
 
 \section{Probleemanalyse en contextstudie}
+\label{sec:meth-probleemanalyse}
 
-In een eerste fase wordt de huidige probleemsituatie in kaart gebracht door middel van documentanalyse en overleg met betrokken IT-professionals binnen de organisatie. 
-Welke rol speelt CA Gen binnen het applicatielandschap? Welke functionele en architecturale componenten bevat de CA Gen-applicatie? Zijn er database- of 
-API-afhankelijkheden? De CA Gen-code moet geanalyseerd worden en dient grondig verstaan te worden, verder moet de PL/I code van gelijkaardige applicaties bekeken worden.
-De officiële CA Gen-documentatie van Broadcom en interne bedrijfsdocumentatie vormen de primaire informatiebronnen voor deze analyse. Dit zal 3 weken duren.
+In een eerste fase wordt de huidige probleemsituatie in kaart gebracht door middel van documentanalyse en
+semi-gestructureerde gesprekken met betrokken IT-professionals binnen ArcelorMittal. Centrale
+onderzoeksthema's hierbij zijn:
+\begin{itemize}
+    \item De rol van CA~Gen binnen het bredere applicatielandschap (PLAPO).
+    \item De functionele en architecturale componenten van de CA~Gen-applicatie.
+    \item Database- en interface-afhankelijkheden, in het bijzonder de relatie met DB2.
+    \item Eerdere migratie-ervaringen binnen de organisatie en lessen die daaruit getrokken kunnen worden.
+\end{itemize}
+De officiële CA~Gen-documentatie van Broadcom~\autocite{Broadcom2013}, de IBM-documentatie voor Enterprise
+PL/I~\autocite{IBM2025} en interne bedrijfsdocumentatie vormen de primaire informatiebronnen. Deze fase
+levert het materiaal voor Hoofdstuk~\ref{ch:probleemanalyse}.
+
+\section{Reverse engineering van TPPBAMT}
+\label{sec:meth-reverse}
+
+In de tweede fase wordt een systematische reverse engineering uitgevoerd op de CA~Gen-module
+\texttt{TPPBAMT}, die instaat voor het genereren van de specifieke segmenten binnen de BAF-planning. Per
+Action Block wordt een view-inventaris opgesteld, een control-flow-beschrijving uitgewerkt, een
+USE-graaf gereconstrueerd en een datamatrix van database-afhankelijkheden samengesteld. Deze stappen vormen
+tegelijk de eerste empirische toepassing van \emph{Component~1} van het framework
+(\autoref{sec:component-analyse}). De resultaten worden besproken in
+Hoofdstuk~\ref{ch:reverse-engineering}.
 
 \section{Ontwerp van het migratieframework}
+\label{sec:meth-framework}
 
-Op basis van de inzichten uit de probleemanalyse en de reverse-engineeringfase wordt een high-level migratieframework ontworpen. Eerst moet er gezocht worden naar een duidelijk
-template of layout waaruit dit framework zal opgesteld worden. Vervolgens komen er verschillende iteraties van de volgende drie processen: onderzoek/programmeerwerk, vertaling
-naar framework en controleren. Ondertussen wordt er ook gewerkt aan de PoC, daarvoor moeten de volgende programma's aangepast/aangemaakt worden: generieke MAIN-module, specifieke 
-MAIN-module, specifieke bestellings- en materiaalmodule met domeinspecifieke logica. Dit zal ongeveer 8 weken duren.
+Op basis van de inzichten uit de twee voorgaande fasen wordt het high-level migratieframework ontworpen.
+Het framework wordt opgebouwd rond vier kerncomponenten -- analysefase, vertaalrichtlijnen, best practices
+en validatiestrategie -- en wordt iteratief verfijnd doorheen de PoC-implementatie. Het volledige framework
+is opgenomen in Hoofdstuk~\ref{ch:framework}.
 
-\section{Validatie via casestudy}
+\section{Implementatie van de proof-of-concept}
+\label{sec:meth-poc}
 
-De huidige applicatie produceert een sequentiële file met segmenten erin. De applicatie moet na migratie ook een file hebben als output, 
-exact dezelfde output zou de perfecte uitkomst zijn. Hier wordt 3 weken voor gerekend. Daarnaast moet het framework eens gelezen worden door een expert
-voor feedback.
+In de vierde fase wordt het framework toegepast op de migratie van \texttt{TPPBAMT} naar PL/I. De
+implementatie gebeurt incrementeel en omvat:
+\begin{itemize}
+    \item Een generieke MAIN-module als entry point voor BAF-planningsverzoeken.
+    \item Een specifieke BAF MAIN-module met domeinspecifieke routering.
+    \item Een materiaalmodule voor de selectie van planbare materialen.
+    \item Een bestellingmodule voor de productie-orderlogica.
+    \item Een output-generator die het sequenti\"ele segmentenbestand produceert.
+\end{itemize}
+Voor elke submodule wordt na implementatie een review uitgevoerd tegen de vertaaltabel
+(\autoref{tab:vertaaltabel}) en de best-practices uit Hoofdstuk~\ref{ch:framework}. De PoC wordt
+uitgewerkt in Hoofdstuk~\ref{ch:poc}.
 
+\section{Validatie}
+\label{sec:meth-validatie}
+
+De validatie steunt op de \emph{Parallel Run}-aanpak die door \textcite{Orosz2022} wordt aanbevolen voor
+bedrijfskritische migraties. Beide implementaties (origineel CA~Gen en nieuw PL/I) worden uitgevoerd op
+identieke invoerdata; de uitvoer wordt vergeleken op functionele equivalentie. Er worden minstens drie
+testscenario's voorzien (standaard, edge-case, foutscenario), aangevuld met een review van het framework
+en een steekproef van de PL/I-code door minstens \'e\'en ervaren ontwikkelaar binnen het PLAPO-team. De
+opzet en resultaten van de validatie worden besproken in Hoofdstuk~\ref{ch:validatie}.
+
+\section{Bedreigingen voor de validiteit}
+\label{sec:meth-bedreigingen}
+
+Een aantal beperkingen verdient expliciete vermelding:
+\begin{description}
+    \item[Constructvaliditeit] De gekozen kerncomponenten van het framework zijn afgeleid uit literatuur en
+        praktijkervaring binnen \'e\'en organisatie; andere relevante dimensies (zoals UI-componenten of
+        performance) blijven buiten beschouwing.
+    \item[Interne validiteit] De validatie steunt op \'e\'en module (\texttt{TPPBAMT}); structureel
+        verschillende modules kunnen aanvullende uitdagingen blootleggen.
+    \item[Externe validiteit] De resultaten zijn toegespitst op de combinatie CA~Gen $\rightarrow$ PL/I. De
+        beweerde herbruikbaarheid voor andere doeltalen wordt in deze proef niet empirisch aangetoond.
+    \item[Beperkte expert-pool] Het aantal beschikbare reviewers met diepe CA~Gen- en PL/I-kennis is in de
+        praktijk klein; dit beperkt de statistische sterkte van de expert-review.
+\end{description}

@@ -79,7 +79,7 @@ beschikbaar zijn:
 \label{subsec:stap-views}
 
 Voor elk Action Block dat tot de migratie\-scope behoort wordt een View\-inventaris opgesteld. De typologie 
-uit \autoref{sec:Views} (Import, Export, Local, Entity, Work, Group, Recursive) wordt hierbij gebruikt als 
+uit \autoref{sec:Views} (Imports, Exports, Locals, Entity Actions) wordt hierbij gebruikt als 
 indeling. \autoref{tab:view-inventaris} toont een lege template die per Action Block ingevuld moet worden.
 
 \begin{table}[h]
@@ -356,14 +356,5 @@ echter steeds een eigen, gevalideerde vertaaltabel en een proof\-of\-concept op 
 \label{sec:framework-poc}
 
 Het framework is parallel met dit hoofdstuk toegepast op de migratie van de CA~Gen\-module 
-\textbf{TPPBAMT} naar PL/I. Hierbij zijn opeenvolgend opgeleverd:
-\begin{enumerate}
-    \item Een \emph{generieke MAIN\-module} als entry\-point voor BAF\-planningsverzoeken.
-    \item Een \emph{specifieke BAF MAIN\-module} die de domeinspecifieke routering en parametrering 
-    afhandelt.
-    \item Een \emph{materiaalmodule} voor het ophalen en filteren van planbare materialen.
-    \item Een \emph{bestellingmodule} voor de productie\-orderlogica en segmentatie.
-    \item Een \emph{output\-generator} die het sequentiële BAF\-segmentenbestand produceert in dezelfde 
-    layout als de oorspronkelijke CA~Gen\-output.
-\end{enumerate}
-De resultaten van de bijhorende validatie worden besproken in Hoofdstuk~\ref{ch:conclusie}.
+\textbf{TPPBAMT} naar PL/I. De analysefase wordt uitgewerkt in Hoofdstuk~\ref{ch:reverse-engineering}, de
+uiteindelijke implementatie in Hoofdstuk~\ref{ch:poc}, en de validatie in Hoofdstuk~\ref{ch:validatie}.

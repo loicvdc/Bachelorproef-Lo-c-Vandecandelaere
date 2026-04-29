@@ -1,0 +1,101 @@
+%%=============================================================================
+%% Probleemanalyse en context
+%%=============================================================================
+
+\chapter{\IfLanguageName{dutch}{Probleemanalyse en context}{Problem analysis and context}}%
+\label{ch:probleemanalyse}
+
+Dit hoofdstuk werkt de in Hoofdstuk~\ref{ch:inleiding} ge\"introduceerde probleemstelling verder uit door het
+toepassingsdomein van het onderzoek -- het PLAPO-lijnplanningsplatform binnen ArcelorMittal -- gedetailleerd in
+kaart te brengen. De uitgewerkte context vormt het uitgangspunt voor zowel de reverse engineering in
+Hoofdstuk~\ref{ch:reverse-engineering} als de proof-of-concept in Hoofdstuk~\ref{ch:poc}.
+
+\section{Het PLAPO-platform}
+\label{sec:plapo}
+
+PLAPO is de interne benaming voor het lijnplanningsplatform van ArcelorMittal. Het platform vertaalt
+binnenkomende productieaanvragen naar concrete planningssegmenten per productiestap. Een segment beschrijft
+welke materialen, in welke volgorde en op welk moment door een specifieke installatie verwerkt worden.
+
+Architecturaal bestaat PLAPO uit twee soorten modules:
+\begin{description}
+    \item[Generieke modules] zijn verantwoordelijk voor de afhandeling van een planningsaanvraag,
+        het opbouwen van de gemeenschappelijke datacontext en het routeren naar de juiste specifieke
+        module. Deze generieke modules zijn reeds volledig in PL/I ge\"implementeerd.
+    \item[Specifieke modules] bevatten de domeinspecifieke logica per installatie of proces.
+        Voorbeelden zijn de continue gietlijnen, de warmwalserij en de Batch Annealing Facility~(BAF).
+        Op \'e\'en uitzondering na zijn alle specifieke modules eveneens reeds gemigreerd naar PL/I; alleen
+        de BAF-module draait nog in CA~Gen.
+\end{description}
+
+Figuur~\ref{fig:Plapo} toont de positie van de BAF-module binnen het bredere PLAPO-landschap. De
+generieke modules sturen, op basis van de aanvraagparameters, de juiste specifieke module aan; deze
+laatste schrijft vervolgens de planningssegmenten weg in een sequenti\"eel uitvoerbestand dat door de
+planningstool wordt ingelezen.
+
+\section{De Batch Annealing Facility (BAF)}
+\label{sec:baf}
+
+Batch annealing is een warmtebehandeling waarbij meerdere rollen ijzer onder een vacu\"umkap geplaatst en
+gecontroleerd verwarmd worden, met als doel de mechanische eigenschappen (hardheid, vervormbaarheid) te
+verbeteren. Een BAF-installatie bestaat uit een aantal werkvelden waarop telkens een rolstapel kan worden
+geplaatst. De planning bestaat eruit om voor elk planbaar materiaal het juiste werkveld, de juiste positie
+in de stapel en het juiste tijdvenster te bepalen, met respect voor metallurgische, logistieke en
+operationele beperkingen.
+
+Concreet moet de BAF-planningsmodule per planbaar materiaal:
+\begin{enumerate}
+    \item Materiaaleigenschappen (afmetingen, kwaliteit, bestemming) ophalen uit DB2.
+    \item De gekoppelde productie-orders en eventuele sequentievoorwaarden raadplegen.
+    \item Op basis van een set parameters en regels een of meer planningssegmenten samenstellen.
+    \item Deze segmenten naar het uitvoerbestand schrijven in een vooraf afgesproken layout.
+\end{enumerate}
+
+\section{De CA~Gen-module TPPBAMT}
+\label{sec:tppbamt}
+
+Binnen het BAF-luik vormt de CA~Gen-module \texttt{TPPBAMT} het hart van de specifieke logica. Deze module
+genereert de specifieke segmenten van alle planbare materialen voor de BAF-planning. Vanuit de generieke
+PLAPO-modules wordt \texttt{TPPBAMT} aangeroepen met een werkcontext (oven, planningshorizon, aanvragend
+proces); de module raadpleegt vervolgens de relevante DB2-tabellen, voert de planningsregels uit en
+schrijft het resultaat weg.
+
+\texttt{TPPBAMT} is de ideale casus voor dit onderzoek omwille van de volgende eigenschappen:
+\begin{itemize}
+    \item De module is bedrijfskritisch: foutieve output verstoort onmiddellijk de productieplanning.
+    \item De module is voldoende complex om alle relevante CA~Gen-constructen te illustreren (variabelen,
+        controlestructuren, USE-statements, embedded SQL via entity actions, group views).
+    \item De module is voldoende afgebakend om binnen het tijdsbestek van een bachelorproef volledig te
+        kunnen migreren.
+    \item De module heeft een duidelijke, sequenti\"ele uitvoer die zich uitstekend leent voor
+        Parallel-Run-validatie.
+\end{itemize}
+
+\section{Stakeholders en doelstellingen}
+\label{sec:stakeholders}
+
+De onderzoeksresultaten zijn relevant voor verschillende profielen binnen ArcelorMittal:
+\begin{description}
+    \item[Applicatiebeheerders] krijgen een gestructureerde leidraad voor het uitvoeren of opvolgen van
+        toekomstige migraties.
+    \item[Software\-ontwikkelaars] beschikken over een concrete vertaaltabel en een set best practices die
+        de kwaliteit en consistentie van de gemigreerde code ten goede komen.
+    \item[Technische architecten] krijgen een eerste empirisch onderbouwd antwoord op de vraag in
+        welke mate de migratiestrategie kan worden hergebruikt voor andere legacy-modules.
+    \item[Plannings\-functies] zijn indirect gebaat bij een correcte migratie, doordat de
+        BAF-planningskwaliteit ongewijzigd blijft maar de onderhoudbaarheid sterk verbetert.
+\end{description}
+
+\section{Bedrijfsdoelstellingen van de migratie}
+\label{sec:doelstellingen-migratie}
+
+Het inhoudelijk doel van het bredere migratietraject (waarvan deze bachelorproef de
+methodologische basis legt) is drieledig:
+\begin{enumerate}
+    \item De afhankelijkheid van CA~Gen-licenties en CA~Gen-expertise be\"eindigen.
+    \item Het PLAPO-platform consolideren in \'e\'en doeltaal (PL/I), wat onderhoud en doorontwikkeling
+        vereenvoudigt.
+    \item De impliciete migratiekennis die in eerdere modulemigraties is opgebouwd, expliciet en
+        herbruikbaar maken.
+\end{enumerate}
+Dit derde doel is precies wat het in Hoofdstuk~\ref{ch:framework} ontworpen framework realiseert.

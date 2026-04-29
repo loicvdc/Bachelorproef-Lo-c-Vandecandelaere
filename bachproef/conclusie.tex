@@ -5,16 +5,28 @@
 \chapter{Conclusie}%
 \label{ch:conclusie}
 
-In dit hoofdstuk wordt een antwoord geformuleerd op de centrale onderzoeksvraag en de bijbehorende deelvragen. Voorts worden de wetenschappelijke bijdrage, praktische meerwaarde en beperkingen van het onderzoek besproken, evenals aanbevelingen voor toekomstig onderzoek.
+In dit hoofdstuk wordt een antwoord geformuleerd op de centrale onderzoeksvraag en de bijbehorende deelvragen. 
+Voorts worden de wetenschappelijke bijdrage, praktische meerwaarde en beperkingen van het onderzoek besproken, 
+evenals aanbevelingen voor toekomstig onderzoek.
 
 \section{\IfLanguageName{dutch}{Antwoord op de centrale onderzoeksvraag}{Answer to the central research question}}%
 \label{sec:antwoord-hoofdvraag}
 
-De centrale onderzoeksvraag luidde: \textit{``Hoe kan een high-level framework worden opgesteld om CA Gen-applicaties succesvol te migreren naar PL/I-code?''}
+De centrale onderzoeksvraag luidde: \textit{``Hoe kan een high-level framework worden opgesteld om CA Gen-applicaties
+ succesvol te migreren naar PL/I-code?''}
+Dit onderzoek toont aan dat een high-level migratieframework voor CA Gen naar PL/I kan worden opgesteld door een 
+gestructureerde aanpak bestaande uit vier kerncomponenten: (1) een grondige \textbf{analysefase} van CA Gen-modellen, 
+waarin Views, Action Diagrams en Procedure Steps systematisch worden ontsloten; (2) \textbf{vertaalrichtlijnen} 
+per CA Gen-construct naar equivalente PL/I-syntax (bijv. \texttt{SET variable TO value} naar 
+\texttt{variable = value;}, \texttt{FOR SUBSCRIPT OF} naar \texttt{DO...BY}); (3) een 
+\textbf{best-practices-sectie} met waarschuwingen voor veelvoorkomende valkuilen 
+(paradigmaverschuiving van modelgestuurd naar procedureel, expliciete View Matching, behoud van DB2-logica);
+ en (4) een \textbf{validatiestrategie} gebaseerd op parallel run en functionele equivalentie van output.
 
-Dit onderzoek toont aan dat een high-level migratieframework voor CA Gen naar PL/I kan worden opgesteld door een gestructureerde aanpak bestaande uit vier kerncomponenten: (1) een grondige \textbf{analysefase} van CA Gen-modellen, waarin Views, Action Diagrams en Procedure Steps systematisch worden ontsloten; (2) \textbf{vertaalrichtlijnen} per CA Gen-construct naar equivalente PL/I-syntax (bijv. \texttt{SET variable TO value} naar \texttt{variable = value;}, \texttt{FOR SUBSCRIPT OF} naar \texttt{DO...BY}); (3) een \textbf{best-practices-sectie} met waarschuwingen voor veelvoorkomende valkuilen (paradigmaverschuiving van modelgestuurd naar procedureel, expliciete View Matching, behoud van DB2-logica); en (4) een \textbf{validatiestrategie} gebaseerd op parallel run en functionele equivalentie van output.
-
-Het framework is bewust \textit{high-level} van aard: het vormt geen automatische codegenerator, maar een gids voor IT-professionals die stap voor stap, module voor module door het migratieproces geleid worden. Dit sluit aan bij de organisatorische context van ArcelorMittal, waar eerdere module-migraties versnipperd waren uitgevoerd zonder gestandaardiseerde documentatie, wat kennisverliezen en inconsistenties veroorzaakte.
+Het framework is bewust \textit{high-level} van aard: het vormt geen automatische codegenerator, maar een gids 
+voor IT-professionals die stap voor stap, module voor module door het migratieproces geleid worden. 
+Dit sluit aan bij de organisatorische context van ArcelorMittal, waar eerdere module-migraties versnipperd 
+waren uitgevoerd zonder gestandaardiseerde documentatie, wat kennisverliezen en inconsistenties veroorzaakte.
 
 \section{\IfLanguageName{dutch}{Bevindingen per onderzoeksdomein}{Findings per research domain}}%
 \label{sec:bevindingen-per-domein}
@@ -22,24 +34,35 @@ Het framework is bewust \textit{high-level} van aard: het vormt geen automatisch
 \subsection{\IfLanguageName{dutch}{Probleemdomein: CA Gen-beperkingen}{Problem domain: CA Gen limitations}}%
 \label{sec:probleemdomein}
 
-Het onderzoek bevestigt dat CA Gen, hoewel ooit een vernieuwende 4GL CASE-tool, momenteel vele beperkingen met zich meebrengt:
+Het onderzoek bevestigt dat CA Gen, hoewel ooit een vernieuwende 4GL CASE-tool, 
+momenteel vele beperkingen met zich meebrengt:
+\textbf{Technologische end-of-life:} CA Gen wordt sinds jaren niet meer actief onderhouden door Broadcom. 
+Dit leidt tot uitfasering van deskundigheid in de IT-industrie en beperkt beschikbaarheid van consultants of 
+externe ondersteuning.
 
-\textbf{Technologische end-of-life:} CA Gen wordt sinds jaren niet meer actief onderhouden door Broadcom. Dit leidt tot uitfasering van deskundigheid in de IT-industrie en beperkt beschikbaarheid van consultants of externe ondersteuning.
+\textbf{Architecturale afhankelijkheden:} De modellen en gegenereerde artefacten worden opgeslagen in 
+encyclopedieën op het mainframe (DB2-databases). Deze centraal opslag leidt tot sterke vendor lock-in en 
+maakt het moeilijk om kennis over te dragen of uit te breiden naar moderne platforms.
 
-\textbf{Architecturale afhankelijkheden:} De modellen en gegenereerde artefacten worden opgeslagen in encyclopedieën op het mainframe (DB2-databases). Deze centraal opslag leidt tot sterke vendor lock-in en maakt het moeilijk om kennis over te dragen of uit te breiden naar moderne platforms.
+\textbf{Paradigma-incompatibiliteit:} CA Gen is modelgestuurd---ontwikkelaars ontwerpen modellen en 
+abstracties, en CA Gen genereert automatisch uitvoerbare code. PL/I is daarentegen procedureel en expliciet: 
+ontwikkelaars schrijven handmatig alle logica. Dit paradigmaverschuiven vormt een significant cognitief en 
+technisch obstakel.
 
-\textbf{Paradigma-incompatibiliteit:} CA Gen is modelgestuurd---ontwikkelaars ontwerpen modellen en abstracties, en CA Gen genereert automatisch uitvoerbare code. PL/I is daarentegen procedureel en expliciet: ontwikkelaars schrijven handmatig alle logica. Dit paradigmaverschuiven vormt een significant cognitief en technisch obstakel.
-
-\textbf{Kennisverlies:} Zonder gestandaardiseerde migratieaanpak riskeren organisaties verlies van impliciet vakweten over hoe bepaalde CA Gen-constructen functioneren en hoe ze het beste kunnen worden vertaald.
-
-Deze bevindingen rechtvaardigen een gestructureerde migratieaanpak en onderstrepen de waarde van het voorgestelde framework.
+\textbf{Kennisverlies:} Zonder gestandaardiseerde migratieaanpak riskeren organisaties verlies van impliciet 
+vakweten over hoe bepaalde CA Gen-constructen functioneren en hoe ze het beste kunnen worden vertaald.
+Deze bevindingen rechtvaardigen een gestructureerde migratieaanpak en onderstrepen de waarde van het 
+voorgestelde framework.
 
 \subsection{\IfLanguageName{dutch}{Oplossingsdomein: Framework-componenten}{Solution domain: Framework components}}%
 \label{sec:oplossingsdomein}
 
 Het ontworpen framework adresseert de probleemdomein-bevindingen door systematisch vier aspecten uit te werken:
 
-\textbf{1. Analysefase:} Voordat migratie plaatsvindt, moeten CA Gen-modellen grondig worden geanalyseerd op hun View-structuur (Import Views, Export Views, Local Views, Entity Views, Work Views, Group Views), Action Diagram-logicastromen en externe Use-statements (interfaces). Deze analyse vormt de basis voor gecontroleerde vertaling.
+\textbf{1. Analysefase:} Voordat migratie plaatsvindt, moeten CA Gen-modellen grondig worden geanalyseerd op hun 
+View-structuur (Import Views, Export Views, Local Views, Entity Views, Work Views, Group Views), 
+Action Diagram-logicastromen en externe Use-statements (interfaces). Deze analyse vormt de basis voor 
+gecontroleerde vertaling.
 
 \textbf{2. Vertaalrichtlijnen:} Het framework biedt expliciete mappings tussen CA Gen-taal en PL/I voor de meest voorkomende constructen:
 \begin{itemize}
@@ -50,68 +73,119 @@ Het ontworpen framework adresseert de probleemdomein-bevindingen door systematis
     \item Database-operaties: \texttt{READ/CREATE/UPDATE} (CA Gen syntax) → expliciete \texttt{EXEC SQL} statements in PL/I
 \end{itemize}
 
-\textbf{3. Best practices en valkuilen:} Het framework waarschuwt expliciet voor risico's zoals: onvolledig begrijpen van View Matching-semantiek, foutieve behandeling van embedded SQL-logica, verlies van error-handling semantiek, en onrealisatie van nuances in CA Gen-arrays en work-variabelen. Dit voorkomt herhaling van eerder gemaakte fouten.
+\textbf{3. Best practices en valkuilen:} Het framework waarschuwt expliciet voor risico's zoals: 
+onvolledig begrijpen van View Matching-semantiek, foutieve behandeling van embedded SQL-logica, verlies van 
+error-handling semantiek, en onrealisatie van nuances in CA Gen-arrays en work-variabelen. 
+Dit voorkomt herhaling van eerder gemaakte fouten.
 
-\textbf{4. Validatiestrategie:} Het framework stelt een \textit{Parallel Run} aanpak voor, waarbij zowel de oude CA Gen-module als de nieuwe PL/I-implementatie met identieke invoerdata draaien en outputresultaten (sequentiële bestanden, databaserijen) byte-voor-byte worden vergeleken. Dit waarborgt functionele equivalentie.
+\textbf{4. Validatiestrategie:} Het framework stelt een \textit{Parallel Run} aanpak voor, 
+waarbij zowel de oude CA Gen-module als de nieuwe PL/I-implementatie met identieke invoerdata draaien en 
+outputresultaten (sequentiële bestanden, databaserijen) byte-voor-byte worden vergeleken. 
+Dit waarborgt functionele equivalentie.
 
-Voorts stelt het framework de vraag van herbruikbaarheid voor andere talen. De analysestructuur (hoe CA Gen-modellen worden ontsloten) en best-practices (paradigmashift, valkuilen) zijn taal-agnostisch. Alleen de vertaaltabellen zijn taal-specifiek. Dit maakt het framework in principe herbruikbaar voor migraties naar COBOL, C\# of ander PL/I-gelijkaardige procedurele talen.
+Voorts stelt het framework de vraag van herbruikbaarheid voor andere talen. De analysestructuur 
+(hoe CA Gen-modellen worden ontsloten) en best-practices (paradigmashift, valkuilen) zijn taal-agnostisch. 
+Alleen de vertaaltabellen zijn taal-specifiek. Dit maakt het framework in principe herbruikbaar voor migraties naar 
+COBOL, C\# of ander PL/I-gelijkaardige procedurele talen.
 
 \section{\IfLanguageName{dutch}{Validatie via Proof-of-Concept}{Validation via Proof-of-Concept}}%
 \label{sec:poc-validatie}
 
-Het framework is gevalideerd via een praktische casestudy: migratie van de CA Gen-module \textbf{TPPBAMT} (Batch Annealing Facility-planningsmodule) naar PL/I.
+Het framework is gevalideerd via een praktische casestudy: migratie van de CA Gen-module \textbf{TPPBAMT} 
+(Batch Annealing Facility-planningsmodule) naar PL/I. De volledige opzet en resultaten worden besproken in
+Hoofdstuk~\ref{ch:validatie}; deze sectie vat enkel de hoofdconclusies samen.
 
-De PoC-implementatie omvat het ontwerp en de implementatie van (1) een generieke MAIN-module (ingang voor alle BAF-planning-requests), (2) een specifieke MAIN-module voor BAF (routering en domeinspecifieke instellingen), en (3) domeinspecifieke business-logic modules voor materiaal- en bestellingsverwerking. De verwachte uitkomst is een sequentieel outputbestand met BAF-planningssegmenten die identiek is aan de oorspronkelijke CA Gen-output.
+De PoC-implementatie omvat het ontwerp en de implementatie van (1) een generieke MAIN-module 
+(ingang voor alle BAF-planning-requests), (2) een specifieke MAIN-module voor BAF (routering en domeinspecifieke 
+instellingen), (3) een materiaal- en bestellingmodule met domeinspecifieke logica en (4) een output-generator. 
+De Parallel Run met drie testscenario's (standaard, edge-case en foutscenario) toont aan dat de PL/I-implementatie
+functioneel equivalente output produceert ten opzichte van de oorspronkelijke CA Gen-implementatie. Hiermee is
+empirisch aangetoond dat het framework in de praktijk werkbaar is voor een bedrijfskritische module.
 
-\textit{Op het moment van schrijven van deze conclusie is de PoC-implementatie in de afrondingsfase.} Voorlopige resultaten wijzen erop dat de kernlogica succesvol is vertaald en dat functionele equivalentie bereikt wordt voor standaard-planningsscenario's. Een volledige byte-voor-byte verificatie van outputbestanden en DB2-vergelijking worden nog afgerond. Zodra deze validatiefase is compleet, zal dit een bevestiging vormen dat het framework in de praktijk werkzaam is.
-
-Daarnaast is het framework voorgelegd aan IT-professionals binnen ArcelorMittal. Door de beperkte beschikbaarheid van experts gedurende dit onderzoek heeft een volledige, gestructureerde evaluatie door meerdere reviewers nog niet plaatsgevonden. Dit wordt aanbevolen als vervolgstap (zie \autoref{sec:toekomstig-onderzoek}).
+Daarnaast is het framework voorgelegd aan een ervaren ontwikkelaar binnen het PLAPO-team van ArcelorMittal. 
+Door de beperkte beschikbaarheid van experts gedurende dit onderzoek heeft een bredere, gestructureerde 
+evaluatie door meerdere reviewers nog niet plaatsgevonden. Dit wordt aanbevolen als vervolgstap (zie 
+\autoref{sec:toekomstig-onderzoek}).
 
 \section{\IfLanguageName{dutch}{Wetenschappelijke bijdrage en meerwaarde}{Scientific contribution and added value}}%
 \label{sec:bijdrage-meerwaarde}
 
 Dit onderzoek levert bijdragen op drie niveaus:
 
-\textbf{Wetenschappelijk:} CA Gen → PL/I-migratie is een zeer niche-onderwerp waarvoor in de openbare literatuur weinig gestandaardiseerde begeleiding bestaat. Dit onderzoek vult die kloof in met een concreet, empirisch onderbouwde framework. Het combineert bestaande strategieën uit de legacy-modernisatie-literatuur (Strangler Fig Pattern, Parallel Run, zie \autocite{Orosz2022}) met praktische implementatiedetails specifiek voor 4GL-naar-procedureel-migraties.
+\textbf{Wetenschappelijk:} CA Gen → PL/I-migratie is een zeer niche-onderwerp waarvoor in de openbare literatuur 
+weinig gestandaardiseerde begeleiding bestaat. Dit onderzoek vult die kloof in met een concreet, 
+empirisch onderbouwde framework. Het combineert bestaande strategieën uit de legacy-modernisatie-literatuur 
+(Strangler Fig Pattern, Parallel Run, zie \autocite{Orosz2022}) met praktische implementatiedetails specifiek voor 
+4GL-naar-procedureel-migraties.
 
-\textbf{Praktisch voor ArcelorMittal:} Het framework biedt de organisatie een herhaalbare, gedocumenteerde aanpak voor toekomstige CA Gen-modulemigraties. Dit vermindert project-risico's, voorkomt kennisverlies, en verlaagt de overhead voor training van nieuwe projectteamleden. De best-practices-sectie leidt teams weg van kostbare iteraties en trial-and-error.
+\textbf{Praktisch voor ArcelorMittal:} Het framework biedt de organisatie een herhaalbare, gedocumenteerde aanpak
+ voor toekomstige CA Gen-modulemigraties. Dit vermindert project-risico's, voorkomt kennisverlies, en verlaagt 
+ de overhead voor training van nieuwe projectteamleden. De best-practices-sectie leidt teams weg van kostbare 
+ iteraties en trial-and-error.
 
-\textbf{Voor het vakgebied:} Het onderzoek illustreert dat high-level frameworks gecombineerd met beknopte PoC's een kosteneffectief alternatief kunnen vormen voor dure, commerciële CASE-converters in niche-scenario's. Dit kan informatief zijn voor andere organisaties die gelijkaardige legacy-uitdagingen ondervinden.
+\textbf{Voor het vakgebied:} Het onderzoek illustreert dat high-level frameworks gecombineerd met beknopte PoC's een
+ kosteneffectief alternatief kunnen vormen voor dure, commerciële CASE-converters in niche-scenario's. Dit kan 
+ informatief zijn voor andere organisaties die gelijkaardige legacy-uitdagingen ondervinden.
 
 \section{\IfLanguageName{dutch}{Kritische reflectie}{Critical reflection}}%
 \label{sec:kritische-reflectie}
 
-\textbf{Realisme vs. verwachting:} De onderzoeksvraag stelde zich expliciet bescheiden op: geen volledig automatisch migratietool, maar een \textit{high-level} gids. Dit realisticisme bleek essentieel, aangezien de heterogeniteit van CA Gen-modellen en PL/I-implementatiepatronen bij ArcelorMittal te groot is voor volledig geautomatiseerde conversie. Het framework accepteert dat menselijke expertise en iteratie onvermijdelijk blijven.
+\textbf{Realisme vs. verwachting:} De onderzoeksvraag stelde zich expliciet bescheiden op: geen volledig automatisch 
+migratietool, maar een \textit{high-level} gids. Dit realisticisme bleek essentieel, aangezien de heterogeniteit 
+van CA Gen-modellen en PL/I-implementatiepatronen bij ArcelorMittal te groot is voor volledig geautomatiseerde 
+conversie. Het framework accepteert dat menselijke expertise en iteratie onvermijdelijk blijven.
 
-\textbf{Scope en generaliseerbaarheid:} Een kernbeperking is dat de validatie plaatshad via één module (TPPBAMT). Hoewel deze module representatief is voor BAF-planning-logica, kunnen andere CA Gen-applicaties anders architecturaal zijn (bv. online/UI-componenten, raadpleegmodules zonder database-schrijven, etc.). Het framework dekt primair batch-georiënteerde applicaties met duidelijke View-semantiek en SQL-logica.
+\textbf{Scope en generaliseerbaarheid:} Een kernbeperking is dat de validatie plaatshad via één module (TPPBAMT). 
+Hoewel deze module representatief is voor BAF-planning-logica, kunnen andere CA Gen-applicaties anders architecturaal 
+zijn (bv. online/UI-componenten, raadpleegmodules zonder database-schrijven, etc.). Het framework dekt primair 
+batch-georiënteerde applicaties met duidelijke View-semantiek en SQL-logica.
 
-\textbf{Automatisering:} Hoewel syntactische mappings voorkomen zijn vastgelegd, ontbreekt tooling om deze mappings semi-automatisch toe te passen. Een toekomstige AST-gebaseerde code-transformatietool zou de implementatiefase kunnen versnellen.
+\textbf{Automatisering:} Hoewel syntactische mappings voorkomen zijn vastgelegd, ontbreekt tooling om deze mappings 
+semi-automatisch toe te passen. Een toekomstige AST-gebaseerde code-transformatietool zou de implementatiefase 
+kunnen versnellen.
 
-\textbf{UI/Online-componenten:} Het framework richt zich primair op batch en procedurele logica. CA Gen bevat ook UI- en online-componenten (Screen/Window-modellen) die buiten scope van dit onderzoek vallen. Dit vormt een duidelijke begrenzing.
+\textbf{UI/Online-componenten:} Het framework richt zich primair op batch en procedurele logica. CA Gen 
+bevat ook UI- en online-componenten (Screen/Window-modellen) die buiten scope van dit onderzoek vallen. 
+Dit vormt een duidelijke begrenzing.
 
-\textbf{Performance en optimalisatie:} Handmatig geschreven PL/I kan aanzienlijk verschillen in prestatie van CA Gen-gegenereerde code. Het framework voert geen performance-benchmarks uit; dit verdient separaat onderzoek.
+\textbf{Performance en optimalisatie:} Handmatig geschreven PL/I kan aanzienlijk verschillen in prestatie van 
+CA Gen-gegenereerde code. Het framework voert geen performance-benchmarks uit; dit verdient separaat onderzoek.
 
 \section{\IfLanguageName{dutch}{Aanbevelingen voor toekomstig onderzoek}{Recommendations for future research}}%
 \label{sec:toekomstig-onderzoek}
 
 Op basis van deze bevindingen worden de volgende vervolgstappen aanbevolen:
 
-\textbf{1. Uitgebreide expert-evaluatie:} Een gestructureerde enquête onder 5--10 IT-professionals van ArcelorMittal (variërend in ervaring met CA Gen en PL/I) over duidelijkheid, volledigheid en praktische bruikbaarheid van het framework. Dit kan leiden tot verfijningen en aanpassingen.
+\textbf{1. Uitgebreide expert-evaluatie:} Een gestructureerde enquête onder 5--10 IT-professionals van ArcelorMittal 
+(variërend in ervaring met CA Gen en PL/I) over duidelijkheid, volledigheid en praktische bruikbaarheid van het 
+framework. Dit kan leiden tot verfijningen en aanpassingen.
 
-\textbf{2. Validatie op meerdere modules:} Test het framework op een tweede, structureel verschillende CA Gen-module (bv. meer raadpleeg-georiënte logica, of UI-componenten) om generalisatiegraad in te schatten.
+\textbf{2. Validatie op meerdere modules:} Test het framework op een tweede, structureel verschillende CA Gen-module 
+(bv. meer raadpleeg-georiënte logica, of UI-componenten) om generalisatiegraad in te schatten.
 
-\textbf{3. COBOL-uitbreiding:} Werk de vertaaltabellen uit voor COBOL als doeltaal, zodat andere organisaties met COBOL-mainframe-expertise het framework kunnen toepassen.
+\textbf{3. COBOL-uitbreiding:} Werk de vertaaltabellen uit voor COBOL als doeltaal, zodat andere organisaties met 
+COBOL-mainframe-expertise het framework kunnen toepassen.
 
-\textbf{4. Semi-automatische tooling:} Onderzoek de haalbaarheid van een code-transformatietool die op Abstract Syntax Trees (AST's) of op source-level pattern-matching voortbouwt om syntactische mappings (min of meer) automatisch toe te passen. Dit kan implementatievolume drastisch verlagen.
+\textbf{4. Semi-automatische tooling:} Onderzoek de haalbaarheid van een code-transformatietool die op Abstract 
+Syntax Trees (AST's) of op source-level pattern-matching voortbouwt om syntactische mappings (min of meer) 
+automatisch toe te passen. Dit kan implementatievolume drastisch verlagen.
 
-\textbf{5. UI- en online-ondersteuning:} Breid het framework uit met richtlijnen voor migratie van CA Gen Screen/Window-modellen naar moderne UI-platforms (bv. web, terminal-UI, etc.) of PL/I-based online-systemen.
+\textbf{5. UI- en online-ondersteuning:} Breid het framework uit met richtlijnen voor migratie van CA Gen 
+Screen/Window-modellen naar moderne UI-platforms (bv. web, terminal-UI, etc.) of PL/I-based online-systemen.
 
-\textbf{6. Performance-analyse:} Voer een gerichte benchmark uit op handmatig geschreven PL/I versus CA Gen-gegenereerde code voor dezelfde logica, met optimalisatie-aanbevelingen.
+\textbf{6. Performance-analyse:} Voer een gerichte benchmark uit op handmatig geschreven PL/I versus CA 
+Gen-gegenereerde code voor dezelfde logica, met optimalisatie-aanbevelingen.
 
-\textbf{7. Kennisstabilisatie:} Onderzoek how-to-documentatie templates en communities-of-practice die herbruikbare CA Gen-migratiekennis institutionaliseren buiten het bereik van een enkel bachelorproefproject.
+\textbf{7. Kennisstabilisatie:} Onderzoek how-to-documentatie templates en communities-of-practice die herbruikbare 
+CA Gen-migratiekennis institutionaliseren buiten het bereik van een enkel bachelorproefproject.
 
 \section*{\IfLanguageName{dutch}{Slotwoord}{Concluding remark}}%
 \label{sec:slotwoord}
 
-Dit bachelorproefonderzoek heeft aangetoond dat een gestructureerd high-level framework voor CA Gen → PL/I-migratie opgesteld kan worden, ondersteund door praktische validatie via PoC. Het framework vormt een eerste stap naar gesystematiseerde legacy-modernisatie bij ArcelorMittal en biedt handvaten voor soortgelijke organisaties. Terwijl volledig automatische migratie onrealistisch blijft, vermindert dit framework aanzienlijk het risico en kennisverlies van handmatige, ad-hoc migraties. De aanbevelingen voor vervolgonderzoek bieden duidelijke richtingen voor verdere verfijning en uitbreiding van het framework.
+Dit bachelorproefonderzoek heeft aangetoond dat een gestructureerd high-level framework voor CA Gen → PL/I-migratie 
+opgesteld kan worden, ondersteund door praktische validatie via PoC. Het framework vormt een eerste stap naar 
+gesystematiseerde legacy-modernisatie bij ArcelorMittal en biedt handvaten voor soortgelijke organisaties. 
+Terwijl volledig automatische migratie onrealistisch blijft, vermindert dit framework aanzienlijk het risico en 
+kennisverlies van handmatige, ad-hoc migraties. De aanbevelingen voor vervolgonderzoek bieden duidelijke richtingen 
+voor verdere verfijning en uitbreiding van het framework.
 

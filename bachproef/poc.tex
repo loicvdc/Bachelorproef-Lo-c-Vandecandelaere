@@ -1,0 +1,145 @@
+%%=============================================================================
+%% Proof-of-concept implementatie
+%%=============================================================================
+
+\chapter{\IfLanguageName{dutch}{Proof-of-concept implementatie}{Proof-of-concept implementation}}%
+\label{ch:poc}
+
+In dit hoofdstuk wordt de proof-of-concept (PoC) besproken: de migratie van \texttt{TPPBAMT} naar PL/I,
+toegepast volgens \emph{Component~2} (vertaalrichtlijnen) en \emph{Component~3} (best practices) van het
+framework. Het hoofdstuk beschrijft eerst de gekozen modulaire opbouw, daarna de implementatiekeuzes per
+submodule, en sluit af met een aantal afwijkingen ten opzichte van het CA~Gen-origineel die in de
+validatiefase (Hoofdstuk~\ref{ch:validatie}) opnieuw aan bod komen.
+
+\section{Architectuur van de PoC}
+\label{sec:poc-architectuur}
+
+De PL/I-implementatie volgt de bestaande PLAPO-conventies (zie \autoref{subsec:conventies}) en is opgesplitst
+in vijf submodules:
+\begin{enumerate}
+    \item \textbf{Generieke MAIN-module} -- entry point voor alle BAF-planningsverzoeken; staat in voor
+        parameter-parsing, initialisatie van de gemeenschappelijke datacontext, en aanroep van de specifieke
+        BAF MAIN-module.
+    \item \textbf{Specifieke BAF MAIN-module} -- domeinspecifieke routering en parametrisatie van de
+        oven-context; orkestreert de aanroep van de materiaal- en bestellingmodules.
+    \item \textbf{Materiaalmodule} -- selectie en filtering van planbare materialen op basis van
+        \texttt{MAT}/\texttt{MATWR}; vervangt de Group-View-iteratie uit de CA~Gen-module.
+    \item \textbf{Bestellingmodule} -- ophalen en valideren van productie-orders en sequentievoorwaarden
+        op basis van \texttt{PRDO}.
+    \item \textbf{Output-generator} -- assemblage en uitschrijven van de planningssegmenten in het
+        sequenti\"ele uitvoerbestand, met dezelfde recordlayout als de CA~Gen-output.
+\end{enumerate}
+
+De aanroephi\"erarchie en bijhorende parameterstructs zijn rechtstreeks afgeleid uit de USE-graaf uit
+Hoofdstuk~\ref{ch:reverse-engineering}.
+
+\section{Implementatiekeuzes per submodule}
+\label{sec:poc-implementatie}
+
+\subsection{Generieke MAIN-module}
+\label{subsec:poc-generiek}
+
+De generieke MAIN-module wordt uitgevoerd als \texttt{PROC OPTIONS(MAIN)} en ontvangt de
+aanvraagparameters via een \texttt{PARM}-string die wordt geparsed naar de struct
+\texttt{IMP\_GEN\_REQUEST}. De module roept vervolgens de specifieke BAF MAIN-module aan via een expliciete
+\texttt{CALL}, met afzonderlijke parameterstructs voor import en export, conform
+\autoref{subsec:view-matching-bp}.
+
+\begin{listing}[h]
+\caption[Skelet generieke MAIN-module in PL/I]{Skelet van de generieke MAIN-module in PL/I (verkort).}
+\label{lst:poc-generiek}
+\begin{minted}{text}
+ GEN_MAIN: PROC OPTIONS(MAIN);
+   DCL 1 IMP_GEN_REQUEST,
+         2 OVEN          CHAR(4),
+         2 HORIZON_VAN   CHAR(8),
+         2 HORIZON_TOT   CHAR(8),
+         2 PROCES        CHAR(8);
+   DCL 1 EXP_GEN_RESULT,
+         2 EXITSTATE     FIXED BIN(15),
+         2 AANTAL_SEG    FIXED BIN(31);
+
+   /* parameter-parsing weggelaten */
+
+   CALL BAF_MAIN(IMP_GEN_REQUEST, EXP_GEN_RESULT);
+
+   IF EXP_GEN_RESULT.EXITSTATE ^= 0
+   THEN CALL ERROR_HANDLER(EXP_GEN_RESULT.EXITSTATE);
+ END GEN_MAIN;
+\end{minted}
+\end{listing}
+
+\subsection{Specifieke BAF MAIN-module}
+\label{subsec:poc-baf-main}
+
+De specifieke BAF MAIN-module zet de oven-specifieke parameters klaar (capaciteit, beschikbare werkvelden,
+metallurgische restricties) en roept achtereenvolgens de materiaalmodule en de bestellingmodule aan. De
+exitstate van elke aanroep wordt geaggregeerd volgens de afgesproken codes (\texttt{0}~=~OK,
+\texttt{4}~=~waarschuwing, \texttt{8}~=~fout) uit \autoref{subsec:exitstate-bp}.
+
+\subsection{Materiaalmodule}
+\label{subsec:poc-materiaal}
+
+De materiaalmodule vervangt de \texttt{READ EACH} op de Group View van planbare materialen door een
+DB2-cursor met \texttt{FETCH}-lus. De cursor wordt gedeclareerd met dezelfde \texttt{WHERE}- en
+\texttt{ORDER BY}-clausules als die werden afgeleid uit de datamatrix in \autoref{sec:re-datamatrix}.
+
+\begin{listing}[h]
+\caption[DB2-cursor voor planbare materialen]{DB2-cursor voor planbare materialen (verkort).}
+\label{lst:poc-cursor}
+\begin{minted}{text}
+ EXEC SQL DECLARE C_MAT CURSOR FOR
+   SELECT M.NUMMER, M.CODERING_IDENTIFICATIENUMMER,
+          MW.DT_WR_EH_MAT
+     FROM MAT  M
+     JOIN MATWR MW ON M.NUMMER = MW.NR_MAT
+    WHERE MW.TY_WR_EH_MAT = 'P'
+      AND MW.OVEN         = :IMP_BAF.OVEN
+    ORDER BY MW.DT_WR_EH_MAT ASC;
+\end{minted}
+\end{listing}
+
+De fetch-lus respecteert zowel de \texttt{SQLCODE}~=~100-conditie als de maximumkardinaliteit van de
+overeenkomstige interne array, conform \autoref{subsec:groupview-bp}.
+
+\subsection{Bestellingmodule}
+\label{subsec:poc-bestelling}
+
+De bestellingmodule haalt voor elk geselecteerd materiaal de gekoppelde productie-orders op uit
+\texttt{PRDO} en valideert sequentievoorwaarden. De vertaling van de oorspronkelijke CA~Gen-logica naar
+PL/I gebeurt regel-per-regel volgens de mappingtabel \autoref{tab:vertaaltabel}; in het bijzonder wordt
+het \texttt{CASE OF}-construct uit CA~Gen vertaald naar een PL/I-\texttt{SELECT/WHEN/OTHERWISE}.
+
+\subsection{Output-generator}
+\label{subsec:poc-output}
+
+De output-generator stelt per planbaar materiaal \'e\'en of meerdere segmenten samen en schrijft deze in de
+afgesproken vaste-lengte recordlayout naar het sequenti\"ele uitvoerbestand. De recordlayout werd
+overgenomen uit het analysedossier (zie \autoref{sec:re-datamatrix}) en is byte-per-byte identiek aan die
+van de CA~Gen-output, wat een directe vergelijking in Hoofdstuk~\ref{ch:validatie} mogelijk maakt.
+
+\section{Afwijkingen ten opzichte van het origineel}
+\label{sec:poc-afwijkingen}
+
+Tijdens de implementatie werden enkele bewuste afwijkingen ten opzichte van de CA~Gen-implementatie
+ge\"introduceerd:
+\begin{itemize}
+    \item \textbf{Exitstate-codes} werden geharmoniseerd met de PLAPO-standaard, eerder dan de CA~Gen-specifieke
+        codes letterlijk over te nemen.
+    \item \textbf{Cursor-gebaseerde leesoperaties} vervangen de impliciete Entity Action; de query is functioneel
+        equivalent maar expliciet leesbaar in de broncode.
+    \item \textbf{Naming-conventies} volgen de bestaande PLAPO-codebase; sommige variabele- en procedurenamen
+        wijken daardoor visueel af van het origineel maar zijn in betekenis gelijk.
+\end{itemize}
+Elke afwijking is gedocumenteerd in het analysedossier en wordt expliciet getest tijdens de
+Parallel-Run-validatie.
+
+\section{Toepassing van het framework}
+\label{sec:poc-toepassing-framework}
+
+De PoC bevestigt dat \emph{Component~2} en \emph{Component~3} van het framework volstaan om de migratie
+op een gestructureerde manier uit te voeren. Voor elk niet-triviaal CA~Gen-construct kon een entry uit
+\autoref{tab:vertaaltabel} aangewezen worden; de best-practices-sectie waarschuwde voor twee concrete
+valkuilen (Group View-overflow, exitstate-mismatch) die zich tijdens de implementatie effectief hebben
+voorgedaan en daardoor tijdig zijn weggewerkt. De ervaringen uit de PoC werden teruggevoerd naar het
+framework via verfijningen aan de aandachtspunten in \autoref{subsec:aandachtspunten}.

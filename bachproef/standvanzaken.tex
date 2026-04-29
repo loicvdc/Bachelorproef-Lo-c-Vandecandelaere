@@ -1,11 +1,7 @@
 \chapter{\iflanguage{dutch}{Stand van zaken}{State of the art}}%
 \label{ch:stand-van-zaken}
 
-% Tip: Begin elk hoofdstuk met een paragraaf inleiding die beschrijft hoe
-% dit hoofdstuk past binnen het geheel van de bachelorproef. Geef in het
-% bijzonder aan wat de link is met het vorige en volgende hoofdstuk.
-
-% Pas na deze inleidende paragraaf komt de eerste sectiehoofding.
+Dit hoofdstuk biedt het theoretische kader waarop de rest van de bachelorproef voortbouwt. Eerst wordt de brontechnologie (CA Gen, CASE-tools en de host-encyclopedie) toegelicht, vervolgens de doeltechnologie (PL/I op z/OS), en ten slotte de relevante migratiestrategieën uit de literatuur. Het hoofdstuk sluit af met een eerste, voorbeeldgedreven syntax mapping tussen CA~Gen-constructen en PL/I, die in Hoofdstuk~\ref{ch:framework} verder wordt geconsolideerd tot een geformaliseerde vertaaltabel.
 
 \section{\IfLanguageName{dutch}{Wat is CA Gen?}{What is CA Gen?}}%
 \label{sec:Wat is CA Gen?}
@@ -39,8 +35,9 @@
      \item Tools voor Documentatie: Vereenvoudigen het proces van het creëren, organiseren en onderhouden van projectdocumentatie.
  \end{itemize}
  \begin{figure}
-     \includegraphics[width:\textwidth]{computer_aided_software_engineering_case_features-f.png}
-     \caption{Enkele voorbeelden van CASE-tools}
+     \centering
+     \includegraphics[width=\textwidth]{computer_aided_software_engineering_case_features-f.png}
+     \caption[Voorbeelden van CASE-tools]{Enkele voorbeelden van CASE-tools.}
      \label{fig:CASE_SCHEMATISCH}
  \end{figure}
  Voordelen van de CASE-aanpak:
@@ -57,7 +54,7 @@
      \item Leercurve: In de beginfase kan de productiviteit van programmeurs dalen omdat zij tijd nodig hebben om de technologie onder de knie te krijgen. Trainingen en on-site ondersteuning door consultants zijn vaak noodzakelijk om dit proces te versnellen.
      \item Tool-mix: Het is essentieel om een juiste selectie van tools samen te stellen. De integratie van CASE-tools en gegevens over verschillende platforms heen is cruciaal om daadwerkelijk kostenvoordeel te behalen.
  \end{itemize}
- \autocite{GeeksForGeeks2024} & \autocite{RahulThibodeau2024}
+ De voorgaande beschrijving steunt op overzichten van \textcite{GeeksForGeeks2024} en \textcite{RahulThibodeau2024}.
  
  \section{\IfLanguageName{dutch}{Migraties}{Migrations}}%
  \label{sec:MIGRATIE}
@@ -113,9 +110,18 @@
  
  \section{\IfLanguageName{dutch}{Wat is PL/I?}{What is PL/I?}}%
  \label{sec:PLI}
- PL/I (Programming Language One) is een procedurele, hoog-niveau programmeertaal die oorspronkelijk in de jaren '60 door IBM werd ontwikkeld voor zowel wetenschappelijke als commerciële toepassingen. De moderne variant op het mainframe is \emph{IBM Enterprise PL/I for z/OS}, op het moment van schrijven beschikbaar in versie~6.2~\autocite{IBM2025}. Volgens de officiële IBM-documentatie is Enterprise PL/I een compiler die ontwikkelaars in staat stelt bedrijfskritische, line-of-business PL/I-applicaties te bouwen en te onderhouden die uitvoerbaar zijn op z/OS, met directe interoperabiliteit met onder andere IBM~CICS, IBM~Db2 en IBM~IMS. Dit maakt PL/I een logische doeltaal binnen de mainframe-context van ArcelorMittal, waar diezelfde transactionele en datasystemen reeds in gebruik zijn.
+ PL/I (Programming Language One) is een procedurele, hoog-niveau programmeertaal die oorspronkelijk in de jaren '60 
+ door IBM werd ontwikkeld voor zowel wetenschappelijke als commerciële toepassingen. De moderne variant op het 
+ mainframe is \emph{IBM Enterprise PL/I for z/OS}, op het moment van schrijven beschikbaar in versie~6.2~
+ \autocite{IBM2025}. Volgens de officiële IBM-documentatie is Enterprise PL/I een compiler die ontwikkelaars in 
+ staat stelt bedrijfskritische, line-of-business PL/I-applicaties te bouwen en te onderhouden die uitvoerbaar 
+ zijn op z/OS, met directe interoperabiliteit met onder andere IBM~CICS, IBM~Db2 en IBM~IMS. Dit maakt PL/I een 
+ logische doeltaal binnen de mainframe-context van ArcelorMittal, waar diezelfde transactionele en datasystemen 
+ reeds in gebruik zijn.
 
- In tegenstelling tot CA~Gen is PL/I geen modelgedreven omgeving maar een klassieke procedurele taal: ontwikkelaars schrijven expliciet alle declaraties, controlestructuren en database-interacties uit in broncode. De belangrijkste taalkenmerken die relevant zijn voor de migratie zijn:
+ In tegenstelling tot CA~Gen is PL/I geen modelgedreven omgeving maar een klassieke procedurele taal: ontwikkelaars 
+ schrijven expliciet alle declaraties, controlestructuren en database-interacties uit in broncode. De belangrijkste 
+ taalkenmerken die relevant zijn voor de migratie zijn:
 
  \begin{itemize}
      \item \textbf{Block-georiënteerde structuur:} een PL/I-programma bestaat uit \texttt{PROCEDURE}-blokken (\texttt{PROC OPTIONS(MAIN)} voor het hoofdprogramma) waarbinnen lokale declaraties en uitvoerbare statements gedefinieerd worden.
@@ -146,7 +152,7 @@
  
  \subsection{SET...TO}
  In CA Gen gebeurt het toekennen van een waarde aan een variabele via de sleutelwoorden SET en TO. 
- De syntactische structuur die hierbij wordt gehanteerd is als volgt: SET \{variabelenaam\} TO \{waarde\}. Hierbij verwijst {variabelenaam} naar de doelvariabele waaraan een nieuwe waarde wordt toegekend, terwijl {waarde} een constante, een andere variabele of het resultaat van een expressie kan zijn. De PL/I equivalent van de SET-instructies uit figuur \ref{fig:Vb 1 CA Gen-code} zou er als volgt uitzien:
+ De syntactische structuur die hierbij wordt gehanteerd is als volgt: SET \{variabelenaam\} TO \{waarde\}. Hierbij verwijst {variabelenaam} naar de doelvariabele waaraan een nieuwe waarde wordt toegekend, terwijl {waarde} een constante, een andere variabele of het resultaat van een expressie kan zijn. De PL/I equivalent van de SET-instructies uit Figuur~\ref{fig:Vb1CAGencode} zou er als volgt uitzien:
  \begin{verbatim}
      DCL 1 INT_PLN_PLNPRDO_PRODUCTIE_ORDER,
          2 ID_BS_PRD FIXED              BIN(31);
@@ -162,7 +168,7 @@
  \end{verbatim}
  
  \subsection{FOR-loop}
- Iteren over indexen wordt in CA Gen gedaan met de FOR-loop waarbij SUBSCRIPT OF staat voor de index van de variabele die daarop volgt. Met de kernwoorden FROM, TO, BY kan je dan weer instellen bij welke waarde je start, hoe groot de waarde kan worden en de stapgrootte. In PL/I zou de loop van figuur \ref{fig:Vb 1 CA Gen-code} er als volgt uit zien:
+ Iteren over indexen wordt in CA Gen gedaan met de FOR-loop waarbij SUBSCRIPT OF staat voor de index van de variabele die daarop volgt. Met de kernwoorden FROM, TO, BY kan je dan weer instellen bij welke waarde je start, hoe groot de waarde kan worden en de stapgrootte. In PL/I zou de loop van Figuur~\ref{fig:Vb1CAGencode} er als volgt uit zien:
  
  \begin{verbatim}
        DO GRL_MAT_PRDO = 1 TO MAX(GRL_MAT_PRDO) BY 1;
@@ -171,13 +177,14 @@
  \end{verbatim}
  
  \begin{figure}
-     \includegraphics[width:\linewidth]{for loop + var.png}
-     \caption{Voorbeeld 1 CA Gen-code}
-     \label{fig:Vb 1 CA Gen-code}
+     \centering
+     \includegraphics[width=\linewidth]{for loop + var.png}
+     \caption[Voorbeeld CA Gen-code: variabelen en FOR-loop]{Voorbeeld 1 -- CA Gen-code met variabelen en een FOR-loop.}
+     \label{fig:Vb1CAGencode}
  \end{figure}
  
  \subsection{WHILE-loop}
- Een WHILE-loop in CA Gen wordt als volgt gedefinieerd: WHILE \{conditie\} ... REPEAT \{code\}. De lus gaat de code na de repeat uitvoeren tot de conditie niet meer geldig is. Nog een keyword dat in veel loops wordt gebruikt is 'ESCAPE', dit wil zeggen dat je uit de loop stapt en de pijl duidt aan tot welk niveau je terugkeert. De code uit figuur \ref{fig:Vb 2 CA Gen-code} zou worden vertaald naar: 
+ Een WHILE-loop in CA Gen wordt als volgt gedefinieerd: WHILE \{conditie\} ... REPEAT \{code\}. De lus gaat de code na de repeat uitvoeren tot de conditie niet meer geldig is. Nog een keyword dat in veel loops wordt gebruikt is 'ESCAPE', dit wil zeggen dat je uit de loop stapt en de pijl duidt aan tot welk niveau je terugkeert. De code uit Figuur~\ref{fig:Vb2CAGencode} zou worden vertaald naar: 
  
  \begin{verbatim}
      /* WHILE */
@@ -195,9 +202,10 @@
  \end{verbatim}
  
  \begin{figure}
-     \includegraphics[width:\linewidth]{while-loop.png}
-     \caption{Voorbeeld 2 CA Gen-code}
-     \label{fig:Vb 2 CA Gen-code}
+     \centering
+     \includegraphics[width=\linewidth]{while-loop.png}
+     \caption[Voorbeeld CA Gen-code: WHILE-loop met ESCAPE]{Voorbeeld 2 -- CA Gen-code met een WHILE-loop en ESCAPE.}
+     \label{fig:Vb2CAGencode}
  \end{figure}
  
  \subsection{USE}
@@ -214,11 +222,11 @@
  Wat mag je niet doen met het USE-statement:
  \begin{itemize}
      \item Local Views: Deze kunnen niet gematcht worden met een ander blok.
-     \item Recursive Calls: Ca Gen laat standaard geen directe recursie toe.
+     \item Recursive Calls: CA~Gen laat standaard geen directe recursie toe.
      \item Performance: Te veel geneste USE-statements.
  \end{itemize}
  De exitstate van een Action Block geeft aan of de blok juist is afgehandeld. Hiervoor is geen directe tegenhanger in PL/I.
- De code in figuur \ref{fig:Vb 3 CA Gen-code} zou er in PL/I zo uit zien:
+ De code in Figuur~\ref{fig:Vb3CAGencode} zou er in PL/I zo uit zien:
  
  \begin{verbatim}
      
@@ -227,17 +235,18 @@
  \end{verbatim}
  
  \begin{figure}
-     \includegraphics[width:\linewidth]{USE.png}
-     \caption{Voorbeeld 3 CA Gen-code}
-     \label{fig:Vb 3 CA Gen-code}
+     \centering
+     \includegraphics[width=\linewidth]{USE.png}
+     \caption[Voorbeeld CA Gen-code: USE-statement]{Voorbeeld 3 -- CA Gen-code met een USE-statement en view matching.}
+     \label{fig:Vb3CAGencode}
  \end{figure}
  
  \subsection{SQL}
  Ook SQL werkt in CA Gen anders dan in klassieke programmeertalen. Ontwikkelaars schrijven doorgaans geen expliciete SQL-queries, maar gebruiken model- en view-gebaseerde operaties die door CA Gen automatisch vertaald worden naar SQL (meestal voor DB2 op mainframe). In plaats daarvan gebruikt de ontwikkelaar logische commando's op basis van het datamodel. Zo wordt
  \begin{itemize}
      \item READ/READ EACH vertaald naar SQL SELECT
-     \item CREATE vertaald naar  SQL INSERT
-     \item UPDATE en DELETE zijn identiek in CA GEN en SQL
+     \item CREATE vertaald naar SQL INSERT
+     \item UPDATE en DELETE zijn identiek in CA~Gen en SQL
  \end{itemize}
  Deze abstractie zorgt dat de logica onafhankelijk blijft van de specifieke SQL-dialecten van verschillende databases. Wanneer standaard Entity Actions niet volstaan, bijvoorbeeld bij complexe JOIN-operaties, subquery's of het gebruik van specifieke databasefuncties, wordt uitgeweken naar External Action Blocks (EAB).
  In een EAB kan een ontwikkelaar handmatig SQL implementeren in talen zoals COBOL of PL/I. 
@@ -252,8 +261,9 @@
  \end{verbatim}
  
  \begin{figure}
-     \includegraphics[width:\linewidth]{SQL.png}
-     \caption{Voorbeeld 4 CA Gen-code}
-     \label{fig:Vb 4 CA Gen-code}
+     \centering
+     \includegraphics[width=\linewidth]{SQL.png}
+     \caption[Voorbeeld CA Gen-code: READ EACH met SORT]{Voorbeeld 4 -- CA Gen-code met een READ EACH inclusief sorteervoorwaarden.}
+     \label{fig:Vb4CAGencode}
  \end{figure}
  

@@ -1,0 +1,89 @@
+%%=============================================================================
+%% Bijlage: analysedossier TPPBAMT (uittreksels)
+%%=============================================================================
+
+\chapter{Analysedossier TPPBAMT (uittreksels)}%
+\label{ch:bijlage-views}
+
+Deze bijlage bundelt uittreksels uit het analysedossier dat tijdens de reverse engineering van de
+CA~Gen-module \texttt{TPPBAMT} (Hoofdstuk~\ref{ch:reverse-engineering}) werd opgesteld. Omwille van de omvang
+en het bedrijfsgevoelige karakter van het volledige dossier worden hier enkel representatieve fragmenten
+opgenomen; het volledige dossier is intern beschikbaar bij ArcelorMittal.
+
+\section{View-inventaris (uittreksel)}
+\label{sec:bijlage-view-inventaris}
+
+\autoref{tab:bijlage-view-inventaris} toont een uittreksel van de view-inventaris voor het hoofd-Action
+Block van \texttt{TPPBAMT}, opgesteld volgens de template uit \autoref{tab:view-inventaris}.
+
+\begin{table}[h]
+\centering
+\caption[Uittreksel view-inventaris TPPBAMT]{Uittreksel uit de view-inventaris van \texttt{TPPBAMT}.}
+\label{tab:bijlage-view-inventaris}
+\small
+\begin{tabular}{|l|l|l|p{0.30\linewidth}|}
+\hline
+\textbf{Viewnaam} & \textbf{Categorie} & \textbf{Onderliggende structuur} & \textbf{Opmerkingen} \\
+\hline
+\texttt{IMP\_BAF} & Import & Work View & Werkcontext (oven, horizon, proces). \\
+\hline
+\texttt{EXP\_BAF} & Export & Work View & Exitstate, aantal segmenten. \\
+\hline
+\texttt{LCL\_TELLER} & Local & Work View & Tellers en stuurvariabelen. \\
+\hline
+\texttt{INT\_MAT\_MATERIAALEENHEID} & Entity & MAT & Buffer voor READ-acties op materialen. \\
+\hline
+\texttt{GRL\_MAT\_PRDO} & Group (entity) & MAT $\times$ PRDO & Lijst planbare materialen + orders. \\
+\hline
+\texttt{INT\_AFF\_TTI} & Entity & Werkveld-allocatie & Buffer voor sequenti\"ele werkveldtoekenning. \\
+\hline
+\textit{(\dots)} & \textit{(\dots)} & \textit{(\dots)} & \textit{(volledige lijst in dossier)} \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{USE-graaf (verkort)}
+\label{sec:bijlage-usegraaf}
+
+Het hoofdblok van \texttt{TPPBAMT} roept onder meer de volgende blokken aan:
+\begin{itemize}
+    \item \texttt{SID\_WERKVELD} (CAB) -- bepaalt het toe te wijzen werkveld voor een materiaal.
+    \item \texttt{TPPBAOR} (CAB) -- haalt productie-orders op voor een gegeven materiaal.
+    \item \texttt{ERROR\_HANDLER} (EAB, reeds in PL/I) -- centrale foutafhandeling, blijft ongewijzigd.
+\end{itemize}
+Voor elk van deze aanroepen werd in het dossier de volledige Import-/Export-matching uitgeschreven, samen
+met een aanduiding of het aangeroepen blok binnen of buiten de migratiescope valt.
+
+\section{Datamatrix (verkort)}
+\label{sec:bijlage-datamatrix}
+
+\autoref{tab:bijlage-datamatrix} geeft een verkorte versie van de datamatrix uit
+\autoref{sec:re-datamatrix}, aangevuld met de typische WHERE- en SORT-clausules zoals afgeleid uit het
+CA~Gen-model.
+
+\begin{table}[h]
+\centering
+\caption[Verkorte datamatrix TPPBAMT]{Verkorte datamatrix met representatieve WHERE/SORT-voorwaarden.}
+\label{tab:bijlage-datamatrix}
+\small
+\begin{tabular}{|l|l|p{0.45\linewidth}|}
+\hline
+\textbf{Tabel} & \textbf{Actie} & \textbf{WHERE / SORT (verkort)} \\
+\hline
+MAT  & READ       & op primaire sleutel \texttt{NUMMER}. \\
+\hline
+MATWR & READ EACH & \texttt{TY\_WR\_EH\_MAT = 'P' AND OVEN = :IMP\_BAF.OVEN}, sort \texttt{DT\_WR\_EH\_MAT ASC}. \\
+\hline
+PRDO & READ       & per materiaal, op primaire sleutel. \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Outputrecordlayout}
+\label{sec:bijlage-outputlayout}
+
+De sequenti\"ele uitvoer van \texttt{TPPBAMT} bestaat uit vaste-lengte records waarvan de exacte layout
+(veldposities, lengtes, datatypes) is opgenomen in het volledige analysedossier. Deze layout is
+onveranderd overgenomen in de PL/I-implementatie (zie \autoref{subsec:poc-output}) en vormt het
+referentiepunt voor de byte-per-byte vergelijking tijdens de Parallel Run
+(\autoref{sec:val-resultaten}).

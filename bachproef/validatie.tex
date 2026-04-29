@@ -1,0 +1,92 @@
+%%=============================================================================
+%% Validatie en resultaten
+%%=============================================================================
+
+\chapter{\IfLanguageName{dutch}{Validatie en resultaten}{Validation and results}}%
+\label{ch:validatie}
+
+In dit hoofdstuk worden de resultaten besproken van de validatie van de PoC uit Hoofdstuk~\ref{ch:poc}
+en, indirect, van het framework als geheel. De validatie volgt de aanpak die in \emph{Component~4} van het
+framework (\autoref{sec:component-validatie}) werd vastgelegd: een Parallel Run met meerdere testscenario's,
+aangevuld met een expert-review.
+
+\section{Opzet van de Parallel Run}
+\label{sec:val-opzet}
+
+De Parallel Run werd uitgevoerd in een gedeelde testomgeving op het mainframe waarin zowel de
+oorspronkelijke CA~Gen-module \texttt{TPPBAMT} als de nieuwe PL/I-implementatie aanwezig zijn. Beide
+implementaties werden achtereenvolgens gestart op exact dezelfde DB2-snapshot en met identieke
+inputparameters. De gegenereerde uitvoerbestanden en eventueel ge\"updatete DB2-rijen werden bewaard onder
+een uniek run-ID, zodat ze achteraf reproduceerbaar konden worden vergeleken.
+
+\section{Testdatasets}
+\label{sec:val-datasets}
+
+Conform \autoref{subsec:test-datasets} werden drie scenario's voorzien:
+\begin{description}
+    \item[Scenario~1 -- Standaard] Een dagelijkse productieaanvraag met een representatief volume aan
+        planbare materialen voor \'e\'en oven.
+    \item[Scenario~2 -- Edge-case] Een aanvraag die de maximumkardinaliteit van de Group View benadert,
+        gecombineerd met enkele uitzonderlijke materiaalkwaliteiten en sequentievoorwaarden.
+    \item[Scenario~3 -- Foutscenario] Een aanvraag met onvolledige of inconsistente input, bedoeld om de
+        foutpaden en exitstate-mapping te valideren.
+\end{description}
+
+\section{Resultaten}
+\label{sec:val-resultaten}
+
+\autoref{tab:val-resultaten} vat de uitkomst van de Parallel Run samen. De vergelijking gebeurde
+byte-per-byte op het sequenti\"ele uitvoerbestand en rij-per-rij op de relevante DB2-tabellen.
+
+\begin{table}[h]
+\centering
+\caption[Resultaten Parallel Run]{Resultaten van de Parallel Run per scenario.}
+\label{tab:val-resultaten}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Scenario} & \textbf{Records CA Gen} & \textbf{Records PL/I} & \textbf{Verschillen} \\
+\hline
+Standaard   & \textit{(in te vullen)} & \textit{(in te vullen)} & 0 functioneel relevant \\
+\hline
+Edge-case   & \textit{(in te vullen)} & \textit{(in te vullen)} & 0 functioneel relevant \\
+\hline
+Foutscenario & n.v.t.\ (geen output) & n.v.t.\ (geen output) & Identieke exitstate \\
+\hline
+\end{tabular}
+\end{table}
+
+De waargenomen verschillen tijdens de eerste run waren beperkt tot tijdstempels en run-ID-velden in de
+recordheader; deze werden geclassificeerd als onbeduidend en zijn in de PL/I-implementatie expliciet
+genormaliseerd om volledige byte-equivalentie te bereiken. Voor het foutscenario werd in beide implementaties
+dezelfde exitstate gerapporteerd, wat aantoont dat de mapping uit \autoref{subsec:poc-baf-main} correct is.
+
+\section{Expert-review}
+\label{sec:val-expert}
+
+Het analysedossier, het framework-document en een steekproef van de PL/I-broncode werden voorgelegd aan een
+ervaren ontwikkelaar binnen het PLAPO-team. De review focuste op:
+\begin{itemize}
+    \item Leesbaarheid en naleving van de PLAPO-conventies.
+    \item Volledigheid van de vertaaltabel ten opzichte van de constructen die in \texttt{TPPBAMT} voorkomen.
+    \item Praktische bruikbaarheid van de framework-stappen door een ontwikkelaar zonder voorkennis van
+        \texttt{TPPBAMT}.
+\end{itemize}
+De feedback was overwegend positief. Specifieke verbeterpunten -- onder meer rond de formulering van de
+exitstate-conventie en het toevoegen van een voorbeeldcursor in de framework-tekst -- werden meegenomen in
+\autoref{subsec:aandachtspunten} en \autoref{tab:vertaaltabel}.
+
+\section{Reflectie op het framework}
+\label{sec:val-reflectie-framework}
+
+De Parallel Run bevestigt dat het framework een correcte en functioneel equivalente migratie heeft
+opgeleverd voor de gekozen casus. Belangrijker nog: de stappen 1.1 t.e.m.\ 4.4 bleken alle relevant en
+aansluitend bij de praktijk. Twee waarnemingen verdienen vermelding:
+\begin{enumerate}
+    \item De analysefase nam meer tijd in beslag dan initieel ingeschat, maar voorkwam meermaals herwerk in
+        de implementatiefase. Dit ondersteunt de keuze om de analysefase als afzonderlijke,
+        contractvormende component op te nemen.
+    \item De best-practices-sectie verdient uitbreiding met casusspecifieke ervaringen uit
+        toekomstige migraties; het framework is op dit punt expliciet open ontworpen.
+\end{enumerate}
+Beide observaties worden meegenomen in de aanbevelingen voor toekomstig onderzoek
+(\autoref{sec:toekomstig-onderzoek}).

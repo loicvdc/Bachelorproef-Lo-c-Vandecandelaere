@@ -45,12 +45,32 @@
 
 \chapter*{\IfLanguageName{dutch}{Samenvatting}{Abstract}}
 
-Dit bachelorproefonderzoek behandelt de problematiek van Ca Gen-gebaseerde legacy-applicaties, waarvan de
-beperkte beschikbaarheid van expertise en verouderde technologie de onderhoudbaarheid en toekomstbestendigheid
-onder druk zetten. Het onderzoek heeft als doel een generiek en herbruikbaar high-level framework te
-ontwikkelen voor de systematische analyse, reverse engineering en migratie van Ca Gen-applicaties naar PL/I.
-De centrale onderzoeksvraag focust op de mate waarin dit framework een correcte en efficiënte migratie kan
-ondersteunen. Het framework begeleidt ontwikkelaars doorheen het volledige migratieproces en biedt ondersteuning
-via best practices en een toelichting van veelvoorkomende valkuilen. Het framework wordt uitgewerkt
-aan de hand van overzichtelijke tekst en figuren, met als doel een duidelijke en vlot leesbare leidraad te vormen.
-Het resultaat na migratie moet functioneel identiek zijn aan het origineel.
+Veel grote organisaties vertrouwen vandaag nog op bedrijfskritische applicaties die ontwikkeld werden met
+CA~Gen, een modelgedreven CASE-tool en vierde generatie ontwikkelomgeving uit de jaren tachtig. Hoewel
+deze applicaties stabiel functioneren, neemt de beschikbare expertise zienderogen af en wordt onderhoud
+steeds duurder en risicovoller. Binnen ArcelorMittal vormt de Batch Annealing Facility (BAF), een
+deelmodule van het PLAPO-lijnplanningslandschap, de laatste CA~Gen-component die nog moet worden
+gemigreerd naar PL/I. Eerdere migraties van zustermodules zijn weliswaar geslaagd, maar verspreid over
+verschillende jaren en ontwikkelaars uitgevoerd, zonder dat een gestructureerde, herbruikbare aanpak werd
+vastgelegd.
+
+Dit onderzoek pakt die leemte aan door een \emph{high-level migratieframework} te ontwerpen voor de
+gecontroleerde migratie van CA~Gen-applicaties naar PL/I. De centrale onderzoeksvraag luidt: \textit{``Hoe
+kan een high-level framework worden opgesteld om CA~Gen-applicaties succesvol te migreren naar
+PL/I-code?''} Het framework wordt opgebouwd rond vier kerncomponenten: (1)~een gestructureerde
+analysefase voor het ontsluiten van CA~Gen-modellen, (2)~geconsolideerde vertaalrichtlijnen tussen
+CA~Gen-constructen en PL/I-equivalenten, (3)~een set best practices en valkuilen, en (4)~een
+validatiestrategie gebaseerd op de \emph{Parallel Run}-aanpak.
+
+Het onderzoek is opgevat als een design-science traject waarbij het framework iteratief is opgebouwd op
+basis van documentanalyse, literatuurstudie, reverse engineering van bestaande modules en een
+proof-of-concept (PoC). Voor de PoC werd de CA~Gen-module \texttt{TPPBAMT} gemigreerd naar PL/I,
+opgesplitst in een generieke MAIN-module, een specifieke BAF MAIN-module, een materiaalmodule, een
+bestellingmodule en een output-generator. De resultaten werden gevalideerd door middel van een Parallel
+Run waarbij de outputbestanden van het origineel en de migratie naast elkaar werden vergeleken.
+
+De resultaten tonen aan dat het framework de migratie van \texttt{TPPBAMT} succesvol heeft begeleid en dat
+de PoC functioneel equivalente output produceert. Het framework biedt ArcelorMittal een herhaalbare en
+gedocumenteerde aanpak voor toekomstige CA~Gen-migraties en vermindert het risico op kennisverlies bij
+ad-hoc trajecten. De analysefase, best-practices en validatiestrategie zijn taal-agnostisch en kunnen
+hergebruikt worden voor migraties naar andere doeltalen, mits een aangepaste vertaaltabel.

@@ -1,0 +1,34 @@
+%%=============================================================================
+%% Lijst van afkortingen en termen
+%%=============================================================================
+
+\chapter*{\IfLanguageName{dutch}{Lijst van afkortingen en termen}{List of acronyms and terms}}%
+\label{ch:afkortingen}
+\addcontentsline{toc}{chapter}{\IfLanguageName{dutch}{Lijst van afkortingen en termen}{List of acronyms and terms}}
+
+\begin{description}
+    \item[4GL] Fourth-generation language; ontwikkeltaal of -omgeving die op een hoger abstractieniveau werkt dan klassieke 3GL-talen.
+    \item[Action Block] Logische bouwsteen in CA~Gen waarin de procedurele logica wordt gedefinieerd via Action Diagrams.
+    \item[BAF] Batch Annealing Facility; warmtebehandelingsinstallatie en bijhorende planningsmodule binnen ArcelorMittal.
+    \item[CA Gen] Modelgedreven CASE-tool van Broadcom (voorheen Computer Associates) voor de generatie van mainframe-applicaties.
+    \item[CAB] Common Action Block; een Action Block dat binnen de CA~Gen-encyclopedie is gedefinieerd en herbruikt wordt door andere blokken.
+    \item[CASE] Computer-Aided Software Engineering; verzameling van tools en methoden ter ondersteuning van softwareontwikkeling.
+    \item[CICS] Customer Information Control System; transactiemonitor van IBM voor z/OS.
+    \item[CSE] Client Server Encyclopedia; netwerkgebaseerde variant van de CA~Gen-encyclopedie.
+    \item[DB2] Relationeel databasebeheersysteem van IBM, in deze context gebruikt op z/OS.
+    \item[DCL] PL/I-statement (\texttt{DECLARE}) voor het declareren van variabelen, structuren en bestanden.
+    \item[DCLGEN] Hulpprogramma dat op basis van een DB2-tabel automatisch hostvariabelen en SQL-declaraties genereert.
+    \item[EAB] External Action Block; Action Block waarvan de implementatie buiten de CA~Gen-encyclopedie valt (bv.\ in PL/I of COBOL).
+    \item[Encyclopedie] Centrale opslagplaats van CA~Gen-modellen; in deze proef typisch de host-encyclopedie op DB2/z\-OS.
+    \item[EXEC SQL] PL/I-syntax waarmee een SQL-statement aan de DB2-precompiler wordt aangeboden.
+    \item[Group View] CA~Gen-view van het type ``repeating''; vertaalt naar een PL/I-array van structuren.
+    \item[IMS] Information Management System; hi\"erarchisch databasesysteem en transactiemanager van IBM.
+    \item[JCL] Job Control Language; scripttaal op z/OS voor het uitvoeren van batchjobs.
+    \item[Parallel Run] Validatiestrategie waarbij oud en nieuw systeem gelijktijdig met dezelfde input draaien om functionele equivalentie aan te tonen.
+    \item[PLAPO] Interne benaming voor het lijnplanningsplatform van ArcelorMittal.
+    \item[PL/I] Programming Language One; procedurele 3GL-taal van IBM, hier in de variant Enterprise PL/I for z/OS.
+    \item[PoC] Proof-of-concept; beperkte implementatie ter staving van de haalbaarheid van een aanpak.
+    \item[Strangler Fig] Migratiepatroon waarbij nieuwe functionaliteit de bestaande applicatie geleidelijk omsingelt en vervangt.
+    \item[TPPBAMT] CA~Gen-module die de specifieke segmenten genereert voor de BAF-planning; vormt de PoC-casus van deze proef.
+    \item[View] In CA~Gen: een gestructureerd dataobject dat als parameter, lokale variabele of database-buffer fungeert binnen een Action Block.
+\end{description}

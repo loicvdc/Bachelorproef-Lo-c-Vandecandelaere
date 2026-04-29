@@ -1,0 +1,119 @@
+%%=============================================================================
+%% Reverse engineering van TPPBAMT
+%%=============================================================================
+
+\chapter{\IfLanguageName{dutch}{Reverse engineering van TPPBAMT}{Reverse engineering of TPPBAMT}}%
+\label{ch:reverse-engineering}
+
+In dit hoofdstuk wordt \emph{Component~1} van het migratieframework -- de analysefase -- toegepast op de
+CA~Gen-module \texttt{TPPBAMT}. Doel is een volledig analysedossier op te bouwen dat als contract dient
+voor de PL/I-implementatie in Hoofdstuk~\ref{ch:poc} en voor de validatie in Hoofdstuk~\ref{ch:validatie}.
+Het hoofdstuk volgt de structuur van \autoref{sec:component-analyse}, met als bijkomende doelstelling het
+framework zelf te toetsen aan een re\"ele casus.
+
+\section{Encyclopedie en versiebeheer}
+\label{sec:re-encyclopedie}
+
+In een eerste stap werd het businessmodel waaronder \texttt{TPPBAMT} valt, lokaal beschikbaar gemaakt via
+een \emph{Check Out} uit de host-encyclopedie van ArcelorMittal. De versie en timestamp van deze check-out
+zijn vastgelegd in het analysedossier; toekomstige aanpassingen aan het origineel kunnen daardoor
+expliciet worden gedetecteerd. Dit is in overeenstemming met de aanbeveling uit
+\autoref{subsec:stap-encyclopedie}.
+
+\section{View-inventaris}
+\label{sec:re-views}
+
+Per Action Block binnen \texttt{TPPBAMT} werd een view-inventaris opgesteld volgens de typologie uit
+\autoref{sec:Views} en de template uit \autoref{tab:view-inventaris}. \autoref{tab:tppbamt-views-overzicht}
+geeft een sterk vereenvoudigd overzicht van de hoofdcategorie\"en views die in de module voorkomen; de
+volledige inventaris is opgenomen in Bijlage~\ref{ch:bijlage-views}.
+
+\begin{table}[h]
+\centering
+\caption[Overzicht view-categorie\"en in TPPBAMT]{Overzicht van view-categorie\"en in \texttt{TPPBAMT}.}
+\label{tab:tppbamt-views-overzicht}
+\begin{tabular}{|l|c|p{0.45\linewidth}|}
+\hline
+\textbf{Categorie} & \textbf{\#} & \textbf{Typische rol} \\
+\hline
+Import View & \textit{(in te vullen)} & Werkcontext (oven, planningshorizon, aanvragend proces). \\
+\hline
+Export View & \textit{(in te vullen)} & Statusvelden, exitstate, samenvattende kentallen. \\
+\hline
+Local View & \textit{(in te vullen)} & Tijdelijke berekeningen, tellers, stuurvariabelen. \\
+\hline
+Entity View (MAT, MATWR, PRDO, \dots) & \textit{(in te vullen)} & Buffers voor de DB2-acties. \\
+\hline
+Work View & \textit{(in te vullen)} & Niet-gepersisteerde tussenresultaten en flags. \\
+\hline
+Group View & \textit{(in te vullen)} & Lijsten van planbare materialen en gegenereerde segmenten. \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Control-flow en USE-graaf}
+\label{sec:re-control-flow}
+
+De control-flow van \texttt{TPPBAMT} werd Action Block per Action Block ontleed. De hoofdlus itereert over
+de Group View van planbare materialen; per materiaal worden achtereenvolgens de bestellings\-, kwaliteits-
+en sequentievoorwaarden ge\"evalueerd alvorens \'e\'en of meerdere segmenten worden weggeschreven.
+
+Daarnaast werden alle USE-statements in kaart gebracht in de vorm van een aanroepgraaf. Per USE wordt
+genoteerd:
+\begin{itemize}
+    \item Het type aangeroepen blok: Common Action Block (CAB) of External Action Block (EAB).
+    \item De Import- en Export-matching tussen de views.
+    \item Of het aangeroepen blok binnen of buiten de migratiescope valt; EAB's vormen vaak natuurlijke
+        modulegrenzen omdat ze typisch reeds in PL/I beschikbaar zijn.
+\end{itemize}
+Het volledige USE-overzicht en bijhorend grafisch schema zijn opgenomen in het analysedossier (zie
+Bijlage~\ref{ch:bijlage-views}).
+
+\section{Datamatrix}
+\label{sec:re-datamatrix}
+
+Op basis van de READ-, READ EACH-, CREATE-, UPDATE- en DELETE-statements werd een datamatrix opgesteld die
+per DB2-tabel weergeeft welke acties plaatsvinden. \autoref{tab:tppbamt-datamatrix} toont het verkorte
+overzicht; de gedetailleerde versie inclusief WHERE-clausules en sorteervoorwaarden zit in
+Bijlage~\ref{ch:bijlage-views}.
+
+\begin{table}[h]
+\centering
+\caption[Datamatrix TPPBAMT]{Verkorte datamatrix van \texttt{TPPBAMT}: gebruik van DB2-tabellen.}
+\label{tab:tppbamt-datamatrix}
+\begin{tabular}{|l|c|c|c|c|c|p{0.30\linewidth}|}
+\hline
+\textbf{Tabel} & \textbf{R} & \textbf{RE} & \textbf{C} & \textbf{U} & \textbf{D} & \textbf{Opmerking} \\
+\hline
+MAT & \checkmark & & & & & Materiaaleigenschappen. \\
+\hline
+MATWR & & \checkmark & & & & Werkrelaties materiaal -- werkveld; gebruikt in cursor. \\
+\hline
+PRDO & \checkmark & & & & & Productie-orders gekoppeld aan materiaal. \\
+\hline
+\textit{(\dots)} & & & & & & \textit{(in te vullen tijdens analysefase)} \\
+\hline
+\end{tabular}
+\end{table}
+
+Daarnaast werd de sequenti\"ele uitvoerstroom van \texttt{TPPBAMT} gedocumenteerd: bestandsnaam, recordlayout
+en typische volumes. Deze layout vormt het re\-fe\-ren\-tie\-punt voor de Parallel-Run-validatie.
+
+\section{Bevindingen}
+\label{sec:re-bevindingen}
+
+Uit de analyse komen drie observaties die de aanpak van Hoofdstuk~\ref{ch:poc} sturen:
+\begin{enumerate}
+    \item De module steunt sterk op Group Views met een vooraf gekende maximumkardinaliteit. Het is
+        essentieel dat de PL/I-implementatie dezelfde grenzen respecteert om buffer overflows te vermijden
+        (zie \autoref{subsec:groupview-bp}).
+    \item Het aantal externe USE-statements is beperkt; het merendeel verwijst naar reeds bestaande PL/I
+        EAB's. De impact op de aanroepende generieke modules is daardoor minimaal.
+    \item De gehanteerde exitstate-codes wijken licht af van de standaardconventie binnen recent gemigreerde
+        modules; in de PL/I-implementatie wordt voor consistentie de standaardconventie gevolgd, met een
+        expliciete mapping in het analysedossier.
+\end{enumerate}
+
+Deze observaties bevestigen tegelijk dat de in \autoref{sec:component-analyse} voorgestelde stappen
+voldoende zijn om een module van deze complexiteit te ontsluiten zonder dat een volledige formele
+specificatie nodig is.
