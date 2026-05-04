@@ -45,11 +45,10 @@ De officiële CA~Gen-documentatie van Broadcom~\autocite{Broadcom2013}, de IBM-d
 PL/I~\autocite{IBM2025} en interne bedrijfsdocumentatie vormen de primaire informatiebronnen. Deze fase
 levert het materiaal voor Hoofdstuk~\ref{ch:probleemanalyse}.
 
-\section{Reverse engineering van TPPBAMT}
+\section{Reverse engineering}
 \label{sec:meth-reverse}
 
-In de tweede fase wordt een systematische reverse engineering uitgevoerd op de CA~Gen-module
-\texttt{TPPBAMT}, die instaat voor het genereren van de specifieke segmenten binnen de BAF-planning. Per
+In de tweede fase wordt een systematische reverse engineering uitgevoerd op de CA~Gen-module, die instaat voor het genereren van de specifieke segmenten binnen de BAF-planning. Per
 Action Block wordt een view-inventaris opgesteld, een control-flow-beschrijving uitgewerkt, een
 USE-graaf gereconstrueerd en een datamatrix van database-afhankelijkheden samengesteld. Deze stappen vormen
 tegelijk de eerste empirische toepassing van \emph{Component~1} van het framework
@@ -67,26 +66,24 @@ is opgenomen in Hoofdstuk~\ref{ch:framework}.
 \section{Implementatie van de proof-of-concept}
 \label{sec:meth-poc}
 
-In de vierde fase wordt het framework toegepast op de migratie van \texttt{TPPBAMT} naar PL/I. De
+In de vierde fase wordt het framework toegepast op de migratie naar PL/I. De
 implementatie gebeurt incrementeel en omvat:
 \begin{itemize}
-    \item Een generieke MAIN-module als entry point voor BAF-planningsverzoeken.
-    \item Een specifieke BAF MAIN-module met domeinspecifieke routering.
-    \item Een materiaalmodule voor de selectie van planbare materialen.
-    \item Een bestellingmodule voor de productie-orderlogica.
-    \item Een output-generator die het sequenti\"ele segmentenbestand produceert.
+    \item Een MAIN-module als entry point voor BAF-planningsverzoeken.
+    \item Een generieke materiaal-module.
+    \item Een specifieke materiaal-module.
+    \item Een generieke bestellings-module.
+    \item Een specifieke materiaal-module.
+    \item Een voorloper.
+    \item Een plapo-manager.
 \end{itemize}
-Voor elke submodule wordt na implementatie een review uitgevoerd tegen de vertaaltabel
-(\autoref{tab:vertaaltabel}) en de best-practices uit Hoofdstuk~\ref{ch:framework}. De PoC wordt
-uitgewerkt in Hoofdstuk~\ref{ch:poc}.
 
 \section{Validatie}
 \label{sec:meth-validatie}
 
 De validatie steunt op de \emph{Parallel Run}-aanpak die door \textcite{Orosz2022} wordt aanbevolen voor
 bedrijfskritische migraties. Beide implementaties (origineel CA~Gen en nieuw PL/I) worden uitgevoerd op
-identieke invoerdata; de uitvoer wordt vergeleken op functionele equivalentie. Er worden minstens drie
-testscenario's voorzien (standaard, edge-case, foutscenario), aangevuld met een review van het framework
+identieke invoerdata; de uitvoer wordt vergeleken op functionele equivalentie. De beide programma's draaien enkele weken naast elkaar om alle soort testcases tegen te komen, aangevuld met een review van het framework
 en een steekproef van de PL/I-code door minstens \'e\'en ervaren ontwikkelaar binnen het PLAPO-team. De
 opzet en resultaten van de validatie worden besproken in Hoofdstuk~\ref{ch:validatie}.
 
@@ -98,7 +95,7 @@ Een aantal beperkingen verdient expliciete vermelding:
     \item[Constructvaliditeit] De gekozen kerncomponenten van het framework zijn afgeleid uit literatuur en
         praktijkervaring binnen \'e\'en organisatie; andere relevante dimensies (zoals UI-componenten of
         performance) blijven buiten beschouwing.
-    \item[Interne validiteit] De validatie steunt op \'e\'en module (\texttt{TPPBAMT}); structureel
+    \item[Interne validiteit] De validatie steunt op \'e\'en module; structureel
         verschillende modules kunnen aanvullende uitdagingen blootleggen.
     \item[Externe validiteit] De resultaten zijn toegespitst op de combinatie CA~Gen $\rightarrow$ PL/I. De
         beweerde herbruikbaarheid voor andere doeltalen wordt in deze proef niet empirisch aangetoond.

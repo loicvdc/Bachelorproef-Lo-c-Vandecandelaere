@@ -7,30 +7,12 @@
 
 In dit hoofdstuk worden de resultaten besproken van de validatie van de PoC uit Hoofdstuk~\ref{ch:poc}
 en, indirect, van het framework als geheel. De validatie volgt de aanpak die in \emph{Component~4} van het
-framework (\autoref{sec:component-validatie}) werd vastgelegd: een Parallel Run met meerdere testscenario's,
+framework (\autoref{sec:component-validatie}) werd vastgelegd: een Parallel Run,
 aangevuld met een expert-review.
 
 \section{Opzet van de Parallel Run}
 \label{sec:val-opzet}
 
-De Parallel Run werd uitgevoerd in een gedeelde testomgeving op het mainframe waarin zowel de
-oorspronkelijke CA~Gen-module \texttt{TPPBAMT} als de nieuwe PL/I-implementatie aanwezig zijn. Beide
-implementaties werden achtereenvolgens gestart op exact dezelfde DB2-snapshot en met identieke
-inputparameters. De gegenereerde uitvoerbestanden worden bewaard, zodat ze achteraf reproduceerbaar konden 
-worden vergeleken.
-
-\section{Testdatasets}
-\label{sec:val-datasets}
-
-Conform \autoref{subsec:test-datasets} werden drie scenario's voorzien:
-\begin{description}
-    \item[Scenario~1 -- Standaard] Een dagelijkse productieaanvraag met een representatief volume aan
-        planbare materialen voor \'e\'en oven.
-    \item[Scenario~2 -- Edge-case] Een aanvraag die de maximumkardinaliteit van de Group View benadert,
-        gecombineerd met enkele uitzonderlijke materiaalkwaliteiten en sequentievoorwaarden.
-    \item[Scenario~3 -- Foutscenario] Een aanvraag met onvolledige of inconsistente input, bedoeld om de
-        foutpaden en exitstate-mapping te valideren.
-\end{description}
 
 \section{Resultaten}
 \label{sec:val-resultaten}
@@ -38,7 +20,6 @@ Conform \autoref{subsec:test-datasets} werden drie scenario's voorzien:
 
 \section{Expert-review}
 \label{sec:val-expert}
-
 
 
 \section{Reflectie op het framework}

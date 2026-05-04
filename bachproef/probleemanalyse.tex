@@ -19,19 +19,15 @@ welke materialen, door een specifieke installatie verwerkt kunnen worden.
 
 Architecturaal bestaat PLAPO uit twee soorten modules:
 \begin{description}
-    \item[Generieke modules] zijn verantwoordelijk voor de afhandeling van een planningsaanvraag,
-        het opbouwen van de gemeenschappelijke datacontext en het routeren naar de juiste specifieke
-        module. Deze generieke modules zijn reeds volledig in PL/I ge\"implementeerd.
+    \item[Generieke modules] zijn verantwoordelijk voor het samenstellen van alle generieke segmenten die in de output-file moeten komen en de specifieke modules aanroepen voor specifieke segmenten. Deze generieke modules bestaan reeds in PL/I maar moeten aangevuld worden om ook de BAF te faciliteren.
     \item[Specifieke modules] bevatten de domeinspecifieke logica per installatie of proces.
         Voorbeelden zijn de continue gietlijnen, de warmwalserij en de Batch Annealing Facility~(BAF).
         Op \'e\'en uitzondering na zijn alle specifieke modules eveneens reeds gemigreerd naar PL/I; alleen
         de BAF-module draait nog in CA~Gen.
 \end{description}
 
-Figuur~\ref{fig:Plapo} toont de positie van de BAF-module binnen het bredere PLAPO-landschap. De
-generieke modules sturen, op basis van de aanvraagparameters, de juiste specifieke module aan; deze
-laatste schrijft vervolgens de planningssegmenten weg in een sequenti\"eel uitvoerbestand dat door de
-planningstool wordt ingelezen.
+Figuur~\ref{fig:Plapo} toont de BAF-module onderverdeeld. De
+generieke modules sturen, op basis van de aanvraagparameters, de juiste specifieke module aan; deze laatste schrijft vervolgens de segmenten weg in een sequenti\"eel uitvoerbestand.
 
 \section{De Batch Annealing Facility (BAF)}
 \label{sec:baf}
@@ -53,10 +49,7 @@ Concreet moet de BAF-planningsmodule per planbaar materiaal:
 \section{De CA~Gen-module TPPBAMT}
 \label{sec:tppbamt}
 
-Binnen het BAF-luik vormt de CA~Gen-module \texttt{TPPBAMT} het hart van de specifieke materiaallogica. 
-Deze module genereert de specifieke materiaal-segmenten van alle planbare materialen voor de BAF-planning. 
-Vanuit de generieke modules wordt \texttt{TPPBAMT} aangeroepen met een inputparamters en maakt de nodige
-materiaalsegmenten en schrijft deze weg naar het output-bestand.
+Binnen het BAF-luik vormt de CA~Gen-ActionBlock \texttt{AB\_APP\_GBP\_MAT\_BAF} het hart van de specifieke materiaallogica. Voor de rest werkt de CA~Gen-module niet met een voorloper of generieke en/of specifieke modules maar alles is geïntegreerd in één programma.
 
 \section{Bedrijfsdoelstellingen van de migratie}
 \label{sec:doelstellingen-migratie}
@@ -64,7 +57,7 @@ materiaalsegmenten en schrijft deze weg naar het output-bestand.
 Het inhoudelijk doel van het bredere migratietraject (waarvan deze bachelorproef de
 methodologische basis legt) is drieledig:
 \begin{enumerate}
-    \item De afhankelijkheid van CA~Gen-licenties en CA~Gen-expertise be\"eindigen.
+    \item De afhankelijkheid van CA~Gen-licenties en CA~Gen-expertise verminderen.
     \item Het PLAPO-platform consolideren in \'e\'en doeltaal (PL/I), wat onderhoud en doorontwikkeling
         vereenvoudigt.
     \item De impliciete migratiekennis die in eerdere modulemigraties is opgebouwd, expliciet en
