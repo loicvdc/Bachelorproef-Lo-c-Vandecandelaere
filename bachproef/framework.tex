@@ -45,14 +45,14 @@ migratietraject doorloopt deze componenten in volgorde, waarbij vondsten in late
 verfijningen in eerdere fasen.
 
 \begin{enumerate}
-    \item \textbf{Analysefase} (\autoref{sec:component-analyse}) -- ontsluiting van het CA~Gen\-model en 
+    \item \textbf{Analysefase} (\autoref{sec:component-analyse}) ontsluiting van het CA~Gen\-model en 
     inventarisatie van Views, Action Diagrams, USE\-relaties en database\-afhankelijkheden.
-    \item \textbf{Vertaalrichtlijnen} (\autoref{sec:component-vertaling}) -- een geconsolideerde 
+    \item \textbf{Vertaalrichtlijnen} (\autoref{sec:component-vertaling}) een geconsolideerde 
     referentietabel van CA~Gen\-constructen en hun PL/I\-equivalenten, voortbouwend op de syntactische 
     voorbeelden uit \autoref{sec:Syntax}.
-    \item \textbf{Best practices en valkuilen} (\autoref{sec:component-bestpractices}) -- een gestructureerde 
+    \item \textbf{Best practices en valkuilen} (\autoref{sec:component-bestpractices}) een gestructureerde 
     waarschuwingslijst die voorkomt dat eerder gemaakte migratiefouten zich herhalen.
-    \item \textbf{Validatiestrategie} (\autoref{sec:component-validatie}) -- een Parallel\-Run\-aanpak die 
+    \item \textbf{Validatiestrategie} (\autoref{sec:component-validatie}) een Parallel\-Run\-aanpak die 
     functionele equivalentie tussen oude en nieuwe implementatie aantoont.
 \end{enumerate}
 
@@ -75,7 +75,7 @@ beschikbaar zijn:
     traceerbaar blijven.
 \end{itemize}
 
-\subsection{Stap 1.2 -- View\-inventaris opstellen}
+\subsection{Stap 1.2 View\-inventaris opstellen}
 \label{subsec:stap-views}
 
 Voor elk Action Block dat tot de migratie\-scope behoort wordt een View\-inventaris opgesteld. De typologie 
@@ -95,7 +95,7 @@ indeling. \autoref{tab:view-inventaris} toont een lege template die per Action B
 \end{tabular}
 \end{table}
 
-\subsection{Stap 1.3 -- Action Diagram\-stroomanalyse}
+\subsection{Stap 1.3 Action Diagram\-stroomanalyse}
 \label{subsec:stap-actionflow}
 
 Per Action Block wordt de control\-flow uitgetekend of beschreven: hoofdlus(sen), conditionele takken, 
@@ -106,14 +106,14 @@ ESCAPE\-niveaus en exitstates. Bijzondere aandacht gaat naar:
     \item Foutpaden en hun terugkoppeling naar de aanroepende module.
 \end{itemize}
 
-\subsection{Stap 1.4 -- USE\-graaf en modulegrenzen}
+\subsection{Stap 1.4 USE\-graaf en modulegrenzen}
 \label{subsec:stap-usegraaf}
 
 Alle USE\-statements worden in kaart gebracht in de vorm van een aanroepgraaf. Voor elk USE\-statement wordt 
 genoteerd:
 \begin{itemize}
     \item Aanroepend en aangeroepen Action Block.
-    \item Type: Common Action Block (CAB, intern) of External Action Block (EAB, extern -- typisch reeds in 
+    \item Type: Common Action Block (CAB, intern) of External Action Block (EAB bestaat reeds in 
     PL/I of COBOL).
     \item Volledige Import\- en Export\-matching tussen views.
     \item Of het aangeroepen blok binnen of buiten de migratiescope valt.
@@ -121,7 +121,7 @@ genoteerd:
 EAB's vormen vaak natuurlijke modulegrenzen: ze zijn doorgaans al beschikbaar in PL/I en kunnen in de nieuwe 
 implementatie rechtstreeks aangeroepen worden via \texttt{CALL}.
 
-\subsection{Stap 1.5 -- Database\- en interface\-afhankelijkheden}
+\subsection{Stap 1.5 Database\- en interface\-afhankelijkheden}
 \label{subsec:stap-db}
 
 In deze stap wordt vastgelegd welke entiteiten en tabellen door de module benaderd worden, welke acties op 

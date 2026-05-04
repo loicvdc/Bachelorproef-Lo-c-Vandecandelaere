@@ -15,19 +15,16 @@ validatiefase (Hoofdstuk~\ref{ch:validatie}) opnieuw aan bod komen.
 \label{sec:poc-architectuur}
 
 De PL/I-implementatie volgt de bestaande PLAPO-conventies (zie \autoref{subsec:conventies}) en is opgesplitst
-in vijf submodules:
+in 7 modules:
 \begin{enumerate}
-    \item \textbf{Generieke MAIN-module} -- entry point voor alle BAF-planningsverzoeken; staat in voor
-        parameter-parsing, initialisatie van de gemeenschappelijke datacontext, en aanroep van de specifieke
-        BAF MAIN-module.
-    \item \textbf{Specifieke BAF MAIN-module} -- domeinspecifieke routering en parametrisatie van de
-        oven-context; orkestreert de aanroep van de materiaal- en bestellingmodules.
-    \item \textbf{Materiaalmodule} -- selectie en filtering van planbare materialen op basis van
-        \texttt{MAT}/\texttt{MATWR}; vervangt de Group-View-iteratie uit de CA~Gen-module.
-    \item \textbf{Bestellingmodule} -- ophalen en valideren van productie-orders en sequentievoorwaarden
-        op basis van \texttt{PRDO}.
-    \item \textbf{Output-generator} -- assemblage en uitschrijven van de planningssegmenten in het
-        sequenti\"ele uitvoerbestand, met dezelfde recordlayout als de CA~Gen-output.
+    \item \textbf{Voorloper} selecteert de populatie planbare materiaaleenheden volgens parameters.
+    \item \textbf{Specifieke BAF MAIN-module} domeinspecifieke routering en parametrisatie; 
+    orkestreert de aanroep van de materiaal- en bestellingmodules.
+    \item \textbf{Generieke Materiaalmodule} produceert generieke segmenten.
+    \item \textbf{Specifieke Materiaalmodule} produceert specifieke segmenten.
+    \item \textbf{Generieke Bestellingmodule} produceert generieke segmenten.
+    \item \textbf{Specifieke Bestellingmodule} produceert specifieke segmenten.
+    \item \textbf{Plapo-manager} splitst verwerking op in logische eenheden en schrijft segmenten weg.
 \end{enumerate}
 
 De aanroephi\"erarchie en bijhorende parameterstructs zijn rechtstreeks afgeleid uit de USE-graaf uit
@@ -39,45 +36,46 @@ Hoofdstuk~\ref{ch:reverse-engineering}.
 \subsection{Generieke MAIN-module}
 \label{subsec:poc-generiek}
 
-De generieke MAIN-module wordt uitgevoerd als \texttt{PROC OPTIONS(MAIN)} en ontvangt de
-aanvraagparameters via een \texttt{PARM}-string die wordt geparsed naar de struct
-\texttt{IMP\_GEN\_REQUEST}. De module roept vervolgens de specifieke BAF MAIN-module aan via een expliciete
-\texttt{CALL}, met afzonderlijke parameterstructs voor import en export, conform
-\autoref{subsec:view-matching-bp}.
+De generieke MAIN-module wordt uitgevoerd als \texttt{PROC OPTIONS(MAIN)} en ontvangt info van de voorloper.
+Hierin worden vervolgens alle tabellen van specifieke structuren gedeclareerd en doorgegeven aan de onderliggende
+modules.
 
 \begin{listing}[h]
 \caption[Skelet generieke MAIN-module in PL/I]{Skelet van de generieke MAIN-module in PL/I (verkort).}
 \label{lst:poc-generiek}
 \begin{minted}{text}
  GEN_MAIN: PROC OPTIONS(MAIN);
-   DCL 1 IMP_GEN_REQUEST,
-         2 OVEN          CHAR(4),
-         2 HORIZON_VAN   CHAR(8),
-         2 HORIZON_TOT   CHAR(8),
-         2 PROCES        CHAR(8);
-   DCL 1 EXP_GEN_RESULT,
-         2 EXITSTATE     FIXED BIN(15),
-         2 AANTAL_SEG    FIXED BIN(31);
 
-   /* parameter-parsing weggelaten */
+   CALL WRITE_ALG_SEGM;
+   CALL VERWERKING_PLAPO;
+   CALL STOPSEGM;
 
-   CALL BAF_MAIN(IMP_GEN_REQUEST, EXP_GEN_RESULT);
+   WRITE_ALG_SEGMENT:
+    PROC;
 
-   IF EXP_GEN_RESULT.EXITSTATE ^= 0
-   THEN CALL ERROR_HANDLER(EXP_GEN_RESULT.EXITSTATE);
+    CALL TPLPLAL(PWZ04151);
+
+  END WRITE_ALG_SEGMENT;
+
+  VERWERKING_PLAPO:
+    PROC;
+
+    CALL TPLPLWR;
+
+  END VERWERKING_PLAPO;
  END GEN_MAIN;
 \end{minted}
 \end{listing}
 
-\subsection{Specifieke BAF MAIN-module}
+\subsection{Specifieke materiaal-module}
 \label{subsec:poc-baf-main}
 
-De specifieke BAF MAIN-module zet de oven-specifieke parameters klaar (capaciteit, beschikbare werkvelden,
+De specifieke materiaal-module zet de oven-specifieke parameters klaar (capaciteit, beschikbare werkvelden,
 metallurgische restricties) en roept achtereenvolgens de materiaalmodule en de bestellingmodule aan. De
 exitstate van elke aanroep wordt geaggregeerd volgens de afgesproken codes (\texttt{0}~=~OK,
 \texttt{4}~=~waarschuwing, \texttt{8}~=~fout) uit \autoref{subsec:exitstate-bp}.
 
-\subsection{Materiaalmodule}
+\subsection{Generieke materiaalmodule}
 \label{subsec:poc-materiaal}
 
 De materiaalmodule vervangt de \texttt{READ EACH} op de Group View van planbare materialen door een

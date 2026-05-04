@@ -5,8 +5,8 @@
 \chapter{\IfLanguageName{dutch}{Reverse engineering van TPPBAMT}{Reverse engineering of TPPBAMT}}%
 \label{ch:reverse-engineering}
 
-In dit hoofdstuk wordt \emph{Component~1} van het migratieframework -- de analysefase -- toegepast op de
-CA~Gen-module \texttt{TPPBAMT}. Doel is een volledig analysedossier op te bouwen dat als contract dient
+In dit hoofdstuk wordt \emph{Component~1} van het migratieframework, de analysefase, toegepast op de
+CA~Gen-module \texttt{TPPBAMT}. Het doel is een volledig analysedossier op te bouwen dat als contract dient
 voor de PL/I-implementatie in Hoofdstuk~\ref{ch:poc} en voor de validatie in Hoofdstuk~\ref{ch:validatie}.
 Het hoofdstuk volgt de structuur van \autoref{sec:component-analyse}, met als bijkomende doelstelling het
 framework zelf te toetsen aan een re\"ele casus.
@@ -15,10 +15,7 @@ framework zelf te toetsen aan een re\"ele casus.
 \label{sec:re-encyclopedie}
 
 In een eerste stap werd het businessmodel waaronder \texttt{TPPBAMT} valt, lokaal beschikbaar gemaakt via
-een \emph{Check Out} uit de host-encyclopedie van ArcelorMittal. De versie en timestamp van deze check-out
-zijn vastgelegd in het analysedossier; toekomstige aanpassingen aan het origineel kunnen daardoor
-expliciet worden gedetecteerd. Dit is in overeenstemming met de aanbeveling uit
-\autoref{subsec:stap-encyclopedie}.
+een \emph{Check Out} uit de host-encyclopedie en deze te openen in de CA~Gen-toolset.
 
 \section{View-inventaris}
 \label{sec:re-views}
@@ -61,7 +58,7 @@ en sequentievoorwaarden ge\"evalueerd alvorens \'e\'en of meerdere segmenten wor
 Daarnaast werden alle USE-statements in kaart gebracht in de vorm van een aanroepgraaf. Per USE wordt
 genoteerd:
 \begin{itemize}
-    \item Het type aangeroepen blok: Common Action Block (CAB) of External Action Block (EAB).
+    \item Het type aangeroepen blok: Common Action Block (AB) of External Action Block (EAB).
     \item De Import- en Export-matching tussen de views.
     \item Of het aangeroepen blok binnen of buiten de migratiescope valt; EAB's vormen vaak natuurlijke
         modulegrenzen omdat ze typisch reeds in PL/I beschikbaar zijn.
