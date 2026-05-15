@@ -21,7 +21,7 @@ Architecturaal bestaat PLAPO uit twee soorten modules:
 \begin{description}
     \item[Generieke modules] zijn verantwoordelijk voor het samenstellen van alle generieke segmenten die in de output-file moeten komen en de specifieke modules aanroepen voor specifieke segmenten. Deze generieke modules bestaan reeds in PL/I maar moeten aangevuld worden om ook de BAF te faciliteren.
     \item[Specifieke modules] bevatten de domeinspecifieke logica per installatie of proces.
-        Voorbeelden zijn de continue gietlijnen, de warmwalserij en de Batch Annealing Facility~(BAF).
+        Voorbeelden zijn de continue gietlijnen, de warmwalserij en de Batch Annealing Furnace~(BAF).
         Op \'e\'en uitzondering na zijn alle specifieke modules eveneens reeds gemigreerd naar PL/I; alleen
         de BAF-module draait nog in CA~Gen.
 \end{description}
@@ -29,10 +29,10 @@ Architecturaal bestaat PLAPO uit twee soorten modules:
 Figuur~\ref{fig:Plapo} toont de BAF-module onderverdeeld. De
 generieke modules sturen, op basis van de aanvraagparameters, de juiste specifieke module aan; deze laatste schrijft vervolgens de segmenten weg in een sequenti\"eel uitvoerbestand.
 
-\section{De Batch Annealing Facility (BAF)}
+\section{De Batch Annealing Furnace (BAF)}
 \label{sec:baf}
 
-Batch annealing is een warmtebehandeling waarbij meerdere rollen ijzer onder een vacu\"umkap geplaatst en
+Batch annealing is een warmtebehandeling waarbij meerdere rollen staal onder een vacu\"umkap geplaatst en
 gecontroleerd verwarmd worden, met als doel de mechanische eigenschappen (hardheid, vervormbaarheid) te
 verbeteren. Een BAF-installatie bestaat uit een aantal werkvelden waarop telkens een rolstapel kan worden
 geplaatst. De planning bestaat eruit om aan de hand van enkele parameters een lijst van de planbare rollen op 
