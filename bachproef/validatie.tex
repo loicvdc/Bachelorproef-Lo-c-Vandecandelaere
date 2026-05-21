@@ -17,7 +17,23 @@ Om de output van de TPPBAMT te controleren wordt deze aan de hand van een JCL sa
 \section{Resultaten}
 \label{sec:val-resultaten}
 
+Hieronder worden de resultaten van de Parallel Run besproken. De output van beide systemen is in \autoref{fig:OUTPUT_CA_GEN} en \autoref{fig:OUTPUT_TPPBAMT} weergegeven. Uit de vergelijking blijkt dat het nodige materiaal-segment aanwezig is, maar dat er enkele verschillen zijn in waardes van de velden, wat aantoont dat de migratie succesvol is verlopen maar dat er nog enkele aanpassingen nodig zijn aan de logica van de TPPBAMT-module.
+
+\begin{figure}
+     \centering
+     \includegraphics[width=\textwidth]{OutputOud.png}
+     \caption[Output CA Gen]{Output van de huidige CA Gen-module.}
+     \label{fig:OUTPUT_CA_GEN}
+ \end{figure}
+
+ \begin{figure}
+     \centering
+     \includegraphics[width=\textwidth]{OutputNieuw.png}
+     \caption[Output TPPBAMT]{Output van de nieuwe TPPBAMT-module.}
+     \label{fig:OUTPUT_TPPBAMT}
+ \end{figure}
 
 \section{Reflectie op het framework}
 \label{sec:val-reflectie-framework}
 
+De migratie is succesvol verlopen, aangezien de output van de TPPBAMT-module functioneel overeenkomt met die van de CA Gen-module. De verschillen in veldwaardes wijzen op enkele logische aanpassingen die nog nodig zijn, maar deze zijn relatief beperkt en kunnen worden opgelost zonder ingrijpende wijzigingen aan het framework. De Parallel Run heeft aangetoond dat het framework een solide basis biedt voor het migratieproces, maar dat er nog ruimte is voor optimalisatie in de vertaling van specifieke logica van CA Gen naar PL/I. De resultaten van deze validatie zullen worden gebruikt om het framework verder te verfijnen en te verbeteren voor toekomstige migraties.

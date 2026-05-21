@@ -17,9 +17,8 @@ validatiefase (Hoofdstuk~\ref{ch:validatie}) opnieuw aan bod komen.
 De PL/I-implementatie volgt de bestaande PLAPO-conventies (zie \autoref{subsec:conventies}) en is opgesplitst
 in 7 modules:
 \begin{enumerate}
-    \item \textbf{Voorloper} selecteert de populatie planbare materiaaleenheden volgens parameters.
-    \item \textbf{Specifieke BAF MAIN-module} domeinspecifieke routering en parametrisatie; 
-    orkestreert de aanroep van de materiaal- en bestellingmodules.
+    \item \textbf{Voorloper} selecteert de populatie planbare materiaaleenheden.
+    \item \textbf{Specifieke BAF MAIN-module} Schrijft algemeen en stop segment en roept plapo-manager aan.
     \item \textbf{Generieke Materiaalmodule} produceert generieke segmenten.
     \item \textbf{Specifieke Materiaalmodule} produceert specifieke segmenten.
     \item \textbf{Generieke Bestellingmodule} produceert generieke segmenten.
@@ -45,10 +44,19 @@ modules.
     \label{lst:poc-generiek}
     \begin{minted}{text}
         GEN_MAIN: PROC OPTIONS(MAIN);
+
+        /* BODY */
+
+        OPEN FILE(WORK);
         
-        CALL WRITE_ALG_SEGM;
-        CALL VERWERKING_PLAPO;
-        CALL STOPSEGM;
+        CALL WRITE_ALG_SEGM;           /* SCHRIJVEN ALGEMEEN SEGMENT   */
+        CALL VERWERKING_PLAPO;         /* VERWERKEN EN MAKEN VAN PLAPO */
+        CALL TPLPLST;                  /* SCHRIJVEN STOP-SEGMENT       */
+
+        CLOSE FILE(WORK);
+        RETURN;
+
+        /* VERWERKING */
         
         WRITE_ALG_SEGMENT:
         PROC;
@@ -83,28 +91,92 @@ DB2-cursor met \texttt{FETCH}-lus. De cursor wordt gedeclareerd met dezelfde \te
 \texttt{ORDER BY}-clausules als die werden afgeleid uit de datamatrix in \autoref{sec:re-datamatrix}.
 
 \begin{listing}[h]
-    \caption[DB2-cursor voor planbare materialen]{DB2-cursor voor planbare materialen (verkort).}
+    \caption[DB2-cursor voor planbare materialen]{DB2-cursor voor planbare materialen}
     \label{lst:poc-cursor}
     \begin{minted}{text}
-        EXEC SQL DECLARE C_MAT CURSOR FOR
-        SELECT M.NUMMER, M.CODERING_IDENTIFICATIENUMMER,
-        MW.DT_WR_EH_MAT
-        FROM MAT  M
-        JOIN MATWR MW ON M.NUMMER = MW.NR_MAT
-        WHERE MW.TY_WR_EH_MAT = 'P'
-        AND MW.OVEN         = :IMP_BAF.OVEN
-        ORDER BY MW.DT_WR_EH_MAT ASC;
+        /* PBA_GEWOON */
+  /* ~~~~~~~~~~ */
+  EXEC SQL
+    DECLARE PBA_GEWOON CURSOR WITH HOLD FOR
+    SELECT MAT.COD_FRM_GG
+          ,MAT.COD_NR_EH_MAT
+          ,MAT.NR_EH_MAT
+          ,MAT.COD_VTW_MAT
+          ,RO.COD_NI_WR_RO
+          ,RO.RT_HFD_RO
+          ,RO.RT_ON_RO
+          ,RO.COD_NI_VZ_RO
+          ,RO.COD_VSH_NI_WR_RO
+          ,RO.TY_RO
+          ,RO.RO_ACT_PRC
+          ,RO.COD_RD_END_RO
+          ,RO.FRM_STK_RO
+          ,RO.COD_TY_BKD_ZN
+          ,RO.COD_STA_PLN_GL
+          ,RO.COD_STA_PLN_CP
+          ,RO.COD_RD_EXT_BHR_PRD
+          ,RO.TY_STK_RO
+          ,RO.NM_STK_RO
+          ,RO.HAL_RO
+          ,RO.NR_ZE_RO
+          ,RO.KEU_RO
+          ,RO.COD_STA_PLN_SKP
+          ,RO.RO_WR_LY_NT
+          ,RO.KRT_FRM_WR_RT
+          ,RO.COD_AFD_PRD
+          ,RO.COD_FRM_GG_RO
+          ,RO.COD_NR_RO
+          ,RO.NR_RO
+          ,MATAF.COD_FRM_GG_PO_BS
+          ,MATAF.NR_BS
+          ,MATAF.NR_PO_BS
+          ,MATAF.NR_EH_MAT
+          ,MATAF.COD_FRM_GG_EH_MAT
+          ,MATAF.COD_NR_EH_MAT
+          ,MATAF.NR_FRA_AFF_EH_MAT
+          ,MATAF.ID_RE
+    FROM MAT, MATAF, RO
+    WHERE MAT.COD_FRM_GG    = :H_MAT.COD_FRM_GG       AND
+          MAT.COD_NR_EH_MAT IN('K','W')
+          AND
+          MATAF.COD_FRM_GG_PO_BS  = MAT.COD_FRM_GG       AND
+          MATAF.NR_BS             > 0                    AND
+          MATAF.COD_FRM_GG_EH_MAT = MAT.COD_FRM_GG       AND
+          MATAF.COD_NR_EH_MAT     = MAT.COD_NR_EH_MAT    AND
+          MATAF.NR_EH_MAT         = MAT.NR_EH_MAT
+          AND
+          MATAF.NR_BS    >= :NR_BS_VAN      AND
+          MATAF.NR_PO_BS >= :NR_PO_BS_VAN   AND
+          MATAF.NR_BS    <= :NR_BS_TOT      AND
+          MATAF.NR_PO_BS <= :NR_PO_BS_TOT
+          AND
+          (((RO.COD_NI_WR_RO      = 'SGLO'                OR
+          RO.COD_NI_WR_RO         = 'SGNW'                OR
+          RO.COD_NI_WR_RO         = 'SNGL')               AND
+          RO.COD_VSH_NI_WR_RO     = ' ')                  OR
+          (RO.COD_VSH_NI_WR_RO    = 'SNGL'                OR
+          RO.COD_VSH_NI_WR_RO     = 'SGNW'                OR
+          RO.COD_VSH_NI_WR_RO     = 'SGLO'))              AND
+          RO.NR_RO                = MAT.NR_EH_MAT         AND
+          RO.COD_NR_RO            = MAT.COD_NR_EH_MAT     AND
+          RO.COD_FRM_GG_RO        = MAT.COD_FRM_GG        AND
+          MAT.COD_FRM_GG          = :H_MAT.COD_FRM_GG     AND
+          RO.COD_RD_EXT_BHR_PRD   = ' '                   AND
+          RO.COD_STA_PLN_GL      <> 'D'                   AND
+          RO.COD_STA_PLN_CP      <> 'D'                   AND
+          RO.COD_NI_VZ_RO         = ' '                   AND
+          RO.COD_RD_END_RO        = ' '                   AND
+          RO.RO_WR_LY_NT         ^= '1'
+    ORDER BY MATAF.NR_BS
+            ,MATAF.NR_PO_BS
+            ,MAT.NR_EH_MAT;
     \end{minted}
 \end{listing}
-
-De fetch-lus respecteert zowel de \texttt{SQLCODE}~=~100-conditie als de maximumkardinaliteit van de
-overeenkomstige interne array, conform \autoref{subsec:groupview-bp}.
 
 \subsection{Bestellingmodule}
 \label{subsec:poc-bestelling}
 
-De bestellingmodule haalt voor elk geselecteerd materiaal de gekoppelde productie-orders op uit
-\texttt{PRDO} en valideert sequentievoorwaarden. De vertaling van de oorspronkelijke CA~Gen-logica naar
+De bestellingmodule haalt voor elk geselecteerd materiaal de gekoppelde productie-orders op. De vertaling van de oorspronkelijke CA~Gen-logica naar
 PL/I gebeurt regel-per-regel volgens de mappingtabel \autoref{tab:vertaaltabel}; in het bijzonder wordt
 het \texttt{CASE OF}-construct uit CA~Gen vertaald naar een PL/I-\texttt{SELECT/WHEN/OTHERWISE}.
 
@@ -129,8 +201,6 @@ ge\"introduceerd:
     \item \textbf{Naming-conventies} volgen de bestaande PLAPO-codebase; sommige variabele- en procedurenamen
     wijken daardoor visueel af van het origineel maar zijn in betekenis gelijk.
 \end{itemize}
-Elke afwijking is gedocumenteerd in het analysedossier en wordt expliciet getest tijdens de
-Parallel-Run-validatie.
 
 \section{Toepassing van het framework}
 \label{sec:poc-toepassing-framework}

@@ -13,21 +13,26 @@ Hoofdstuk~\ref{ch:reverse-engineering} als de proof-of-concept in Hoofdstuk~\ref
 \section{Het PLAPO-platform}
 \label{sec:plapo}
 
-PLAPO is de interne benaming voor het lijnplanningsplatform van ArcelorMittal. Het platform vertaalt
-binnenkomende productieaanvragen naar concrete planningssegmenten per productiestap. Een segment beschrijft
-welke materialen, door een specifieke installatie verwerkt kunnen worden.
+Het woord plapo is een samenvoeging van 'planbare' en 'populatie'. Om te bepalen welke rollen staal in ArcelorMittal planbaar zijn voor een bepaalde afdeling moet een plapo-segmentfile opgemaakt worden. Vanuit een planningstool wordt
+een JCL-job opgestart die eerst een voorloopstap oproept die alle mogelijke materialen ophaalt, daarna wordt naargelang de gevraagde afdeling een specifiek main-programma aangeroepen. Deze main roept op zijn beurt de generieke en specifieke modules aan om de nodige segmenten op te stellen maar daarin alle nodige informatie over de planbare materialen en weg te schrijven naar de plapo-segmentfile. Aan de hand van deze file worden de rollen uitgekozen voor de BAF.
 
 Architecturaal bestaat PLAPO uit twee soorten modules:
 \begin{description}
     \item[Generieke modules] zijn verantwoordelijk voor het samenstellen van alle generieke segmenten die in de output-file moeten komen en de specifieke modules aanroepen voor specifieke segmenten. Deze generieke modules bestaan reeds in PL/I maar moeten aangevuld worden om ook de BAF te faciliteren.
     \item[Specifieke modules] bevatten de domeinspecifieke logica per installatie of proces.
         Voorbeelden zijn de continue gietlijnen, de warmwalserij en de Batch Annealing Furnace~(BAF).
-        Op \'e\'en uitzondering na zijn alle specifieke modules eveneens reeds gemigreerd naar PL/I; alleen
+        Op één uitzondering na zijn alle specifieke modules eveneens reeds gemigreerd naar PL/I; alleen
         de BAF-module draait nog in CA~Gen.
 \end{description}
 
-Figuur~\ref{fig:Plapo} toont de BAF-module onderverdeeld. De
-generieke modules sturen, op basis van de aanvraagparameters, de juiste specifieke module aan; deze laatste schrijft vervolgens de segmenten weg in een sequenti\"eel uitvoerbestand.
+Figuur~\ref{fig:Plapo} toont de BAF-plapo onderverdeeld. De plapo manager, TPLPLWR, stelt de algemene segmenten op en roept de andere modules aan waar nodig voor de andere segmenten.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{PLAPO BAF SCHEMATISCH.png}
+    \caption[Schematische voorstelling van PLAPO]{Schematische voorstelling van het PLAPO-planningslandschap met de positie van de BAF-module.}
+    \label{fig:Plapo}
+\end{figure}
 
 \section{De Batch Annealing Furnace (BAF)}
 \label{sec:baf}
@@ -35,8 +40,7 @@ generieke modules sturen, op basis van de aanvraagparameters, de juiste specifie
 Batch annealing is een warmtebehandeling waarbij meerdere rollen staal onder een vacu\"umkap geplaatst en
 gecontroleerd verwarmd worden, met als doel de mechanische eigenschappen (hardheid, vervormbaarheid) te
 verbeteren. Een BAF-installatie bestaat uit een aantal werkvelden waarop telkens een rolstapel kan worden
-geplaatst. De planning bestaat eruit om aan de hand van enkele parameters een lijst van de planbare rollen op 
-te stellen.
+geplaatst.
 
 Concreet moet de BAF-planningsmodule per planbaar materiaal:
 \begin{enumerate}
@@ -45,6 +49,13 @@ Concreet moet de BAF-planningsmodule per planbaar materiaal:
     \item Op basis van een set parameters en regels een of meer planningssegmenten samenstellen.
     \item Deze segmenten naar het uitvoerbestand schrijven in een vooraf afgesproken layout.
 \end{enumerate}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{BAF_SCHEMATISCH.png}
+    \caption[Schematische voorstelling van BAF]{Schematische voorstelling van wat de Batch Annealing Furnace doet met het materiaal.}
+    \label{fig:BAF}
+\end{figure}
 
 \section{De CA~Gen-module TPPBAMT}
 \label{sec:tppbamt}
@@ -58,7 +69,7 @@ Het inhoudelijk doel van het bredere migratietraject (waarvan deze bachelorproef
 methodologische basis legt) is drieledig:
 \begin{enumerate}
     \item De afhankelijkheid van CA~Gen-licenties en CA~Gen-expertise verminderen.
-    \item Het PLAPO-platform consolideren in \'e\'en doeltaal (PL/I), wat onderhoud en doorontwikkeling
+    \item Het PLAPO-platform consolideren in één doeltaal (PL/I), wat onderhoud en doorontwikkeling
         vereenvoudigt.
     \item De impliciete migratiekennis die in eerdere modulemigraties is opgebouwd, expliciet en
         herbruikbaar maken.
