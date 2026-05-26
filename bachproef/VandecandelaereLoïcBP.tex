@@ -12,6 +12,7 @@
 %   explicit approval!), remove the option "dutch," or replace with "english".
 
 \usepackage{lipsum} % For blind text, can be removed after adding actual content
+\usepackage{listings}
 
 %% Pictures to include in the text can be put in the graphics/ folder
 \graphicspath{{../graphics/}}
@@ -23,6 +24,7 @@
 %% import instead:
 \usepackage[chapter,outputdir=../output]{minted}
 \usepackage{easylist}
+\usepackage{caption}
 \usemintedstyle{solarized-light}
 
 %% Formatting for minted environments.
@@ -30,6 +32,7 @@
     autogobble,
     frame=lines,
     breaklines,
+    breakanywhere=true,
     linenos,
     tabsize=4
 }
@@ -53,7 +56,7 @@
 \author{Loïc Vandecandelaere}
 \supervisor{Dhr. T. Parmentier}
 \cosupervisor{Dhr. D. Marichal}
-\title[Optionele ondertitel]%
+\title
     {Hoe kan een high-level framework worden opgesteld om CA Gen-applicaties succesvol te migreren naar PL/I code?}
 \academicyear{\advance\year by -1 \the\year--\advance\year by 1 \the\year}
 \examperiod{1}
@@ -145,6 +148,7 @@
 \input{framework}
 \input{poc}
 \input{validatie}
+\input{automatisatie}
 
 \input{conclusie}
 

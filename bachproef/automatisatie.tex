@@ -1,0 +1,351 @@
+%%=============================================================================
+%% Automatiseren van migratieproces
+%%=============================================================================
+
+\chapter{\IfLanguageName{dutch}{Automatisatie}{Automation}}%
+\label{ch:automatisatie}
+
+In dit hoofdstuk gaan we kort in op de mogelijkheden om het 
+migratieproces
+van CA Gen naar PL/I te automatiseren. Hoewel het volledige proces niet
+geautomatiseerd kan worden, zijn er verschillende stappen die 
+geautomatiseerd kunnen worden om de efficiëntie te verhogen en 
+menselijke fouten te verminderen.
+
+\section{Wat kan geautomatiseerd worden en wat niet?}
+\label{sec:automatisatie-mogelijkheden}
+
+Waarom kan momenteel niet he volledige migratieproces geautomatiseerd
+worden? De belangrijkste reden is dat CA Gen achterliggend heel veel
+doet waar de gebruiker geen zicht op heeft. De toolset is als het 
+ware een black box. Hierdoor missen automatisatie-tools en AI te veel
+context om een volledige migratie te kunnen uitvoeren. Dit zijn een 
+paar van de dingen die CA Gen achterliggend doet:
+\begin{itemize}
+    \item IMS database interacties
+    \item SQL interacties
+    \item vertalen van bussiness-namen naar technische namen die de 
+    mainframe kent
+    \item optimalisaties die de toolset zelf doet van flows
+\end{itemize}
+
+\subsection{Voorbeeld code generatie door Copilot}
+
+Wat wel kan geautomatiseerd kan worden met AI is het vertalen van de 
+pseudo-code in de Action Blocks naar PL/I code. In het onderstaande
+voorbeeld hebben we een stukje pseudo-code uit een Action Block genomen
+en gevraagd aan Copilot om dit te vertalen naar PL/I code, met als 
+context de hoofdstukken van deze bachelorproef die gaan rond de syntax
+van PL/I en de mapping van CA Gen constructies naar PL/I constructies.
+
+\begin{center}
+    \captionof{listing}{CA Gen pseudo-code die werd vertaald naar PL/I code door Copilot.}
+    \label{lst:CA Gen input}
+\end{center}
+
+\begin{minted}[fontsize=\small]
+EXIT STATE IS sid_verwerking_ab_gestart_rb WITH ROLLBACK
+
+READ mtstbo
+    WHERE SOME mat IS CURRENT imp ro
+    AND DESIRED mtstbo cod_frm_gg_eh_mat IS EQUAL TO THAT mat cod_frm_gg
+    AND DESIRED mtstbo nr_eh_mat_dl IS EQUAL TO THAT mat cod_nr_eh_mat
+    AND DESIRED mtstbo nr_eh_mat_dl IS EQUAL TO THAT mat nr_eh_mat
+    AND DESIRED mtstbo cod_prc_cre_dl_mat IS EQUAL TO CURRENT imp ro 
+    cod_prc_l_ro
+    AND SOME matwr is_laatste_proces_voor CURRENT imp ro
+    AND THAT matwr nr_wr_eh_mat IS EQUAL TO DESIRED mtstbo 
+    nr_prc_cre_dl_mat
+    AND DESIRED mtstbo ty_dl_mat IS EQUAL TO "M"
+
+WHEN successful
+    WHILE mtstbo cod_eh_mat_dl IS NOT EQUAL TO "W"
+        SET loc_imp_mat056 wz54601 cod_frm_gg TO "S"
+        SET loc_imp_mat056 wz54601 cod_nr_ro TO "K"
+        SET loc_imp_mat056 wz54601 nr_ro TO mtstbo nr_eh_mat_dl
+        SET loc_imp_mat056 wz54601 nr_prc_ro TO mtstbo nr_prc_cre_dl_mat
+        SET loc_imp_mat056 wz54601 dt_cre_ro TO mtstbo dt_cre_eh_mat_dl
+        USE eab_oproep_mat056_lees_prcskin
+            WHICH IMPORTS: Work View loc_imp_mat056 wz54601 TO Work View
+             imp wz54601
+            WHICH EXPORTS: Work View loc_exp_mat056 wz54601 FROM Work 
+            View exp wz54601
+                             Work View loc_exp_ind_mat056 
+                             mat_ind_wz54601 FROM Work View 
+                             mat_ind_wz54601
+                             Work View loc_exp_wz30911 FROM Work View 
+                             exp wz30911
+
+        IF loc_exp_wz30911 cod_tg IS EQUAL TO 1
+            AND loc_exp_wz30911 cod_rd IS EQUAL TO 0
+
+* * * * SET gloc_mat sid_werkveld text80 TO concat("Oproep 
+eab_oproep_mat055_lees_prcskin gelukt Return: "
+* * * * SET gloc_mat_ft int_mat_materiaaleenheid code_frma TO 
+loc_imp_mat056 wz54601 cod_frm_gg
+* * * * SET gloc_mat_ft int_mat_materiaaleenheid 
+codering_identificatienummer TO loc_imp_mat056 wz54601 cod_
+* * * * SET gloc_mat_ft int_mat_materiaaleenheid nummer TO 
+loc_imp_mat056 wz54601 nr_ro
+* * * * USE eab_druk_foutlijn_materiaal
+* * * *     WHICH IMPORTS: Group View grl_foutlijn_mat TO Group 
+View gri_foutlijn_mat
+
+            IF exp_stamboom_gg int_bsn_bstuyprd pct_lg_skp_na IS 
+            EQUAL TO 0
+                IF loc_exp_ind_mat056 mat_ind_wz54601 i_lg_skp IS 
+                EQUAL TO -1
+                ELSE
+                    SET exp_stamboom_gg int_bsn_bstuyprd pct_lg_skp_na 
+                    TO loc_exp_mat056 wz54601 lg_skp
+
+            IF exp_stamboom_gg int_bsn_bstuyprd brk_emul_skp IS EQUAL 
+            TO SPACES
+                SET exp_stamboom_gg int_bsn_bstuyprd brk_emul_skp TO 
+                loc_exp_mat056 wz54601 emul_brk_skp
+
+        IF mtstbo nr_dl_moe IS NULL
+            ESCAPE
+
+        READ mtstbo
+            WHERE DESIRED mtstbo cod_dl_mat IS EQUAL TO CURRENT 
+            mtstbo cod_dl_moe
+            AND DESIRED mtstbo nr_dl_mat IS EQUAL TO CURRENT 
+            mtstbo nr_dl_moe
+
+        WHEN successful
+        WHEN not found
+            ESCAPE
+
+WHEN not found
+    EXIT STATE IS mtstbo_nf WITH ROLLBACK
+
+ESCAPE
+\end{minted}
+
+\begin{center}
+    \captionof{listing}{PL/I output van Copilot op basis van de CA Gen pseudo-code}
+    \label{lst:Copilot output}
+\end{center}
+
+\begin{minted}[fontsize=\small]
+/* ------------------------------------------------------------------ */
+/* EXIT STATE IS sid_verwerking_ab_gestart_rb WITH ROLLBACK           */
+/* Initialiseer exitstate; WITH ROLLBACK = caller voert ROLLBACK uit  */
+/* als dit veld bij terugkeer niet overschreven is.                   */
+/* ------------------------------------------------------------------ */
+
+EXP_EXITSTATE = 'SID_VERWERKING_AB_GESTART_RB';
+
+/* ------------------------------------------------------------------ */
+/* READ mtstbo                                                        */
+/*   WHERE SOME mat is CURRENT imp ro                                 */
+/*     AND DESIRED mtstbo ... IS EQUAL TO THAT mat ...                */
+/*     AND SOME matur is_laatste_proces_voor CURRENT imp ro           */
+/*     AND THAT matur nr_wr_eh_mat IS EQUAL TO DESIRED mtstbo         */
+/*              nr_prc_cre_dl_mat                                     */
+/*     AND DESIRED mtstbo ty_dl_mat IS EQUAL TO "M"                   */
+/*                                                                    */
+/* SOME mat / SOME matur = impliciete JOINs via het datamodel;        */
+/* DESIRED = veld van mtstbo, THAT = veld van de gejoinde entiteit,   */
+/* CURRENT = huidig importview-veld.                                  */
+/* ------------------------------------------------------------------ */
+
+EXEC SQL
+    SELECT MTSTBO.COD_NR_EH_MAT_DL,
+           MTSTBO.NR_EH_MAT_DL,
+           MTSTBO.NR_PRC_CRE_DL_MAT,
+           MTSTBO.DT_CRE_EH_MAT_DL,
+           MTSTBO.COD_DL_MOE,
+           MTSTBO.NR_DL_MOE
+    INTO  :MTSTBO.COD_NR_EH_MAT_DL,
+          :MTSTBO.NR_EH_MAT_DL,
+          :MTSTBO.NR_PRC_CRE_DL_MAT,
+          :MTSTBO.DT_CRE_EH_MAT_DL,
+          :MTSTBO.COD_DL_MOE,
+          :MTSTBO.NR_DL_MOE :IND_NR_DL_MOE   /* NULL-indicator */
+    FROM  MTSTBO
+    INNER JOIN MAT
+           ON  MTSTBO.COD_FRM_GG_EH_MAT = MAT.COD_FRM_GG
+           AND MTSTBO.COD_NR_EH_MAT_DL  = MAT.COD_NR_EH_MAT
+           AND MTSTBO.NR_EH_MAT_DL      = MAT.NR_EH_MAT
+    INNER JOIN MATUR
+           ON  MATUR.NR_WR_EH_MAT       = MTSTBO.NR_PRC_CRE_DL_MAT
+           /* AND <relatie is_laatste_proces_voor: verifieer in 
+           datamodel> */
+    WHERE  MAT.COD_FRM_GG              = :IMP_RO.COD_FRM_GG
+      AND  MAT.COD_NR_EH_MAT           = :IMP_RO.COD_NR_EH_MAT
+      AND  MAT.NR_EH_MAT               = :IMP_RO.NR_EH_MAT
+      AND  MTSTBO.COD_PRC_CRE_DL_MAT  = :IMP_RO.COD_PRC_L_RO
+      AND  MTSTBO.TY_DL_MAT            = 'M';
+
+/* WHEN successful */
+IF SQLCODE = 0 THEN DO;
+
+    /* WHILE mtstbo cod_nr_eh_mat_dl IS NOT EQUAL TO "U" */
+    /* Label nodig want meerdere ESCAPE-niveaus vanuit de lus */
+    LP_MTSTBO:
+    DO WHILE (MTSTBO.COD_NR_EH_MAT_DL ^= 'U');
+        /* SET loc_imp_mat056 wz54601 cod_frm_gg TO "S" */
+        LOC_IMP_MAT056.WZ54601.COD_FRM_GG = 'S';
+        /* SET loc_imp_mat056 wz54601 cod_nr_ro TO "K" */
+        LOC_IMP_MAT056.WZ54601.COD_NR_RO  = 'K';
+        /* SET loc_imp_mat056 wz54601 nr_ro TO mtstbo nr_eh_mat_dl */
+        LOC_IMP_MAT056.WZ54601.NR_RO      = MTSTBO.NR_EH_MAT_DL;
+        /* SET loc_imp_mat056 wz54601 nr_prc_ro TO mtstbo 
+        nr_prc_cre_dl_mat */
+        LOC_IMP_MAT056.WZ54601.NR_PRC_RO  = MTSTBO.NR_PRC_CRE_DL_MAT;
+        /* SET loc_imp_mat056 wz54601 dt_cre_ro 
+        TO mtstbo dt_cre_eh_mat_dl */
+        LOC_IMP_MAT056.WZ54601.DT_CRE_RO  = MTSTBO.DT_CRE_EH_MAT_DL;
+
+        /* USE eab_oproep_mat056_lees_prcskin                         */
+        /* IMPORTS: loc_imp_mat056 wz54601 → imp wz54601              */
+        /* EXPORTS: exp wz54601, mat_ind_wz54601, exp wz30911 terug   */
+        CALL EAB_OPROEP_MAT056_LEES_PRCSKIN(
+                LOC_IMP_MAT056.WZ54601,
+                LOC_EXP_MAT056.WZ54601,
+                LOC_EXP_IND_MAT056.MAT_IND_WZ54601,
+                LOC_EXP.WZ30911);
+
+        /* IF loc_exp wz30911 cod_tg IS EQUAL TO 1                    */
+        /*    AND loc_exp wz30911 cod_rd IS EQUAL TO 0                */
+        IF  LOC_EXP.WZ30911.COD_TG = 1
+        AND LOC_EXP.WZ30911.COD_RD = 0
+        THEN DO;
+ 
+            /* * * * * regels zijn inactief in CA Gen — niet vertalen */
+
+            /* IF exp_stamboom_gg int_bsn_bstyprd pct_lg_skp_na       */
+            /*                                IS EQUAL TO 0           */
+            IF EXP_STAMBOOM_GG.INT_BSN_BSTYPRD.PCT_LG_SKP_NA = 0 THEN 
+            DO;
+                /* IF loc_exp_ind_mat056 mat_ind_wz54601 i_lg_skp     */
+                /*                                IS EQUAL TO -1      */
+                /* → doe niets (lege THEN-tak); ELSE voert de SET uit */
+                IF LOC_EXP_IND_MAT056.MAT_IND_WZ54601.I_LG_SKP ^= -1
+                THEN
+                    /* SET exp_stamboom_gg ... pct_lg_skp_na TO       */
+                    /*     loc_exp_mat056 wz54601 lg_skp              */
+                    EXP_STAMBOOM_GG.INT_BSN_BSTYPRD.PCT_LG_SKP_NA =
+                        LOC_EXP_MAT056.WZ54601.LG_SKP;
+            END;
+
+            /* IF exp_stamboom_gg int_bsn_bstyprd brk_emul_skp        */
+            /*                          IS EQUAL TO SPACES            */
+            IF EXP_STAMBOOM_GG.INT_BSN_BSTYPRD.BRK_EMUL_SKP = ' '
+            THEN
+                /* SET exp_stamboom_gg ... brk_emul_skp TO            */
+                /*     loc_exp_mat056 wz54601 emul_brk_skp            */
+                EXP_STAMBOOM_GG.INT_BSN_BSTYPRD.BRK_EMUL_SKP =
+                    LOC_EXP_MAT056.WZ54601.EMUL_BRK_SKP;
+
+        END; /* IF cod_tg = 1 AND cod_rd = 0 */
+
+        /* IF mtstbo nr_dl_moe IS NULL → ESCAPE (verlaat de WHILE)    */
+        /* IND_NR_DL_MOE is de NULL-indicator van het meest recente 
+        READ */
+        IF IND_NR_DL_MOE < 0
+        THEN LEAVE LP_MTSTBO;
+
+        /* READ mtstbo                                                */
+        /*   WHERE DESIRED mtstbo cod_dl_mat IS EQUAL TO              */
+        /*             CURRENT mtstbo cod_dl_moe                      */
+        /*     AND DESIRED mtstbo nr_dl_mat IS EQUAL TO               */
+        /*             CURRENT mtstbo nr_dl_moe                       */
+        /* Volg de keten: laad het "moeder"-record.                   */
+        EXEC SQL
+            SELECT COD_NR_EH_MAT_DL,
+                   NR_EH_MAT_DL,
+                   NR_PRC_CRE_DL_MAT,
+                   DT_CRE_EH_MAT_DL,
+                   COD_DL_MOE,
+                   NR_DL_MOE
+            INTO  :MTSTBO.COD_NR_EH_MAT_DL,
+                  :MTSTBO.NR_EH_MAT_DL,
+                  :MTSTBO.NR_PRC_CRE_DL_MAT,
+                  :MTSTBO.DT_CRE_EH_MAT_DL,
+                  :MTSTBO.COD_DL_MOE,
+                  :MTSTBO.NR_DL_MOE :IND_NR_DL_MOE
+            FROM  MTSTBO
+            WHERE COD_DL_MAT = :MTSTBO.COD_DL_MOE
+              AND NR_DL_MAT  = :MTSTBO.NR_DL_MOE;
+
+        /* WHEN successful → lus gaat verder                          */
+        /* WHEN not found  → ESCAPE (verlaat de WHILE)                */
+        IF SQLCODE = 100
+        THEN LEAVE LP_MTSTBO;
+    END LP_MTSTBO; /* einde WHILE mtstbo cod_nr_eh_mat_dl ^= 'U' */
+END; /* WHEN successful (outer READ) */
+
+/* WHEN not found (outer READ)                                        */
+ELSE IF SQLCODE = 100 THEN DO;
+    /* EXIT STATE IS mtstbo_nf WITH ROLLBACK                          */
+    /* Caller controleert EXP_EXITSTATE en voert EXEC SQL ROLLBACK uit*/
+    EXP_EXITSTATE = 'MTSTBO_NF';
+    RETURN; /* ESCAPE = verlaat dit Action Block */
+END;
+\end{minted}
+
+\begin{center}
+    \captionof{listing}{CA Gen pseudo-code die werd vertaald naar PL/I code door expert}
+    \label{lst:expert output}
+\end{center}
+
+\begin{minted}[fontsize=\small]
+/* ------------------------ */
+BEPAAL_SKP_GEGS_VIA_MTSTBO:
+PROC;
+
+  #TRACE_ENTRY;
+
+  /* Init variabelen */
+  LG_SKP = 0;
+  BRK_EMUL_SKP = '';
+
+  H_MTSTBO.COD_FRM_GG_EH_MAT  = H_RO_IMP.COD_FRM_GG_RO;
+  H_MTSTBO.COD_NR_EH_MAT_DL   = H_RO_IMP.COD_NR_RO;
+  H_MTSTBO.NR_EH_MAT_DL       = H_RO_IMP.NR_RO;
+  H_MTSTBO.COD_PRC_CRE_DL_MAT = H_RO_IMP.COD_PRC_L_RO;
+  H_MTSTBO.NR_PRC_CRE_DL_MAT  = H_RO_IMP.NR_PRC_L_RO;
+  H_MTSTBO.TY_DL_MAT          = 'M';  /* MATDEEL */
+
+  CALL SQL_OPEN_CURSOR('MTSTBO_MATDL_PRC_L');
+  CALL SQL_FETCH_CURSOR('MTSTBO_MATDL_PRC_L');
+
+  SCAN_LAATSTE_PROCES:
+    DO WHILE(SQLCA.SQLCODE = 0);
+
+    VERWERK_MAT_DEEL:
+      DO WHILE(SQLCA.SQLCODE = 0 & H_MTSTBO.COD_NR_EH_MAT_DL = 'K');
+
+        CALL OPROEP_MAT056;
+
+        IF WZ30911.COD_TG = 1 & WZ30911.COD_RD = 0
+        THEN
+        DO;
+          IF LG_SKP = 0
+          THEN
+            IF WZ54601.GRP_EXP_IND.LG_SKP ^= -1
+            THEN
+              LG_SKP = WZ54601.GRP_EXP.LG_SKP;
+
+          IF BRK_EMUL_SKP = ''
+          THEN
+            BRK_EMUL_SKP = WZ54601.GRP_EXP.EMUL_BRK_SKP;
+        END;
+
+        IF I_MTSTBO.NR_DL_MOE >= 0
+        THEN
+          CALL SELECT_MTSTBO_MOEDER;
+        ELSE
+          LEAVE VERWERK_MAT_DEEL;
+
+    END VERWERK_MAT_DEEL;
+
+    CALL SQL_FETCH_CURSOR('MTSTBO_MATDL_PRC_L');
+
+    END SCAN_LAATSTE_PROCES;
+
+    CALL SQL_CLOSE_CURSOR('MTSTBO_MATDL_PRC_L');
+\end{minted}

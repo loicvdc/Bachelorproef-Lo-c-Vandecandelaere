@@ -5,10 +5,187 @@
 \chapter{\IfLanguageName{dutch}{Probleemanalyse en context}{Problem analysis and context}}%
 \label{ch:probleemanalyse}
 
-Dit hoofdstuk werkt de probleemstelling verder uit door het toepassingsdomein van het onderzoek
-, het PLAPO-lijnplanningsplatform binnen ArcelorMittal, gedetailleerd in
+Dit hoofdstuk werkt de probleemstelling verder uit door het toepassingsdomein van het onderzoek, het PLAPO-lijnplanningsplatform binnen ArcelorMittal, gedetailleerd in
 kaart te brengen. De uitgewerkte context vormt het uitgangspunt voor zowel de reverse engineering in
 Hoofdstuk~\ref{ch:reverse-engineering} als de proof-of-concept in Hoofdstuk~\ref{ch:poc}.
+
+\section{\IfLanguageName{dutch}{Syntax mapping}{Syntax mapping}}%
+\label{sec:Syntax}
+Zoals eerder vermeld maakt CA Gen gebruik van een vorm van gestructureerde pseudocode waarin de volledige applicatielogica wordt gedefinieerd. Deze pseudocode vormt de basis voor de automatische generatie van programmacode.
+
+In dit onderdeel wordt voor de meest voorkomende CA Gen-expressies en constructies toegelicht hoe deze systematisch kunnen worden vertaald naar equivalente structuren in PL/I. Hierbij wordt gefocust op het correct interpreteren van de onderliggende logica en het behouden van functionele equivalentie tussen de oorspronkelijke CA Gen-implementatie en de PL/I-code. Dit wordt gedemonstreerd aan de hand van enkele echte voorbeelden.
+
+\subsection{Variabelen}
+Variabele in CA Gen verschillen op een aantal belangrijke punten van variabelen in klassieke programmeertalen. Omdat CA Gen modelgedreven werkt, zijn variabelen sterk gekoppeld aan het datamodel en de context waarin ze gebruikt worden. In CA Gen zijn variabelen gegevenshouders die gebruikt worden binnen action diagrams en procedures om waarden tijdelijk of persisten op te slaan tijdens de uitvoering van een applicatie. Volgende soorten variabelen bestaan:
+\begin{itemize}
+    \item De meest voorkomende variabelen zijn attribute-based variabelen, deze zijn afgeleid van een entiteit of datamodel en hebben een vaste structuur en datatype. Voorbeelden hiervan zijn 'Customer.Name' of 'Material.ID'. Deze variabelen zijn rechtstreeks gelinkt aan de database-structuur.
+    \item Local variables: deze worden gebruikt binnen procedures en action diagrams. Variabelen van deze soort bestaan slechts tijdelijk (enkel tijdens de uitvoering) en worden bijvoorbeeld gebruikt voor berekeningen of tussenresultaten. De lokale variabelen worden gedefinieerd aan het begin van de action diagram onder 'IMPORTS'.
+    \item Parameter-variabelen worden gebruikt als I/O voor procedure calls of module-interactie.
+    \item CA Gen voorziet ook systeemvariabelen zoals statuscodes en foutcodes.
+\end{itemize}
+
+\subsection{SET...TO}
+In CA Gen gebeurt het toekennen van een waarde aan een variabele via de sleutelwoorden SET en TO. 
+De syntactische structuur die hierbij wordt gehanteerd is als volgt: SET \{variabelenaam\} TO \{waarde\}. Hierbij verwijst {variabelenaam} naar de doelvariabele waaraan een nieuwe waarde wordt toegekend, terwijl {waarde} een constante, een andere variabele of het resultaat van een expressie kan zijn. De PL/I equivalent van de SET-instructies uit Figuur~\ref{fig:Vb1CAGencode} zou er als volgt uitzien:
+\begin{listing}[h]
+    \caption[PL/I voorbeeld van variabele declaratie en assignatie]{\textbf{PL/I voorbeeld van variabele declaratie en assignatie}}
+    \label{lst:PL/I-variabelen}
+    \begin{minted}{text}
+        DCL 1 INT_PLN_PLNPRDO_PRODUCTIE_ORDER,
+        2 ID_BS_PRD FIXED              BIN(31);
+        DCL 1 INT_MAT_MATERIAALEENHEID,
+        2 NUMMER FIXED                 BIN(31),
+        2 CODERING_IDENTIFICATIENUMMER CHAR(7);
+        DCL FLAG                           CHAR(8);
+        
+        INT_PLN_PLNPRDO_PRODUCTIE_ORDER.ID_BS_PRD = 0;
+        INT_MAT_MATERIAALEENHEID.NUMMER = 0; 
+        INT_MAT_MATERIAALEENHEID.CODERING_IDENTIFICATIENUMMER = '';
+        FLAG = '';         
+    \end{minted}
+\end{listing}
+
+\subsection{FOR-loop}
+Iteren over indexen wordt in CA Gen gedaan met de FOR-loop waarbij SUBSCRIPT OF staat voor de index van de variabele die daarop volgt. Met de kernwoorden FROM, TO, BY kan je dan weer instellen bij welke waarde je start, hoe groot de waarde kan worden en de stapgrootte. In PL/I zou de loop van Figuur~\ref{fig:Vb1CAGencode} er als volgt uit zien:
+
+\begin{listing}[h]
+    \caption[PL/I voorbeeld van FOR LOOP]{PL/I voorbeeld van FOR LOOP}
+    \label{lst:PL/I-forloop}
+    \begin{minted}{text}
+        DO GRL_MAT_PRDO = 1 TO MAX(GRL_MAT_PRDO) BY 1;
+        
+        END;
+    \end{minted}
+\end{listing}
+
+\begin{listing}[h]
+    \caption[Voorbeeld CA Gen-code: FOR-loop]{CA Gen-code FOR-loop}
+    \label{lst:PL/I-forloop}
+    \begin{minted}{text}
+        FOR SUBSCRIPT OF grl_mat_prdo FROM 1 TO MAX OF grl_mat_prdo BY 1
+        SET ...
+    \end{minted}
+\end{listing}
+
+\subsection{WHILE-loop}
+Een WHILE-loop in CA Gen wordt als volgt gedefinieerd: WHILE \{conditie\} ... REPEAT \{code\}. De lus gaat de code na de repeat uitvoeren tot de conditie niet meer geldig is. Nog een keyword dat in veel loops wordt gebruikt is 'ESCAPE', dit wil zeggen dat je uit de loop stapt en de pijl duidt aan tot welk niveau je terugkeert. De code uit codefragment~\ref{lst:CAGEN-WHILE} zou worden vertaald naar: 
+
+\begin{listing}[h]
+    \caption[PL/I voorbeeld van WHILE loop]{PL/I voorbeeld van WHILE loop}
+    \label{lst:PL/I-WHILE}
+    \begin{minted}{text}
+        /* WHILE */
+        DO WHILE (INT_AFF_WERKVELDEN.NR_VKM <= INT_AFF_WERKVELDEN.Q_VKM);
+        /* REPEAT */
+        GRL_TTIS = 1;
+        INT_AFF_MATERIAALEENHEID.NR_BS_AFF    = INT_AFF_TTI.NR_BS;
+        INT_AFF_MATERIAALEENHEID.NR_PO_BS_AFF = INT_AFF_TTI.NR_PO_BS;
+        
+        IF INT_AFF_MATERIAALEENHEID.FRM_AFD_PRD ^= “SID”
+        THEN
+        /* ESCAPE */
+        LEAVE;
+        END;
+    \end{minted}
+\end{listing}
+
+\begin{listing}[h]
+    \caption[Voorbeeld CA Gen-code: WHILE-loop met ESCAPE]{CA Gen-code van een WHILE-loop en ESCAPE.}
+    \label{lst:CAGEN-WHILE}
+    \begin{minted}{text}
+        
+        WHILE nr_vkm IS LESS OR EQUAL TO q_vkm
+        
+        REPEAT
+        SET SUBSCRIPT OF grl_ttis TO 1
+        SET loc_exp_mat nr_bs_af TO gloc_tti nr_bs
+        SET loc_exp_mat nr_po_bs_aff TO gloc_tti nr_po_bs
+        
+        IF frm_afd_prd IS NOT EQUAL TO “SID”
+        ESCAPE
+        
+    \end{minted}
+\end{listing}
+
+\subsection{USE}
+Het USE-statement is een van de meest fundamentele commando's in een Action Diagram. Het stelt je in staat om de logica van het ene Action Block aan te roepen vanuit een ander. Het USE-statement fungeert als een subroutine-call. In plaats van alle logica in één groot blok te schrijven, splits je functionaliteiten op in kleinere, herbruikbare eenheden.
+\begin{itemize}
+    \item Common Action Blocks (CABs): Logica die binnen de CA Gen-encyclopedie is gedefinieerd.
+    \item External Action Blocks (EABs): Logica die buiten Gen is geschreven (bijvoorbeeld PL/I).
+\end{itemize}
+Een belangrijk concept bij een USE-statement is View Matching. Je kan niet zomaar variabelen overal gebruiken, je moet expliciet definiëren welke data “naar binnen” gaat en welke “naar buiten” komt.
+\begin{itemize}
+    \item Import Matching: Je koppelt views uit het aanroepende blok aan de Import Views van het aangeroepen block.
+    \item Export Matching: Je koppelt de Export Views aan het aangeroepen blok terug aan de views in het aanroepende blok.
+\end{itemize}
+Wat mag je niet doen met het USE-statement:
+\begin{itemize}
+    \item Local Views: Deze kunnen niet gematcht worden met een ander blok.
+    \item Recursive Calls: CA~Gen laat standaard geen directe recursie toe.
+    \item Performance: Te veel geneste USE-statements.
+\end{itemize}
+De exitstate van een Action Block geeft aan of de blok juist is afgehandeld. Hiervoor is geen directe tegenhanger in PL/I.
+De code in codefragment~\ref{lst:CAGEN-USE} zou er in PL/I zo uit zien:
+
+\begin{listing}[h]
+    \caption[Voorbeeld PL/I CALL]{Voorbeeld PL/I CALL}
+    \label{lst:PL/I-CALL}
+    \begin{minted}{text}
+        
+        CALL(SID_WERKVELD, GRI_PRDO);
+        
+    \end{minted}
+\end{listing}
+
+\begin{listing}[h]
+    \caption[Voorbeeld CA Gen-code: USE-statement]{CA Gen-code met een USE-statement en view matching.}
+    \label{lst:CAGEN-USE}
+    \begin{minted}{text}
+        
+        USE ab_lpl_app_pp_sgm_plnprdo
+        WHICH IMPORTS: Work View  loc_comm sid_werkveld TO Work View imp_comm sid_werkveld
+        Group View grl_prdo TO Group View gri_prdo
+        WHICH EXPORTS: <none> FROM Work View exp int_error_handling
+        
+    \end{minted}
+\end{listing}
+
+\subsection{SQL}
+Ook SQL werkt in CA Gen anders dan in klassieke programmeertalen. Ontwikkelaars schrijven doorgaans geen expliciete SQL-queries, maar gebruiken model- en view-gebaseerde operaties die door CA Gen automatisch vertaald worden naar SQL (meestal voor DB2 op mainframe). In plaats daarvan gebruikt de ontwikkelaar logische commando's op basis van het datamodel. Zo wordt
+\begin{itemize}
+    \item READ/READ EACH vertaald naar SQL SELECT
+    \item CREATE vertaald naar SQL INSERT
+    \item UPDATE en DELETE zijn identiek in CA~Gen en SQL
+\end{itemize}
+Deze abstractie zorgt dat de logica onafhankelijk blijft van de specifieke SQL-dialecten van verschillende databases. Wanneer standaard Entity Actions niet volstaan, bijvoorbeeld bij complexe JOIN-operaties, subquery's of het gebruik van specifieke databasefuncties, wordt uitgeweken naar External Action Blocks (EAB).
+In een EAB kan een ontwikkelaar handmatig SQL implementeren in talen zoals COBOL of PL/I. 
+
+\begin{listing}[h]
+    \caption[PL/I tegenhanger van CA Gen READ]{PL/I tegenhanger van CA Gen READ}
+    \label{lst:READ-PL/I}
+    \begin{minted}{text}
+        
+        SELECT *
+        FROM MATWR JOIN MAT
+        WHERE MATWR.TY_WR_EH_MAT = 'P'
+        SORT BY MATWR.DT_WR_EH_MAT ASC,...
+        
+    \end{minted}
+\end{listing}
+
+\begin{listing}[h]
+    \caption[Voorbeeld CA Gen-code: READ met SORT]{CA Gen-code met een READ inclusief sorteervoorwaarden.}
+    \label{lst:READ-CAGEN}
+    \begin{minted}{text}
+        READ matwr
+        SORTED BY ASCENDING matwr dt_wr_eh_mat
+        SORTED BY ASCENDING matwr tyd_wr_eh_mat
+        SORTED BY ASCENDING matwr tms_atk_wr
+        WHERE DESIRED matwr wordt_uitgevoerd_op CURRENT imp mat
+        AND DESIRED matwr ty_wr_eh_mat IS EQUAL TO “P”
+    \end{minted}
+\end{listing}
+
 
 \section{Het PLAPO-platform}
 \label{sec:plapo}
