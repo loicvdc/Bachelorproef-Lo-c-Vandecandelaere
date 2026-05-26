@@ -80,7 +80,7 @@ Dit voorkomt herhaling van eerder gemaakte fouten.
 
 \textbf{4. Validatiestrategie:} Het framework stelt een \textit{Parallel Run} aanpak voor, 
 waarbij zowel de oude CA Gen-module als de nieuwe PL/I-implementatie met identieke invoerdata draaien en 
-outputresultaten (sequentiële bestanden) byte-voor-byte worden vergeleken. 
+outputresultaten (sequentiële bestanden) worden vergeleken. 
 Dit waarborgt functionele equivalentie.
 
 Voorts stelt het framework de vraag van herbruikbaarheid voor andere talen. De analysestructuur 
@@ -95,10 +95,10 @@ Het framework is gevalideerd via een praktische casestudy: migratie van de CA Ge
 (Batch Annealing Furnace-planningsmodule) naar PL/I. De volledige opzet en resultaten worden besproken in
 Hoofdstuk~\ref{ch:validatie}; deze sectie vat enkel de hoofdconclusies samen.
 
-De PoC-implementatie omvat het ontwerp en de implementatie van (1) een generieke MAIN-module 
-(ingang voor alle BAF-planning-requests), (2) een specifieke MAIN-module voor BAF (routering en domeinspecifieke 
-instellingen), (3) een materiaal- en bestellingmodule met domeinspecifieke logica en (4) een output-generator. 
-De Parallel Run met drie testscenario's (standaard, edge-case en foutscenario) toont aan dat de PL/I-implementatie
+De PoC-implementatie omvat het ontwerp en de implementatie van (1) een voorloopstap om de planbare materiaaleenheden op te halen, (2) een generieke MAIN-module 
+(ingang voor alle BAF-planning-requests), (3) een generieke materiaal- en bestellingsmodule voor BAF (routering en domeinspecifieke 
+instellingen), (4) een materiaal- en bestellingmodule met domeinspecifieke logica en (5) een PLAPO-manager. 
+De Parallel Run toont aan dat de PL/I-implementatie
 functioneel equivalente output produceert ten opzichte van de oorspronkelijke CA Gen-implementatie. Hiermee is
 empirisch aangetoond dat het framework in de praktijk werkbaar is voor een bedrijfskritische module.
 
@@ -141,8 +141,7 @@ zijn (bv. online/UI-componenten, raadpleegmodules zonder database-schrijven, etc
 batch-georiënteerde applicaties met duidelijke View-semantiek en SQL-logica.
 
 \textbf{Automatisering:} Hoewel syntactische mappings voorkomen zijn vastgelegd, ontbreekt tooling om deze mappings 
-semi-automatisch toe te passen. Een toekomstige AST-gebaseerde code-transformatietool zou de implementatiefase 
-kunnen versnellen.
+semi-automatisch toe te passen. Een toekomstige code-transformatietool zou de implementatiefase kunnen versnellen.
 
 \textbf{UI/Online-componenten:} Het framework richt zich primair op batch en procedurele logica. CA Gen 
 bevat ook UI- en online-componenten (Screen/Window-modellen) die buiten scope van dit onderzoek vallen. 

@@ -18,7 +18,7 @@ De PL/I-implementatie volgt de bestaande PLAPO-conventies (zie \autoref{subsec:c
 in 7 modules:
 \begin{enumerate}
     \item \textbf{Voorloper} selecteert de populatie planbare materiaaleenheden.
-    \item \textbf{Specifieke BAF MAIN-module} Schrijft algemeen en stop segment en roept plapo-manager aan.
+    \item \textbf{Specifieke BAF MAIN-module} Schrijft algemeen- en stopsegment en roept plapo-manager aan.
     \item \textbf{Generieke Materiaalmodule} produceert generieke segmenten.
     \item \textbf{Specifieke Materiaalmodule} produceert specifieke segmenten.
     \item \textbf{Generieke Bestellingmodule} produceert generieke segmenten.
@@ -35,9 +35,8 @@ Hoofdstuk~\ref{ch:reverse-engineering}.
 \subsection{Generieke MAIN-module}
 \label{subsec:poc-generiek}
 
-De generieke MAIN-module wordt uitgevoerd als \texttt{PROC OPTIONS(MAIN)} en ontvangt info van de voorloper.
-Hierin worden vervolgens alle tabellen van specifieke structuren gedeclareerd en doorgegeven aan de onderliggende
-modules.
+De generieke MAIN-module wordt aangeroepen vanuit een JCL en uitgevoerd als \texttt{PROC OPTIONS(MAIN)} en ontvangt info van de voorloper via een bestand.
+Hierin wordt vervolgens het algemeen segment geschreven, de PLAPO-manager aangeroepen en ten slotte het slot segment geschreven.
 
 \begin{listing}[h]
     \caption[Skelet generieke MAIN-module in PL/I]{Skelet van de generieke MAIN-module in PL/I (verkort).}
@@ -75,20 +74,17 @@ modules.
     \end{minted}
 \end{listing}
 
-\subsection{Specifieke materiaal-module}
+\subsection{Specifieke materiaalmodule}
 \label{subsec:poc-baf-main}
 
-De specifieke materiaal-module zet de oven-specifieke parameters klaar (capaciteit, beschikbare werkvelden,
-metallurgische restricties) en roept achtereenvolgens de materiaalmodule en de bestellingmodule aan. De
-exitstate van elke aanroep wordt geaggregeerd volgens de afgesproken codes (\texttt{0}~=~OK,
-\texttt{4}~=~waarschuwing, \texttt{8}~=~fout) uit \autoref{subsec:exitstate-bp}.
+De specifieke materiaalmodule, ofwel TPPBAMT, bevat de domeinspecifieke materiaallogica van de BAF. Deze module gaat met de meegegeven parameters en zelf-berekende waarden de specifieke segmenten opstellen en wegschrijven.
 
 \subsection{Generieke materiaalmodule}
 \label{subsec:poc-materiaal}
 
 De materiaalmodule vervangt de \texttt{READ EACH} op de Group View van planbare materialen door een
 DB2-cursor met \texttt{FETCH}-lus. De cursor wordt gedeclareerd met dezelfde \texttt{WHERE}- en
-\texttt{ORDER BY}-clausules als die werden afgeleid uit de datamatrix in \autoref{sec:re-datamatrix}.
+\texttt{ORDER BY}-clausules als die werden afgeleid uit de datamatrix in \autoref{sec:re-datamatrix}. Daarnaast worden in deze modules alle generieke materiaal-segmenten opgesteld en weggeschreven.
 
 \begin{listing}[h]
     \caption[DB2-cursor voor planbare materialen]{DB2-cursor voor planbare materialen}
@@ -173,20 +169,16 @@ DB2-cursor met \texttt{FETCH}-lus. De cursor wordt gedeclareerd met dezelfde \te
     \end{minted}
 \end{listing}
 
-\subsection{Bestellingmodule}
+\subsection{Bestellingmodules}
 \label{subsec:poc-bestelling}
 
-De bestellingmodule haalt voor elk geselecteerd materiaal de gekoppelde productie-orders op. De vertaling van de oorspronkelijke CA~Gen-logica naar
-PL/I gebeurt regel-per-regel volgens de mappingtabel \autoref{tab:vertaaltabel}; in het bijzonder wordt
-het \texttt{CASE OF}-construct uit CA~Gen vertaald naar een PL/I-\texttt{SELECT/WHEN/OTHERWISE}.
+De bestellingmodules halen voor elk geselecteerd materiaal de gekoppelde productie-orders op. De vertaling van de oorspronkelijke CA~Gen-logica naar
+PL/I gebeurt regel-per-regel volgens de mappingtabel \autoref{tab:vertaaltabel}.
 
-\subsection{Output-generator}
+\subsection{PLAPO-manager}
 \label{subsec:poc-output}
 
-De output-generator stelt per planbaar materiaal \'e\'en of meerdere segmenten samen en schrijft deze in de
-afgesproken vaste-lengte recordlayout naar het sequenti\"ele uitvoerbestand. De recordlayout werd
-overgenomen uit het analysedossier (zie \autoref{sec:re-datamatrix}) en is byte-per-byte identiek aan die
-van de CA~Gen-output, wat een directe vergelijking in Hoofdstuk~\ref{ch:validatie} mogelijk maakt.
+De PLAPO-manager gaat een paar generieke segmenten opstelllen en waar nodig de andere modules aanroepen.
 
 \section{Afwijkingen ten opzichte van het origineel}
 \label{sec:poc-afwijkingen}

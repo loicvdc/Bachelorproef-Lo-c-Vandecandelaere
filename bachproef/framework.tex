@@ -99,7 +99,7 @@ indeling. \autoref{tab:view-inventaris} toont een lege template die per Action B
 \label{subsec:stap-actionflow}
 
 Per Action Block wordt de control\-flow uitgetekend of beschreven: hoofdlus(sen), conditionele takken, 
-ESCAPE\-niveaus en exitstates. Bijzondere aandacht gaat naar:
+ESCAPE-niveaus en exitstates. Bijzondere aandacht gaat naar:
 \begin{itemize}
     \item Geneste lussen en de bijbehorende Group View\-iteratie.
     \item Plaatsen waar de exitstate gezet of gecontroleerd wordt.
@@ -150,15 +150,15 @@ Dit dossier vormt het contract waaraan de PL/I\-implementatie moet voldoen.
 
 Component~2 vat alle vertaalregels samen die ontwikkelaars nodig hebben tijdens de implementatiefase. De 
 uitgewerkte voorbeelden (met figuren van originele CA~Gen\-code) staan in \autoref{sec:Syntax} 
-en worden hier niet herhaald; deze sectie biedt de \emph{geconsolideerde referentietabel} 
+en worden hier niet herhaald; deze sectie biedt de \emph{referentietabel} 
 (\autoref{tab:vertaaltabel}) en bespreekt de aandachtspunten per categorie.
 
-\subsection{Geconsolideerde mappingtabel}
+\subsection{Mappingtabel}
 \label{subsec:mappingtabel}
 
 \begin{table}[h]
 \centering
-\caption[Vertaaltabel CA~Gen $\rightarrow$ PL/I]{Geconsolideerde vertaaltabel van CA~Gen\-constructen naar PL/I.}
+\caption[Vertaaltabel CA~Gen $\rightarrow$ PL/I]{Vertaaltabel van CA~Gen\-constructen naar PL/I.}
 \label{tab:vertaaltabel}
 \small
 \begin{tabular}{|p{0.30\linewidth}|p{0.30\linewidth}|p{0.30\linewidth}|}
@@ -270,7 +270,7 @@ elke koppeling tussen aanroepende en aangeroepen view formeel documenteren in he
 \subsection{Embedded SQL i.p.v.\ verborgen entity actions}
 \label{subsec:sql-bp}
 
-In CA~Gen zijn \texttt{READ}\statements compact omdat de generator de SQL afleidt uit het model. In PL/I 
+In CA~Gen zijn \texttt{READ}-statements compact omdat de generator de SQL afleidt uit het model. In PL/I 
 moet de SQL volledig uitgeschreven worden. Het is aan te raden om de SQL te formuleren op basis van de 
 datamatrix uit Stap~1.5 en niet op basis van een visuele interpretatie van de CA~Gen\-code, om subtiele 
 JOIN\- of filtervoorwaarden niet te missen.
@@ -306,14 +306,14 @@ uitgevoerd op identieke invoer; de uitvoer wordt vergeleken op functionele equiv
 \subsection{Stap 4.1 -- Parallel uitvoeren}
 \label{subsec:parallel-run}
 
-De twee implementaties draaien een tijdje parallel en na iedere uitvoering wordt gekeken naar eventuele verschillen tussen de output-bestanden om alle edge-cased eruit te halen.
+De twee implementaties draaien een tijdje parallel en na iedere uitvoering wordt gekeken naar eventuele verschillen tussen de output-bestanden om alle edge-cases eruit te halen.
 
-\subsection{Stap 4.4 -- Expert-review}
-\label{subsec:expert-review}
+%\subsection{Stap 4.2 -- Expert-review}
+%\label{subsec:expert-review}
 
-Naast de geautomatiseerde validatie wordt het analysedossier en een steekproef van de PL/I-code voorgelegd 
-aan minstens één ervaren ontwikkelaar binnen het PLAPO-team. De review focust op leesbaarheid, naleving 
-van de conventies en correctheid van de exitstate-mapping.
+%Naast de geautomatiseerde validatie wordt het analysedossier en een steekproef van de PL/I-code voorgelegd 
+%aan minstens één ervaren ontwikkelaar binnen het PLAPO-team. De review focust op leesbaarheid, naleving 
+%van de conventies en correctheid van de exitstate-mapping.
 
 \section{\IfLanguageName{dutch}{Toepassing en herbruikbaarheid}{Application and reusability}}%
 \label{sec:framework-herbruikbaarheid}
@@ -328,7 +328,7 @@ De vier componenten zijn niet in dezelfde mate taal\-specifiek:
     de aandachtspuntencategorieën blijven identiek.
 \end{itemize}
 Dit maakt het framework in opzet herbruikbaar; een effectieve toepassing op een andere doeltaal vergt 
-echter steeds een eigen, gevalideerde vertaaltabel en een proof\-of\-concept op een representatieve module.
+echter steeds een eigen, gevalideerde vertaaltabel en een proof-of-concept op een representatieve module.
 
 \section{\IfLanguageName{dutch}{Toepassing op de PoC}{Application to the PoC}}%
 \label{sec:framework-poc}

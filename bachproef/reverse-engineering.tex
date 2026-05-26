@@ -61,16 +61,17 @@ genoteerd:
     \item Of het aangeroepen blok binnen of buiten de migratiescope valt; EAB's vormen vaak natuurlijke
         modulegrenzen omdat ze typisch reeds in PL/I beschikbaar zijn.
 \end{itemize}
-Het volledige USE-overzicht en bijhorend grafisch schema zijn opgenomen in het analysedossier (zie
-Bijlage~\ref{ch:bijlage-views}).
+%Het volledige USE-overzicht en bijhorend grafisch schema zijn opgenomen in het analysedossier (zie
+%Bijlage~\ref{ch:bijlage-views}).
 
 \section{Datamatrix}
 \label{sec:re-datamatrix}
 
 Op basis van de READ-, READ EACH-, CREATE-, UPDATE- en DELETE-statements werd een datamatrix opgesteld die
 per DB2-tabel weergeeft welke acties plaatsvinden. \autoref{tab:tppbamt-datamatrix} toont het verkorte
-overzicht; de gedetailleerde versie inclusief WHERE-clausules en sorteervoorwaarden zit in
-Bijlage~\ref{ch:bijlage-views}.
+overzicht. 
+%De gedetailleerde versie inclusief WHERE-clausules en sorteervoorwaarden zit in
+%Bijlage~\ref{ch:bijlage-views}.
 
 \begin{table}[h]
 \centering
@@ -97,7 +98,7 @@ Uit de analyse komen drie observaties die de aanpak van Hoofdstuk~\ref{ch:poc} s
     \item Het aantal externe USE-statements is beperkt; het merendeel verwijst naar reeds bestaande PL/I
         EAB's. De impact op de aanroepende generieke modules is daardoor minimaal.
     \item De gehanteerde exitstate-codes wijken licht af van de standaardconventie binnen andere
-        modules; in de PL/I-implementatie wordt voor consistentie de standaardconventie.
+        modules; in de PL/I-implementatie wordt voor consistentie de standaardconventie gebruikt.
 \end{enumerate}
 
 %Deze observaties bevestigen tegelijk dat de in \autoref{sec:component-analyse} voorgestelde stappen
