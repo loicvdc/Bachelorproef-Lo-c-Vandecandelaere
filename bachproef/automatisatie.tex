@@ -349,3 +349,25 @@ PROC;
 
     CALL SQL_CLOSE_CURSOR('MTSTBO_MATDL_PRC_L');
 \end{minted}
+
+\section{Verschillen}
+\label{sec:verschillen-in-automatisatie}
+
+Er zitten heel wat verschillen tussen de AI-gegenereerde code en de code van de expert. Het grootste verschil dat direct opvalt is de naamgeving van alle variabelen. Dit is ook logisch want developpers programmeren met business namen die CA Gen automatisch aan de hand van de host-encyclopedie omzet naar technische namen die de mainframe wel kent. Ook deelt de expert logica op over verschillende procedures, vooral SQL-blokken, om code leesbaarder te maken.
+
+\section{Conclusie}
+\label{sec:automatisatie-conclusie}
+
+Het volledige migratieproces van CA Gen naar PL/I kan momenteel niet
+volledig worden geautomatiseerd. Wel kunnen specifieke stappen zoals
+pseudo-codevertaling, SQL-mapping en herhalende routines ondersteund
+worden met tooling en AI om de efficiëntie te verhogen en fouten te
+verminderen.
+
+AI kan een nuttige hulp zijn bij het genereren van PL/I-code en het
+verduidelijken van complexe CA Gen-constructies, maar menselijke
+controle blijft noodzakelijk voor context, datamodelrelaties en
+mainframe-optimalisaties. Daarom blijft de meest realistische aanpak een
+hybride proces: automatisering ondersteunt de migratie, terwijl experts
+de resultaten verifiëren en bijsturen.
+
