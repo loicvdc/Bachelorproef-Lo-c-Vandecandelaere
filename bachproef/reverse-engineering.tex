@@ -11,6 +11,28 @@ voor de PL/I-implementatie in Hoofdstuk~\ref{ch:poc} en voor de validatie in Hoo
 Het hoofdstuk volgt de structuur van \autoref{sec:component-analyse}, met als bijkomende doelstelling het
 framework zelf te toetsen aan een re\"ele casus.
 
+\begin{table}[h]
+\centering
+\caption[Schema reverse engineering]{Schema van de reverse engineering-analyse voor \texttt{AB\_APP\_GBP\_MAT\_BAF}.}
+\label{tab:re-schema}
+\small
+\begin{tabular}{|p{0.22\linewidth}|p{0.32\linewidth}|p{0.35\linewidth}|}
+\hline
+\textbf{Stap} & \textbf{Uitvoering} & \textbf{Resultaat} \\
+\hline
+Encyclopedie ontsluiten & Check Out van het relevante businessmodel, versiebeheer en lokale toegang tot CA~Gen & Lokale modelkopie, versiehistoriek, traceerbaarheid \\
+\hline
+View-inventaris & Inventaris per Action Block volgens Imports, Exports, Locals, Entity Actions & Overzicht van alle views en hun rol in de module \\
+\hline
+Control-flow en USE-graaf & Analyse van loopstructuren, ESCAPE/exitstates en USE-relaties & Flowbeschrijving en aanroepgraaf met scopegrenzen \\
+\hline
+Datamatrix & Mapping van READ/READ EACH/CREATE/UPDATE/DELETE naar DB2-tabellen & Datamatrix voor databaseafhankelijkheden en validatie \\
+\hline
+Bevindingen & Conclusies uit de analysefase voor de PL/I-implementatie & Analysecontract met risico's, aandachtspunten en consistentie-afspraken \\
+\hline
+\end{tabular}
+\end{table}
+
 \section{Encyclopedie en versiebeheer}
 \label{sec:re-encyclopedie}
 

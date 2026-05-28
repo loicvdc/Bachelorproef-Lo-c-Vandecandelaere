@@ -47,14 +47,35 @@ verfijningen in eerdere fasen.
 \begin{enumerate}
     \item \textbf{Analysefase} (\autoref{sec:component-analyse}) ontsluiting van het CA~Gen\-model en 
     inventarisatie van Views, Action Diagrams, USE-relaties en database\-afhankelijkheden.
-    \item \textbf{Vertaalrichtlijnen} (\autoref{sec:component-vertaling}) een geconsolideerde 
-    referentietabel van CA~Gen\-constructen en hun PL/I\-equivalenten, voortbouwend op de syntactische 
+    \item \textbf{Vertaalrichtlijnen} (\autoref{sec:component-vertaling}) een referentietabel van CA~Gen\-constructen en hun PL/I\-equivalenten, voortbouwend op de syntactische 
     voorbeelden uit \autoref{sec:Syntax}.
     \item \textbf{Best practices en valkuilen} (\autoref{sec:component-bestpractices}) een gestructureerde 
     waarschuwingslijst die voorkomt dat eerder gemaakte migratiefouten zich herhalen.
     \item \textbf{Validatiestrategie} (\autoref{sec:component-validatie}) een Parallel Run aanpak die 
     functionele equivalentie tussen oude en nieuwe implementatie aantoont.
 \end{enumerate}
+
+\begin{table}[h]
+\centering
+\caption[Schema migratieframework]{High-level schema van het migratieframework voor CA~Gen naar PL/I.}
+\label{tab:framework-schema}
+\small
+\begin{tabular}{|p{0.18\linewidth}|p{0.34\linewidth}|p{0.34\linewidth}|}
+\hline
+\textbf{Stap} & \textbf{Doel / output} & \textbf{Terugkoppeling / validatie} \\
+\hline
+Analysefase & Modelontsluiting, View-inventaris, Action-flow, USE-graaf, datamatrix & Basis voor vertaling en validatie \\
+\hline
+Vertaalrichtlijnen & Referentietabel CA~Gen $\rightarrow$ PL/I, datatype- en view-mapping, SQL-strategie & Feedback uit de PoC, review en analyse \\
+\hline
+Best practices & Paradigmaverschuiving, PLAPO-conventies, expliciete view matching, exitstate-mapping & Voorkomt herhaalde migratiefouten \\
+\hline
+Validatie & Parallel Run, outputvergelijking, functionele equivalentie & Verifieert migratie en identificeert verbeterpunten \\
+\hline
+\end{tabular}
+\end{table}
+
+Het schema benadrukt dat het framework niet alleen een lineair stappenplan is, maar ook iteratief werkt: bevindingen uit Component~2 tot en met Component~4 kunnen teruggevoerd worden naar Component~1 en leiden tot een toegenomen betrouwbaarheid van de migratie.
 
 \section{\IfLanguageName{dutch}{Component 1: Analysefase}{Component 1: Analysis phase}}%
 \label{sec:component-analyse}
@@ -336,3 +357,10 @@ echter steeds een eigen, gevalideerde vertaaltabel en een proof-of-concept op ee
 Het framework is parallel met dit hoofdstuk toegepast op de migratie van de CA~Gen\-module 
 \texttt{AB\_APP\_GBP\_MAT\_BAF} naar PL/I. De analysefase wordt uitgewerkt in Hoofdstuk~\ref{ch:reverse-engineering}, de
 uiteindelijke implementatie in Hoofdstuk~\ref{ch:poc}, en de validatie in Hoofdstuk~\ref{ch:validatie}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{framework-visueel.png}
+    \caption[Visuele voorstelling van het framework]{Visuele voorstelling van het framework.}
+    \label{fig:framework}
+\end{figure}

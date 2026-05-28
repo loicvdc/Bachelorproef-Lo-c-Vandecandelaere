@@ -5,12 +5,12 @@ Dit hoofdstuk biedt het theoretische kader waarop de rest van de bachelorproef v
 
 \section{\IfLanguageName{dutch}{Wat is CA Gen?}{What is CA Gen?}}%
 \label{sec:Wat is CA Gen?}
- CA Gen is een Computer Aided Software Engineering (CASE)-tool en een vierde generatie ontwikkelomgeving (4GL), oorspronkelijk ontwikkeld in 1987. CA Gen is doorheen de jaren onder verschillende namen bekend geweest, waaronder IEF (Information Engineering Furnace), Composer by IEF, Composer, COOL:Gen, Advantage:Gen en AllFusion Gen. Met deze CASE-tool kunnen ontwikkelaars op modelgedreven wijze applicaties ontwerpen via grafische modellering en gestructureerde specificaties, zonder rechtstreeks traditionele programmeersyntax te schrijven. Op basis van deze modellen genereert CA Gen automatisch broncode in verschillende programmeertalen, zoals C en COBOL, en voor diverse platformen. CA Gen ondersteunt onder meer component-based software engineering en verschillende architectuurvormen, waaronder client-server-, batch-, online- en webapplicaties. De tool combineert functioneel ontwerp, datamodellering, technische implementatie en deployment binnen één geïntegreerde ontwikkelomgeving. Volgens \textcite{BenefitsCASE2021} maakt het gebruiken van een CASE-tool complexiteit beheerbaarder, verbetert documentatie en leidt tot aanzienlijke kosten- en tijdsbesparing voor organisaties.
+ CA Gen is een Computer Aided Software Engineering (CASE)-tool en een vierde generatie ontwikkelomgeving (4GL), oorspronkelijk ontwikkeld in 1987. CA Gen is doorheen de jaren onder verschillende namen bekend geweest, waaronder IEF (Information Engineering Furnace), Composer by IEF, Composer, COOL:Gen, Advantage:Gen en AllFusion Gen. Met deze CASE-tool kunnen ontwikkelaars op modelgedreven wijze applicaties ontwerpen via grafische modellering en gestructureerde specificaties, zonder rechtstreeks traditionele programmeersyntax te schrijven \autocite{Grokipedia2026}. Op basis van deze modellen genereert CA Gen automatisch broncode in verschillende programmeertalen, zoals C en COBOL, en voor diverse platformen. CA Gen ondersteunt onder meer component-based software engineering en verschillende architectuurvormen, waaronder client-server-, batch-, online- en webapplicaties. De tool combineert functioneel ontwerp, datamodellering, technische implementatie en deployment binnen één geïntegreerde ontwikkelomgeving. Volgens \textcite{SHAFIEE2021103432} maakt het gebruiken van een CASE-tool complexiteit beheerbaarder, verbetert documentatie en leidt tot aanzienlijke kosten- en tijdsbesparing voor organisaties.
  Alle modellen en gegenereerde artefacten worden opgeslagen in één of meerdere zogenaamde encyclopedieën op het mainframe. Deze encyclopedieën maken gebruik van een DB2-database voor de opslag van metadata en modelinformatie. Binnen ArcelorMittal bevat de encyclopedie verschillende modellen, waarbij elk model een business- of technisch model representeert. De businessmodellen bevatten de logica en specificaties die nodig zijn om een applicatie te genereren, implementeren en testen. 
  
  \section{\IfLanguageName{dutch}{Computer Aided Software Engineering}{Computer Aided Software Engineering}}%
  \label{sec:CASE}
- Computer-aided software engineering (CASE) is de implementatie van door de computer ondersteunde tools en methoden binnen softwareontwikkeling. CASE wordt ingezet om software van hoge kwaliteit en zonder defecten te garanderen. Het waarborgt een gedisciplineerde aanpak met vaste controlepunten (checkpoints) en helpt ontwerpers, ontwikkelaars, testers en managers om de projectmijlpalen tijdens het ontwikkelproces te bewaken.
+ Computer-aided software engineering (CASE) is de implementatie van door de computer ondersteunde tools en methoden binnen softwareontwikkeling. CASE wordt ingezet om software van hoge kwaliteit en zonder defecten te garanderen. Het waarborgt een gedisciplineerde aanpak met vaste controlepunten (checkpoints) en helpt ontwerpers, ontwikkelaars, testers en managers om de projectmijlpalen tijdens het ontwikkelproces te bewaken \autocite{RahulThibodeau2024}.
  
  CASE kan daarnaast dienen als een centraal depot voor projectgerelateerde documentatie, zoals bedrijfsplannen, requirements (vereisten) en ontwerpspecificaties. Een van de belangrijkste voordelen van het gebruik van CASE is de uiteindelijke oplevering van het product; dit sluit vaak beter aan bij de reële behoeften in de praktijk, omdat het garandeert dat klanten nauw betrokken blijven bij het proces.
  
@@ -19,9 +19,9 @@ Dit hoofdstuk biedt het theoretische kader waarop de rest van de bachelorproef v
  Wat zijn CASE-tools?
  De kerngedachte achter CASE-tools is dat ingebouwde programma's kunnen helpen bij het analyseren van systemen in ontwikkeling, om zo de kwaliteit te verhogen en betere resultaten te behalen. Gedurende de jaren '90 werd de term 'CASE-tool' onderdeel van het software-lexicon, en grote bedrijven zoals IBM maakten gebruik van dit soort tools bij de creatie van software.
  
- Diverse instrumenten zijn geïntegreerd in CASE en worden CASE-tools genoemd. Deze worden gebruikt om verschillende fasen en mijlpalen in de levenscyclus van softwareontwikkeling (SDLC) te ondersteunen.
+ Diverse instrumenten zijn geïntegreerd in CASE en worden CASE-tools genoemd. Deze worden gebruikt om verschillende fasen en mijlpalen in de levenscyclus van softwareontwikkeling (SDLC) te ondersteunen \autocite{RahulThibodeau2024}.
  
- Typen CASE-tools:
+ De verschillende types CASE-tools volgens \textcite{GeeksForGeeks2024}:
  \begin{itemize}
      \item Diagramtools: Deze helpen bij de schematische en grafische weergave van gegevens en systeemprocessen. Ze representeren systeemonderdelen, de beheersstroom (control flow) en de gegevensstroom (data flow) tussen verschillende softwarecomponenten en systeemstructuren in beeldvorm. Voorbeeld: Flow Chart Maker voor geavanceerde stroomdiagrammen.
      \item Beeldscherm- en rapportgeneratoren: Deze helpen bij het begrijpen van de gegevensvereisten en de onderlinge relaties.
@@ -37,10 +37,10 @@ Dit hoofdstuk biedt het theoretische kader waarop de rest van de bachelorproef v
  \begin{figure}
      \centering
      \includegraphics[width=\textwidth]{computer_aided_software_engineering_case_features-f.png}
-     \caption[Voorbeelden van CASE-tools]{Enkele voorbeelden van CASE-tools volgens \textcite{Roberts2026}.}
+     \caption[Voorbeelden van CASE-tools]{Enkele voorbeelden van CASE-tools \autocite{RahulThibodeau2024}.}
      \label{fig:CASE_SCHEMATISCH}
  \end{figure}
- Voordelen van de CASE-aanpak:
+ Voordelen van de CASE-aanpak zoals besproken in \textcite{GeeksForGeeks2024}:
  \begin{itemize}
      \item Verbeterde documentatie: Het maken en onderhouden van uitgebreide documentatie wordt eenvoudiger. Omdat automatisch gegenereerde documentatie meestal nauwkeuriger en actueler is, is de kans op fouten en misverstanden door verouderd materiaal kleiner.
      \item Hergebruik van componenten: CASE-tools stimuleren een modulaire en componentgebaseerde aanpak. Hierdoor kunnen teams de ontwikkeltijd verkorten door geteste oplossingen te hergebruiken.
@@ -54,7 +54,6 @@ Dit hoofdstuk biedt het theoretische kader waarop de rest van de bachelorproef v
      \item Leercurve: In de beginfase kan de productiviteit van programmeurs dalen omdat zij tijd nodig hebben om de technologie onder de knie te krijgen. Trainingen en on-site ondersteuning door consultants zijn vaak noodzakelijk om dit proces te versnellen.
      \item Tool-mix: Het is essentieel om een juiste selectie van tools samen te stellen. De integratie van CASE-tools en gegevens over verschillende platforms heen is cruciaal om daadwerkelijk kostenvoordeel te behalen.
  \end{itemize}
- De voorgaande beschrijving steunt op overzichten van \textcite{GeeksForGeeks2024} en \textcite{RahulThibodeau2024}.
  
  \section{\IfLanguageName{dutch}{Migraties}{Migrations}}%
  \label{sec:MIGRATIE}
@@ -80,7 +79,7 @@ Dit hoofdstuk biedt het theoretische kader waarop de rest van de bachelorproef v
  
  \section{\IfLanguageName{dutch}{Host encyclopedie}{Host Encyclopedia}}%
  \label{sec:Host Encyclopedie}
- Een Gen-encyclopedie is een centrale opslagplaats van objecten waarmee meerdere gebruikers tegelijkertijd aan meerdere ontwikkelingsprojecten kunnen werken. CA Gen biedt de volgende twee types encyclopedie aan:
+ Volgens \textcite{Broadcom2026} is een Gen-encyclopedie een centrale opslagplaats van objecten waarmee meerdere gebruikers tegelijkertijd aan meerdere ontwikkelingsprojecten kunnen werken. CA Gen biedt de volgende twee types encyclopedie aan:
  \begin{itemize}
      \item Een host encyclopedie die draait op z/OS gebruike makende van TSO
      \item Een Client Server Encyclopedie (CSE) die draait op een netwerk gebruik makende van één of meerdere werkstations
@@ -89,14 +88,14 @@ Dit hoofdstuk biedt het theoretische kader waarop de rest van de bachelorproef v
  
  \section{\IfLanguageName{dutch}{CA Gen Views}{CA Gen Views}}%
  \label{sec:Views}
- Het begrip view is essentieel voor hoe data door de applicatie stroomt en hoe de database wordt aangesproken. Er wordt doorgaans een onderscheid gemaakt tussen data-views (in Action Diagrams) en UI-views (in de ontwikkelomgeving). Hieronder volgt een overzicht van de verschillende typen views die je in de logica tegenkomt:
+ Het begrip view is essentieel voor hoe data door de applicatie stroomt en hoe de database wordt aangesproken. Er wordt doorgaans een onderscheid gemaakt tussen data-views (in Action Diagrams) en UI-views (in de ontwikkelomgeving). Hieronder volgt een overzicht van de verschillende typen views die je in de logica tegenkomt zoals beschreven in \textcite{Broadcom2026}:
  \newline
  
  \begin{easylist}
      § Functionele categorieën
      §§ Import Views: De inputvariabelen. Deze data wordt meegegeven aan het Action Block door de aanroepende logica.
      §§ Export Views: De outputvariabelen. Deze data wordt door het Action Block teruggegeven aan de aanroepende logica.
-     §§ Local Views: Tijdelijke variabelen die alleen binnen het betreffende Action Block bestaan.
+     §§ Entity action views: Tonen opgeslagen informatie over een entiteit dat een proces manipuleert tijdens uitvoering.
      \newline
      § Inhoudelijke categorieën
      §§ Entity Views: Deze zijn direct gekoppeld aan een Entity Type uit het datamodel. Ze worden gebruikt om gegevens uit de database te verwerken.
