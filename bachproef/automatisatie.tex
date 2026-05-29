@@ -5,7 +5,7 @@
 \chapter{\IfLanguageName{dutch}{Automatisatie}{Automation}}%
 \label{ch:automatisatie}
 
-In dit hoofdstuk gaan we kort in op de mogelijkheden om het 
+Dit hoofdstuk gaat kort in op de mogelijkheden om het 
 migratieproces
 van CA Gen naar PL/I te automatiseren. Hoewel het volledige proces niet
 geautomatiseerd kan worden, zijn er verschillende stappen die 
@@ -15,7 +15,7 @@ menselijke fouten te verminderen.
 \section{Wat kan geautomatiseerd worden en wat niet?}
 \label{sec:automatisatie-mogelijkheden}
 
-Waarom kan momenteel niet he volledige migratieproces geautomatiseerd
+Waarom kan momenteel niet het volledige migratieproces geautomatiseerd
 worden? De belangrijkste reden is dat CA Gen achterliggend heel veel
 doet waar de gebruiker geen zicht op heeft. De toolset is als het 
 ware een black box. Hierdoor missen automatisatie-tools en AI te veel
@@ -33,7 +33,7 @@ paar van de dingen die CA Gen achterliggend doet:
 
 Wat wel kan geautomatiseerd kan worden met AI is het vertalen van de 
 pseudo-code in de Action Blocks naar PL/I code. In het onderstaande
-voorbeeld hebben we een stukje pseudo-code uit een Action Block genomen
+voorbeeld wordt een stukje pseudo-code uit een Action Block genomen
 en gevraagd aan Copilot om dit te vertalen naar PL/I code, met als 
 context de hoofdstukken van deze bachelorproef die gaan rond de syntax
 van PL/I en de mapping van CA Gen constructies naar PL/I constructies.
@@ -353,7 +353,7 @@ PROC;
 \section{Verschillen}
 \label{sec:verschillen-in-automatisatie}
 
-Er zitten heel wat verschillen tussen de AI-gegenereerde code en de code van de expert. Het grootste verschil dat direct opvalt is de naamgeving van alle variabelen. Dit is ook logisch want developpers programmeren met business namen die CA Gen automatisch aan de hand van de host-encyclopedie omzet naar technische namen die de mainframe wel kent. Ook deelt de expert logica op over verschillende procedures, vooral SQL-blokken, om code leesbaarder te maken.
+Er zitten heel wat verschillen tussen de AI-gegenereerde code en de code van de expert. Het grootste verschil dat direct opvalt is de naamgeving van alle variabelen. Dit is ook logisch want developpers programmeren in de CA GEN-toolset met businessnamen die CA Gen automatisch aan de hand van de host-encyclopedie omzet naar technische namen die de mainframe wel kent. AI kan deze vertalingen niet maken omdat AI geen toegang heeft tot de host-encyclopedie. Ook deelt de expert logica op over verschillende procedures, vooral SQL-blokken, om code leesbaarder te maken.
 
 \section{Conclusie}
 \label{sec:automatisatie-conclusie}

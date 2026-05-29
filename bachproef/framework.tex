@@ -6,10 +6,10 @@
 \label{ch:framework}
 
 Dit hoofdstuk vormt de kern van de bachelorproef en presenteert het uitgewerkte high\-level framework dat 
-ontwikkelaars moet begeleiden bij het migreren van CA~Gen\-applicaties naar PL/I. Waar Hoofdstuk~\ref{ch:stand-van-zaken} 
-de theoretische achtergrond en concrete syntactische voorbeelden behandelt, en Hoofdstuk~\ref{ch:methodologie} 
+ontwikkelaars moet begeleiden bij het migreren van CA~Gen\-applicaties naar PL/I. Waar hoofdstuk~\ref{ch:stand-van-zaken} 
+de theoretische achtergrond behandelt, en hoofdstuk~\ref{ch:methodologie} 
 de gevolgde onderzoeksaanpak beschrijft, wordt het framework hier opgebouwd rond vier kerncomponenten: 
-(1)~een gestructureerde \emph{analysefase}, (2)~een geconsolideerde set \emph{vertaalrichtlijnen}, 
+(1)~een gestructureerde \emph{analysefase}, (2)~een set \emph{vertaalrichtlijnen}, 
 (3)~een overzicht van \emph{best practices en valkuilen} en (4)~een \emph{validatiestrategie}. Het hoofdstuk 
 sluit af met een reflectie over de herbruikbaarheid van het framework voor andere doeltalen.
 
@@ -27,8 +27,7 @@ volgende situatie:
     z/OS (DB2\-gebaseerd), met een sterke focus op batch\-georiënteerde Action Blocks en embedded SQL.
     \item \textbf{Doeltechnologie:} PL/I op het mainframe, gecompileerd volgens de bestaande conventies 
     binnen de PLAPO-codebase.
-    \item \textbf{Type applicaties:} batch\- en procedure\-georiënteerde modules met duidelijke 
-    View\-semantiek, sequentiële bestandsoutput en/of DB2\-interacties.
+    \item \textbf{Type applicaties:} batch\- en procedure\-georiënteerde modules, sequentiële bestandsoutput en/of DB2-interacties.
 \end{itemize}
 
 Buiten scope vallen: UI\- en online\-componenten (Screen/Window\-modellen), de ontwikkeling van een 
@@ -75,7 +74,7 @@ Validatie & Parallel Run, outputvergelijking, functionele equivalentie & Verifie
 \end{tabular}
 \end{table}
 
-Het schema benadrukt dat het framework niet alleen een lineair stappenplan is, maar ook iteratief werkt: bevindingen uit Component~2 tot en met Component~4 kunnen teruggevoerd worden naar Component~1 en leiden tot een toegenomen betrouwbaarheid van de migratie.
+Figuur~\ref{fig:framework} benadrukt dat het framework niet alleen een lineair stappenplan is, maar ook iteratief werkt: bevindingen uit Component~4 kunnen teruggevoerd worden naar Component~1 en leiden tot een toegenomen betrouwbaarheid van de migratie.
 
 \section{\IfLanguageName{dutch}{Component 1: Analysefase}{Component 1: Analysis phase}}%
 \label{sec:component-analyse}
@@ -111,23 +110,12 @@ indeling. \autoref{tab:view-inventaris} toont een lege template die per Action B
 \hline
 \textbf{Viewnaam} & \textbf{Categorie} & \textbf{Onderliggende structuur} & \textbf{Opmerkingen} \\
 \hline
-\textit{(naam)} & Import / Export / Local & Entity / Work / Group & \textit{(SQL\-koppeling, max.\ kardinaliteit, \dots)} \\
+\textit{(naam)} & Import / Export / Local & Entity / Work / Group & \textit{(max.\ kardinaliteit, \dots)} \\
 \hline
 \end{tabular}
 \end{table}
 
-\subsection{Stap 1.3 Action Diagram\-stroomanalyse}
-\label{subsec:stap-actionflow}
-
-Per Action Block wordt de control\-flow uitgetekend of beschreven: hoofdlus(sen), conditionele takken, 
-ESCAPE-niveaus en exitstates. Bijzondere aandacht gaat naar:
-\begin{itemize}
-    \item Geneste lussen en de bijbehorende Group View\-iteratie.
-    \item Plaatsen waar de exitstate gezet of gecontroleerd wordt.
-    \item Foutpaden en hun terugkoppeling naar de aanroepende module.
-\end{itemize}
-
-\subsection{Stap 1.4 USE\-graaf en modulegrenzen}
+\subsection{Stap 1.3 USE\-graaf en modulegrenzen}
 \label{subsec:stap-usegraaf}
 
 Alle USE-statements worden in kaart gebracht in de vorm van een aanroepgraaf. Voor elk USE-statement wordt 
@@ -142,7 +130,7 @@ genoteerd:
 EAB's vormen vaak natuurlijke modulegrenzen: ze zijn doorgaans al beschikbaar in PL/I en kunnen in de nieuwe 
 implementatie rechtstreeks aangeroepen worden via \texttt{CALL}.
 
-\subsection{Stap 1.5 Database\- en interface\-afhankelijkheden}
+\subsection{Stap 1.4 Database\- en interface\-afhankelijkheden}
 \label{subsec:stap-db}
 
 In deze stap wordt vastgelegd welke entiteiten en tabellen door de module benaderd worden, welke acties op 
@@ -161,7 +149,7 @@ Na afronding van Stappen 1.1 t.e.m.\ 1.5 beschikt de ontwikkelaar over een \emph
 \begin{enumerate}
     \item Een overzicht van alle relevante Action Blocks.
     \item Een View\-inventaris per Action Block (cf.\ \autoref{tab:view-inventaris}).
-    \item Een control\-flow\-beschrijving en USE\-graaf.
+    \item Een USE-graaf.
     \item Een datamatrix van database\- en bestandsafhankelijkheden.
 \end{enumerate}
 Dit dossier vormt het contract waaraan de PL/I\-implementatie moet voldoen.
@@ -258,7 +246,7 @@ met een afgesproken set codes (bv.\ \texttt{0}~=~OK, \texttt{4}~=~waarschuwing, 
 
 Component~3 verzamelt aanbevelingen die voortkomen uit de analyse van eerder gemigreerde modules binnen 
 ArcelorMittal en uit de algemene literatuur over legacy\-modernisering 
-(\autocite{Orosz2022}, \autocite{StrategicMigration2024}).
+(\autocite{Orosz2022}, \autocite{Patel2024}).
 
 \subsection{Paradigmaverschuiving aanvaarden}
 \label{subsec:paradigma}
@@ -316,6 +304,11 @@ exitstate $\rightarrow$ return\-code en review deze samen met de eigenaar van de
 Elke nieuwe of aangepaste module wordt na implementatie gereviewd tegen \autoref{tab:vertaaltabel} en de 
 best-practices uit deze sectie. Gevonden afwijkingen worden teruggevoerd in het analysedossier en, indien 
 relevant, in het framework zelf.
+
+\subsection{IMS}
+\label{subsec:IMS}
+
+Zorg dat in de JCL waarmee de main-module aangeroepen wordt de juiste IMS-database tabellen meegegeven worden.
 
 \section{\IfLanguageName{dutch}{Component 4: Validatiestrategie}{Component 4: Validation strategy}}%
 \label{sec:component-validatie}

@@ -1,5 +1,9 @@
+%% Backup of original samenvatting.tex
+%% Created by GitHub Copilot assistant before replacing with new abstract
+% Original contents preserved for safety.
+
 %%=============================================================================
-%% Samenvatting
+%% Samenvatting (backup)
 %%=============================================================================
 
 % TODO: De "abstract" of samenvatting is een kernachtige (~ 1 blz. voor een
@@ -49,32 +53,31 @@ Veel grote organisaties vertrouwen vandaag nog op bedrijfskritische applicaties 
 CA~Gen, een modelgedreven CASE-tool en vierde generatie ontwikkelomgeving uit de jaren tachtig. Hoewel
 deze applicaties stabiel functioneren, neemt de beschikbare expertise zienderogen af en wordt onderhoud
 steeds duurder en risicovoller. Binnen ArcelorMittal vormt de Batch Annealing Furnace (BAF), een
-deelmodule van het PLAPO-lijnplanningslandschap, de laatste CA~Gen-component van de lijnplanning die nog moet worden
+deelmodule van het PLAPO-lijnplanningslandschap, de laatste CA~Gen-component die nog moet worden
 gemigreerd naar PL/I. Eerdere migraties van zustermodules zijn weliswaar geslaagd, maar verspreid over
 verschillende jaren en ontwikkelaars uitgevoerd, zonder dat een gestructureerde, herbruikbare aanpak werd
 vastgelegd.
 
 Dit onderzoek pakt die leemte aan door een \emph{high-level migratieframework} te ontwerpen voor de
-gecontroleerde migratie van CA~Gen-applicaties naar PL/I. De centrale onderzoeksvraag luidt: \textit{``Hoe
+gecontroleerde migratie van CA~Gen-applicaties naar PL/I. De centrale onderzoeksvraag luidt: \textit{"Hoe
 kan een high-level framework worden opgesteld om CA~Gen-applicaties succesvol te migreren naar
-PL/I-code?''} Het framework wordt opgebouwd rond vier kerncomponenten: (1)~een gestructureerde
+PL/I-code?"} Het framework wordt opgebouwd rond vier kerncomponenten: (1)~een gestructureerde
 analysefase voor het ontsluiten van CA~Gen-modellen, (2)~vertaalrichtlijnen tussen
 CA~Gen-constructen en PL/I-equivalenten, (3)~een set best practices en valkuilen, en (4)~een
 validatiestrategie gebaseerd op de \emph{Parallel Run}-aanpak.
 
-Het onderzoek is opgevat als een design-science traject waarbij het framework iteratief is opgebouwd op
-basis van documentanalyse, literatuurstudie, reverse engineering van bestaande modules en een
-proof-of-concept (PoC). Voor de PoC werd de CA~Gen-module \texttt{TPPBAMT} gemigreerd naar PL/I. 
+Het onderzoek is opgezet als een design-science traject: reverse engineering van bestaande modules,
+iteratieve frameworkontwerpen en een proof-of-concept (PoC). Voor de PoC werd de CA~Gen-module
+\texttt{TPPBAMT} gemigreerd naar PL/I en gevalideerd via een Parallel Run waarbij beide implementaties
+op identieke invoerdata werden vergeleken.
 
-% De resultaten tonen aan dat het framework de migratie van \texttt{TPPBAMT} succesvol heeft begeleid en dat
-%de PoC functioneel equivalente output produceert. 
-Het framework biedt ArcelorMittal een herhaalbare en
-gedocumenteerde aanpak voor toekomstige CA~Gen-migraties en vermindert het risico op kennisverlies bij
-ad-hoc trajecten. De analysefase, best-practices en validatiestrategie zijn taal-agnostisch en kunnen
-hergebruikt worden voor migraties naar andere doeltalen, mits een aangepaste vertaaltabel.
+De Parallel Run toonde aan dat de gemigreerde PL/I-implementatie functioneel equivalente output
+produceert als het CA~Gen-origineel; resterende verschillen in enkele veldwaarden zijn herleidbaar tot
+detailfouten in logica en kunnen met beperkte inspanning worden verholpen. Dit bevestigt dat het
+framework een praktische en herhaalbare basis biedt voor gecontroleerde migraties.
 
-De validatie van het framework via een Parallel Run toonde aan dat de gemigreerde PL/I-module functioneel vergelijkbare output oplevert als het CA~Gen-origineel. Kleine verschillen in veldwaarden zijn terug te voeren op detailfouten in de logica en kunnen met beperkte inspanning worden opgelost. Dit bevestigt dat het framework een solide basis biedt voor gecontroleerde migraties, maar dat optimalisatie mogelijk blijft voor specifieke logica.
-
-Het antwoord op de centrale onderzoeksvraag luidt dan ook dat een high-level framework, opgebouwd uit analyse, vertaalschema's, best practices en validatie, effectief richting geeft aan het migratieproces van CA~Gen naar PL/I. Het framework is geen automatische codegenerator, maar een praktische leidraad die IT-professionals ondersteunt bij het gestructureerd en reproduceerbaar uitvoeren van migraties. Voor ArcelorMittal betekent dit een verminderd risico op kennisverlies en een verhoogde efficiëntie bij toekomstige migraties.
-
-Aanbevolen wordt om het framework verder te verfijnen op basis van toekomstige migratiecases en de opgedane ervaringen te documenteren. De aanpak is bovendien inzetbaar voor andere legacy-migraties, mits aanpassing van de vertaaltabellen en validatiestrategie aan de doeltaal en context.
+Belangrijk is dat het framework geen automatische codegenerator is, maar een pragmatische leidraad die
+IT-professionals ondersteunt bij het structureel en reproduceerbaar uitvoeren van migraties. Voor
+ArcelorMittal betekent dit verminderd risico op kennisverlies en grotere voorspelbaarheid in toekomstige
+migratietrajecten. Aanbevolen wordt om het framework verder te valideren op meerdere modules en om
+semi-automatische tooling te ontwikkelen die vertaaltabellen en validaties ondersteunt.

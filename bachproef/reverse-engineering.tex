@@ -24,7 +24,7 @@ Encyclopedie ontsluiten & Check Out van het relevante businessmodel, versiebehee
 \hline
 View-inventaris & Inventaris per Action Block volgens Imports, Exports, Locals, Entity Actions & Overzicht van alle views en hun rol in de module \\
 \hline
-Control-flow en USE-graaf & Analyse van loopstructuren, ESCAPE/exitstates en USE-relaties & Flowbeschrijving en aanroepgraaf met scopegrenzen \\
+USE-graaf & USE-relaties & USE-graaf \\
 \hline
 Datamatrix & Mapping van READ/READ EACH/CREATE/UPDATE/DELETE naar DB2-tabellen & Datamatrix voor databaseafhankelijkheden en validatie \\
 \hline
@@ -45,7 +45,7 @@ een \emph{Check Out} uit de host-encyclopedie en geopend in de CA~Gen-toolset.
 Per Action Block binnen \texttt{AB\_APP\_GBP\_MAT\_BAF} werd een view-inventaris opgesteld volgens de typologie uit
 \autoref{sec:Views} en de template uit \autoref{tab:view-inventaris}. \autoref{tab:tppbamt-views-overzicht}
 geeft een sterk vereenvoudigd overzicht van de hoofdcategorie\"en views die in de module voorkomen. 
-%De volledige inventaris is opgenomen in Bijlage~\ref{ch:bijlage-views}.
+Een uittreksel van de inventaris is opgenomen in bijlage~\ref{ch:bijlage-views}.
 
 \begin{table}[h]
 \centering
@@ -70,10 +70,10 @@ Group View & 10+ & Werkzones. \\
 \end{tabular}
 \end{table}
 
-\section{Control-flow en USE-graaf}
+\section{USE-graaf}
 \label{sec:re-control-flow}
 
-De control-flow van \texttt{AB\_APP\_GBP\_MAT\_BAF} werd ontleed. De hoofdlus itereert over
+Het aanroepen van welke Action Block's van \texttt{AB\_APP\_GBP\_MAT\_BAF} werd ontleed. De hoofdlus itereert over
 de planbare materialen; per materiaal worden vervolgens de materiaaleigenschappen ge\"evalueerd alvorens meerdere segmenten worden weggeschreven.
 
 Daarnaast werden alle USE-statements in kaart gebracht in de vorm van een aanroepgraaf. Per USE wordt
@@ -83,8 +83,8 @@ genoteerd:
     \item Of het aangeroepen blok binnen of buiten de migratiescope valt; EAB's vormen vaak natuurlijke
         modulegrenzen omdat ze typisch reeds in PL/I beschikbaar zijn.
 \end{itemize}
-%Het volledige USE-overzicht en bijhorend grafisch schema zijn opgenomen in het analysedossier (zie
-%Bijlage~\ref{ch:bijlage-views}).
+De volledige USE-graaf is opgenomen in het analysedossier (zie
+Bijlage~\ref{ch:bijlage-views}).
 
 \section{Datamatrix}
 \label{sec:re-datamatrix}

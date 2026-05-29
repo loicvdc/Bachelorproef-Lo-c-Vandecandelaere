@@ -86,10 +86,12 @@ De materiaalmodule vervangt de \texttt{READ EACH} op de Group View van planbare 
 DB2-cursor met \texttt{FETCH}-lus. De cursor wordt gedeclareerd met dezelfde \texttt{WHERE}- en
 \texttt{ORDER BY}-clausules als die werden afgeleid uit de datamatrix in \autoref{sec:re-datamatrix}. Daarnaast worden in deze modules alle generieke materiaal-segmenten opgesteld en weggeschreven.
 
-\begin{listing}[h]
-    \caption[DB2-cursor voor planbare materialen]{DB2-cursor voor planbare materialen}
+\begin{center}
+    \captionof{listing}{DB2-cursor voor planbare materialen}
     \label{lst:poc-cursor}
-    \begin{minted}{text}
+\end{center}
+
+\begin{minted}[fontsize=\small]
         /* PBA_GEWOON */
   /* ~~~~~~~~~~ */
   EXEC SQL
@@ -166,8 +168,8 @@ DB2-cursor met \texttt{FETCH}-lus. De cursor wordt gedeclareerd met dezelfde \te
     ORDER BY MATAF.NR_BS
             ,MATAF.NR_PO_BS
             ,MAT.NR_EH_MAT;
-    \end{minted}
-\end{listing}
+\end{minted}
+
 
 \subsection{Bestellingmodules}
 \label{subsec:poc-bestelling}

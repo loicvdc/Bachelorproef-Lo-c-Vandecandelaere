@@ -18,7 +18,7 @@ In dit onderdeel wordt voor de meest voorkomende CA Gen-expressies en constructi
 \subsection{Variabelen}
 Variabele in CA Gen verschillen op een aantal belangrijke punten van variabelen in klassieke programmeertalen. Omdat CA Gen modelgedreven werkt, zijn variabelen sterk gekoppeld aan het datamodel en de context waarin ze gebruikt worden. In CA Gen zijn variabelen gegevenshouders die gebruikt worden binnen action diagrams en procedures om waarden tijdelijk of persisten op te slaan tijdens de uitvoering van een applicatie. Volgende soorten variabelen bestaan:
 \begin{itemize}
-    \item De meest voorkomende variabelen zijn attribute-based variabelen, deze zijn afgeleid van een entiteit of datamodel en hebben een vaste structuur en datatype. Voorbeelden hiervan zijn 'Customer.Name' of 'Material.ID'. Deze variabelen zijn rechtstreeks gelinkt aan de database-structuur.
+    \item De meest voorkomende variabelen zijn attribute-based variabelen, deze zijn afgeleid van een entiteit of datamodel en hebben een vaste structuur en datatype. Voorbeelden hiervan zijn 'Customer.Name' of 'Material.ID'. Deze variabelen zijn rechtstreeks gelinkt aan de databasestructuur.
     \item Local variables: deze worden gebruikt binnen procedures en action diagrams. Variabelen van deze soort bestaan slechts tijdelijk (enkel tijdens de uitvoering) en worden bijvoorbeeld gebruikt voor berekeningen of tussenresultaten. De lokale variabelen worden gedefinieerd aan het begin van de action diagram onder 'IMPORTS'.
     \item Parameter-variabelen worden gebruikt als I/O voor procedure calls of module-interactie.
     \item CA Gen voorziet ook systeemvariabelen zoals statuscodes en foutcodes.
@@ -26,9 +26,9 @@ Variabele in CA Gen verschillen op een aantal belangrijke punten van variabelen 
 
 \subsection{SET...TO}
 In CA Gen gebeurt het toekennen van een waarde aan een variabele via de sleutelwoorden SET en TO. 
-De syntactische structuur die hierbij wordt gehanteerd is als volgt: SET \{variabelenaam\} TO \{waarde\}. Hierbij verwijst {variabelenaam} naar de doelvariabele waaraan een nieuwe waarde wordt toegekend, terwijl {waarde} een constante, een andere variabele of het resultaat van een expressie kan zijn. De PL/I equivalent van de SET-instructies uit Figuur~\ref{fig:Vb1CAGencode} zou er als volgt uitzien:
+De syntactische structuur die hierbij wordt gehanteerd is als volgt: SET \{variabelenaam\} TO \{waarde\}. Hierbij verwijst {variabelenaam} naar de doelvariabele waaraan een nieuwe waarde wordt toegekend, terwijl {waarde} een constante, een andere variabele of het resultaat van een expressie kan zijn. De PL/I equivalent van de SET-instructies uit codefragment~\ref{lst:CA_GEN-forloop} zou er als volgt uitzien:
 \begin{listing}[h]
-    \caption[PL/I voorbeeld van variabele declaratie en assignatie]{\textbf{PL/I voorbeeld van variabele declaratie en assignatie}}
+    \caption[PL/I voorbeeld van variabele declaratie en assignatie]{PL/I voorbeeld van variabele declaratie en assignatie}
     \label{lst:PL/I-variabelen}
     \begin{minted}{text}
         DCL 1 INT_PLN_PLNPRDO_PRODUCTIE_ORDER,
@@ -46,7 +46,7 @@ De syntactische structuur die hierbij wordt gehanteerd is als volgt: SET \{varia
 \end{listing}
 
 \subsection{FOR-loop}
-Iteren over indexen wordt in CA Gen gedaan met de FOR-loop waarbij SUBSCRIPT OF staat voor de index van de variabele die daarop volgt. Met de kernwoorden FROM, TO, BY kan je dan weer instellen bij welke waarde je start, hoe groot de waarde kan worden en de stapgrootte. In PL/I zou de loop van Figuur~\ref{fig:Vb1CAGencode} er als volgt uit zien:
+Iteren over indexen wordt in CA Gen gedaan met de FOR-loop waarbij SUBSCRIPT OF staat voor de index van de variabele die daarop volgt. Met de kernwoorden FROM, TO, BY kan je dan weer instellen bij welke waarde je start, hoe groot de waarde kan worden en de stapgrootte. In PL/I zou de loop van codefragment~\ref{lst:CA_GEN-forloop} er als volgt uit zien:
 
 \begin{listing}[h]
     \caption[PL/I voorbeeld van FOR LOOP]{PL/I voorbeeld van FOR LOOP}
@@ -59,16 +59,19 @@ Iteren over indexen wordt in CA Gen gedaan met de FOR-loop waarbij SUBSCRIPT OF 
 \end{listing}
 
 \begin{listing}[h]
-    \caption[Voorbeeld CA Gen-code: FOR-loop]{CA Gen-code FOR-loop}
-    \label{lst:PL/I-forloop}
+    \caption[Voorbeeld CA Gen-code: FOR-loop]{CA Gen-code FOR-loop en variabelen}
+    \label{lst:CA_GEN-forloop}
     \begin{minted}{text}
         FOR SUBSCRIPT OF grl_mat_prdo FROM 1 TO MAX OF grl_mat_prdo BY 1
-        SET ...
+        SET gloc_prdo int_pln_plnprdo_productie_order id_bs_prd TO 0
+        SET gloc_prdo int_mat_materiaaleenheid nummer TO 0
+        SET gloc_prdo int_mat_materiaaleenheid codering_identificatienummer TO SPACES
+        SET gloc_update ief_supplied flag TO SPACES
     \end{minted}
 \end{listing}
 
 \subsection{WHILE-loop}
-Een WHILE-loop in CA Gen wordt als volgt gedefinieerd: WHILE \{conditie\} ... REPEAT \{code\}. De lus gaat de code na de repeat uitvoeren tot de conditie niet meer geldig is. Nog een keyword dat in veel loops wordt gebruikt is 'ESCAPE', dit wil zeggen dat je uit de loop stapt en de pijl duidt aan tot welk niveau je terugkeert. De code uit codefragment~\ref{lst:CAGEN-WHILE} zou worden vertaald naar: 
+Een WHILE-loop in CA Gen wordt als volgt gedefinieerd: WHILE \{conditie\} ... REPEAT \{code\}. De lus gaat de code na de repeat uitvoeren tot de conditie niet meer geldig is. Nog een keyword dat in veel loops wordt gebruikt is 'ESCAPE', dit wil zeggen dat je uit de loop stapt en de pijl duidt aan tot welk niveau je terugkeert. De code uit codefragment~\ref{lst:CAGEN-WHILE} zou worden vertaald naar codefragment~\ref{lst:PL/I-WHILE}.
 
 \begin{listing}[h]
     \caption[PL/I voorbeeld van WHILE loop]{PL/I voorbeeld van WHILE loop}
@@ -90,7 +93,7 @@ Een WHILE-loop in CA Gen wordt als volgt gedefinieerd: WHILE \{conditie\} ... RE
 \end{listing}
 
 \begin{listing}[h]
-    \caption[Voorbeeld CA Gen-code: WHILE-loop met ESCAPE]{CA Gen-code van een WHILE-loop en ESCAPE.}
+    \caption[Voorbeeld CA Gen-code: WHILE-loop met ESCAPE]{CA Gen-code van een WHILE-loop en ESCAPE}
     \label{lst:CAGEN-WHILE}
     \begin{minted}{text}
         
@@ -113,7 +116,7 @@ Het USE-statement is een van de meest fundamentele commando's in een Action Diag
     \item Common Action Blocks (CABs): Logica die binnen de CA Gen-encyclopedie is gedefinieerd.
     \item External Action Blocks (EABs): Logica die buiten Gen is geschreven (bijvoorbeeld PL/I).
 \end{itemize}
-Een belangrijk concept bij een USE-statement is View Matching. Je kan niet zomaar variabelen overal gebruiken, je moet expliciet definiëren welke data “naar binnen” gaat en welke “naar buiten” komt.
+Een belangrijk concept bij een USE-statement is View Matching. Je kan niet zomaar variabelen overal gebruiken, je moet expliciet definiëren welke data 'naar binnen' gaat en welke 'naar buiten' komt.
 \begin{itemize}
     \item Import Matching: Je koppelt views uit het aanroepende blok aan de Import Views van het aangeroepen block.
     \item Export Matching: Je koppelt de Export Views aan het aangeroepen blok terug aan de views in het aanroepende blok.
@@ -125,7 +128,7 @@ Wat mag je niet doen met het USE-statement:
     \item Performance: Te veel geneste USE-statements.
 \end{itemize}
 De exitstate van een Action Block geeft aan of de blok juist is afgehandeld. Hiervoor is geen directe tegenhanger in PL/I.
-De code in codefragment~\ref{lst:CAGEN-USE} zou er in PL/I zo uit zien:
+De code in codefragment~\ref{lst:CAGEN-USE} zou er in PL/I uitzien als codefragment~\ref{lst:PL/I-CALL}.
 
 \begin{listing}[h]
     \caption[Voorbeeld PL/I CALL]{Voorbeeld PL/I CALL}
@@ -138,7 +141,7 @@ De code in codefragment~\ref{lst:CAGEN-USE} zou er in PL/I zo uit zien:
 \end{listing}
 
 \begin{listing}[h]
-    \caption[Voorbeeld CA Gen-code: USE-statement]{CA Gen-code met een USE-statement en view matching.}
+    \caption[Voorbeeld CA Gen-code: USE-statement]{CA Gen-code met een USE-statement en view matching}
     \label{lst:CAGEN-USE}
     \begin{minted}{text}
         
@@ -158,23 +161,23 @@ Ook SQL werkt in CA Gen anders dan in klassieke programmeertalen. Ontwikkelaars 
     \item UPDATE en DELETE zijn identiek in CA~Gen en SQL
 \end{itemize}
 Deze abstractie zorgt dat de logica onafhankelijk blijft van de specifieke SQL-dialecten van verschillende databases. Wanneer standaard Entity Actions niet volstaan, bijvoorbeeld bij complexe JOIN-operaties, subquery's of het gebruik van specifieke databasefuncties, wordt uitgeweken naar External Action Blocks (EAB).
-In een EAB kan een ontwikkelaar handmatig SQL implementeren in talen zoals COBOL of PL/I. 
+In een EAB kan een ontwikkelaar handmatig SQL implementeren in talen zoals COBOL of PL/I. Zo wordt het PL/I codefragment~\ref{lst:READ-CAGEN} geschreven als \ref{lst:READ-PL/I}.
 
 \begin{listing}[h]
     \caption[PL/I tegenhanger van CA Gen READ]{PL/I tegenhanger van CA Gen READ}
     \label{lst:READ-PL/I}
     \begin{minted}{text}
-        
         SELECT *
         FROM MATWR JOIN MAT
         WHERE MATWR.TY_WR_EH_MAT = 'P'
-        SORT BY MATWR.DT_WR_EH_MAT ASC,...
-        
+        SORT BY MATWR.DT_WR_EH_MAT ASC,
+                MATWR.TYD_WR_EH_MAT ASC,
+                MATWR.TMS_ATK_WR ASC;        
     \end{minted}
 \end{listing}
 
 \begin{listing}[h]
-    \caption[Voorbeeld CA Gen-code: READ met SORT]{CA Gen-code met een READ inclusief sorteervoorwaarden.}
+    \caption[Voorbeeld CA Gen-code: READ met SORT]{CA Gen-code met een READ inclusief sorteervoorwaarden}
     \label{lst:READ-CAGEN}
     \begin{minted}{text}
         READ matwr

@@ -2,7 +2,7 @@
 %% Bijlage: analysedossier TPPBAMT (uittreksels)
 %%=============================================================================
 
-\chapter{Analysedossier TPPBAMT (uittreksels)}%
+\chapter{Analysedossier TPPBAMT}%
 \label{ch:bijlage-views}
 
 Deze bijlage bundelt uittreksels uit het analysedossier dat tijdens de reverse engineering van de
@@ -18,7 +18,7 @@ Block van \texttt{TPPBAMT}, opgesteld volgens de template uit \autoref{tab:view-
 
 \begin{table}[h]
 \centering
-\caption[Uittreksel view-inventaris TPPBAMT]{Uittreksel uit de view-inventaris van \texttt{TPPBAMT}.}
+\caption[Uittreksel view-inventaris TPPBAMT]{Uittreksel uit de view-inventaris van \texttt{TPPBAMT}}
 \label{tab:bijlage-view-inventaris}
 \small
 \begin{tabular}{|l|l|l|p{0.30\linewidth}|}
@@ -37,22 +37,78 @@ Block van \texttt{TPPBAMT}, opgesteld volgens de template uit \autoref{tab:view-
 \hline
 \texttt{INT\_AFF\_TTI} & Entity & Werkveld-allocatie & Buffer voor sequenti\"ele werkveldtoekenning. \\
 \hline
-\textit{(\dots)} & \textit{(\dots)} & \textit{(\dots)} & \textit{(volledige lijst in dossier)} \\
-\hline
 \end{tabular}
 \end{table}
 
-\section{USE-graaf (verkort)}
+\section{USE-graaf}
 \label{sec:bijlage-usegraaf}
 
-Het hoofdblok van \texttt{TPPBAMT} roept onder meer de volgende blokken aan:
-\begin{itemize}
-    \item \texttt{SID\_WERKVELD} (CAB) -- bepaalt het toe te wijzen werkveld voor een materiaal.
-    \item \texttt{TPPBAOR} (CAB) -- haalt productie-orders op voor een gegeven materiaal.
-    \item \texttt{ERROR\_HANDLER} (EAB, reeds in PL/I) -- centrale foutafhandeling, blijft ongewijzigd.
-\end{itemize}
-Voor elk van deze aanroepen werd in het dossier de volledige Import-/Export-matching uitgeschreven, samen
-met een aanduiding of het aangeroepen blok binnen of buiten de migratiescope valt.
+Het hoofdblok van \texttt{AB\_APP\_GBP\_MAT\_BAF} roept onder meer de volgende blokken aan:
+
+\begin{center}
+    \captionof{listing}{USE-graaf van Action Block \texttt{AB\_APP\_GBP\_MAT\_BAF}}
+    \label{lst:USE-graaf}
+\end{center}
+
+\begin{minted}[fontsize=\small]{text}
+    
+    AB_APP_GBP_MAT_BAF
+    
+    READ RO, MAT
+    
+    USE eab_oproep_tpbafgg   /* ophalen bestelgegevens
+    
+    USE ipo_rta_bep_routebewerking_info /* check of skp op routing voorkomt
+      USE eab_oproep_tpolie   /* haal oliegegevens
+    
+    USE eab_oproep_drt701   /* bepaal gloeicurve uit herneming / deroutering
+    
+    USE ab_scan_materiaal_stamboom   /* scan materiaal stamboom
+    
+    USE eab_oproep_ypglkro   /* bepaal gloeikarakteristieken
+    
+    USE eab_oproep_tpgghal   /* bepaal geschiktheid ligging
+    
+    USE ab_bepaal_aantal_dagen_stock /* bepaal aantal dagen in stock
+    
+    USE ab_bepaal_mogelijke_skinpass   /* bepaal mogelijke skinpass
+    
+    USE ab_bep_dlstk_beschikbaarheid_baf   /* bepaal deelstock/beschikbaarheid
+    
+    USE ipo_mat_lees_ly_lst_prc_eh_mat   /* bepaal laatste proces voor het gloeien
+    
+    USE ipo_mop_lees_mat_opm_met_positie   /* zoeken naar opmerking voor kleefkritische rollen
+    
+    USE ipo_mop_lees_mat_opm_met_positie   /* bepaal alle opmerkingen van het materiaal
+    
+    USE eab_oproep_tprton                  /* bepaal soort materiaal
+      USE ipo_vre_haal_vreemd_nummer
+    
+    USE eab_oproep_mat071   /* ophalen laatste PRCZINK
+      USE eab_oproep_mat057_lees_prcruw
+      USE eab_oproep_mat071
+    
+    USE eab_oproep_mat105   /* bepalen max & min breedte
+    
+    USE eab_oproep_tpdiam   /* voor uitwendige diameter
+    
+    USE eab_oproep_tpinwdi   /* module voor de berekening van de inwendige diameter aan de uitgang van het proces
+    
+    USE eab_oproep_tpmagda   /* bepalen geforceerde parameters MAGDA
+    
+    USE ab_lpl_bepaal_lijnmogelijkheden
+    
+    USE ab_lpl_app_pp_sgm_plnmat   /* relatie naar PLNRT	
+    
+    USE ab_app_pp_sgm_bafmat_baf
+    
+    USE ab_timestamp_from_text
+      USE ab_lpl_app_pp_sgm_plnmtopm
+      USE ipo_mop_lees_mat_opm_met_positie
+    
+    USE ab_lpl_app_pp_sgm_plnmprdo
+    
+\end{minted}
 
 \section{Datamatrix (verkort)}
 \label{sec:bijlage-datamatrix}
@@ -81,6 +137,8 @@ PRDO & READ       & per materiaal, op primaire sleutel. \\
 
 \section{Outputrecordlayout}
 \label{sec:bijlage-outputlayout}
+
+De gegenereerde PLAPO-segmentfile moet uiteindelijk als volgt gestructureerd worden.
 
 \begin{figure}
     \centering

@@ -1,7 +1,7 @@
 \chapter{\iflanguage{dutch}{Stand van zaken}{State of the art}}%
 \label{ch:stand-van-zaken}
 
-Dit hoofdstuk biedt het theoretische kader waarop de rest van de bachelorproef voortbouwt. Eerst wordt de brontechnologie (CA Gen, CASE-tools en de host-encyclopedie) toegelicht, vervolgens de doeltechnologie (PL/I op z/OS), en ten slotte de relevante migratiestrategieën uit de literatuur. Het hoofdstuk sluit af met een eerste, voorbeeldgedreven syntax mapping tussen CA~Gen-constructen en PL/I, die in Hoofdstuk~\ref{ch:framework} verder wordt geconsolideerd tot een geformaliseerde vertaaltabel.
+Dit hoofdstuk biedt het theoretische kader waarop de rest van de bachelorproef voortbouwt. Eerst wordt de brontechnologie (CA Gen, CASE-tools en de host-encyclopedie) toegelicht, vervolgens de doeltechnologie (PL/I op z/OS), en ten slotte de relevante migratiestrategieën uit de literatuur. 
 
 \section{\IfLanguageName{dutch}{Wat is CA Gen?}{What is CA Gen?}}%
 \label{sec:Wat is CA Gen?}
@@ -59,21 +59,21 @@ Dit hoofdstuk biedt het theoretische kader waarop de rest van de bachelorproef v
  \label{sec:MIGRATIE}
  Volgens \textcite{Orosz2022} is complexiteit van migraties door drie hoofdbenaderingen te identificeren, elk met een eigen risicoprofiel en impact op de continuïteit van de bedrijfsvoering:
  \begin{itemize}
-     \item De "Big Bang" Migratie: Bij deze aanpak wordt het volledige systeem in één enkel moment vervangen door de nieuwe oplossing.
+     \item De 'Big Bang' migratie: Bij deze aanpak wordt het volledige systeem in één enkel moment vervangen door de nieuwe oplossing.
      \begin{itemize}
-         \item Kenmerken: Hoge efficiëntie in theorie, maar in de praktijk extreem risicovol voor complexe omgevingen zoals CA Gen.
-         \item Relevantie: Hoewel aantrekkelijk vanwege de kortere dubbele onderhoudsperiode, waarschuwt \textcite{Orosz2022} voor de "point of no return" en de enorme druk op validatie en testen vlak voor de livegang.
+         \item Kenmerken: hoge efficiëntie in theorie, maar in de praktijk extreem risicovol voor complexe omgevingen zoals CA Gen.
+         \item Relevantie: hoewel aantrekkelijk vanwege de kortere dubbele onderhoudsperiode, waarschuwt \textcite{Orosz2022} voor de 'point of no return' en de enorme druk op validatie en testen vlak voor het live gaan.
      \end{itemize}
-     \item De Inkrementele Migratie (Gefaseerde aanpak)
+     \item De incrementele migratie (gefaseerde aanpak).
      Dit is de meest aanbevolen methode voor bedrijfskritische systemen. Hierbij wordt de migratie opgedeeld in kleinere, beheersbare brokken (bijvoorbeeld per module, functie of subdomein).
      \begin{itemize}
-         \item Strangler Fig Pattern: Een cruciaal concept waarbij de nieuwe PL/I-functionaliteit geleidelijk de oude CA Gen-logica "omsingelt" en vervangt, totdat de legacy-kern volledig is uitgefaseerd.
-         \item Voordeel: Risico's worden gespreid en er kan voortdurend  worden bijgestuurd op basis van de prestaties in productie.
+         \item Strangler Fig Pattern: een cruciaal concept waarbij de nieuwe PL/I-functionaliteit geleidelijk de oude CA Gen-logica "omsingelt" en vervangt, totdat de legacy-kern volledig is uitgefaseerd.
+         \item Voordeel: risico's worden gespreid en er kan voortdurend  worden bijgestuurd op basis van de prestaties in productie.
      \end{itemize}
-     \item De "Parallel Run"
+     \item De 'Parallel Run'.
      Hierbij draaien zowel het oude CA Gen-systeem als het nieuwe PL/I-systeem gelijktijdig met dezelfde input. De resultaten worden vergeleken om functionele equivalentie aan te tonen.
      \begin{itemize}
-         \item Toepassing: Dit is bijzonder relevant voor dit  framework, aangezien logistieke berekeningen in PL/I exact moeten matchen met de oorspronkelijke CA Gen-output.
+         \item Toepassing: dit is bijzonder relevant voor dit  framework, aangezien logistieke berekeningen in PL/I exact moeten matchen met de oorspronkelijke CA Gen-output.
      \end{itemize}
  \end{itemize}
  
@@ -84,7 +84,7 @@ Dit hoofdstuk biedt het theoretische kader waarop de rest van de bachelorproef v
      \item Een host encyclopedie die draait op z/OS gebruike makende van TSO
      \item Een Client Server Encyclopedie (CSE) die draait op een netwerk gebruik makende van één of meerdere werkstations
  \end{itemize}
- De host encyclopedie is een DB2 database dat informatie opslaat  dat de Gen Host componenten creëren op meerdere werkstations. Met deze encyclopedie kan je alle kritieke taken controleren vanuit een centrale locatie. Met deze encyclopedie kan heel veel gaan doen, maar in deze context is het belangrijkste de “Check in”, ofwel het uploaden van een model, en de “Check out” ofwel het downloaden van een model.
+ De host encyclopedie is een DB2 database dat informatie opslaat  dat de Gen Host componenten creëren op meerdere werkstations. Met deze encyclopedie kan je alle kritieke taken controleren vanuit een centrale locatie. Met deze encyclopedie kan heel veel gaan doen, maar in deze context is het belangrijkste de 'Check in', ofwel het uploaden van een model, en de 'Check out' ofwel het downloaden van een model.
  
  \section{\IfLanguageName{dutch}{CA Gen Views}{CA Gen Views}}%
  \label{sec:Views}
@@ -103,7 +103,7 @@ Dit hoofdstuk biedt het theoretische kader waarop de rest van de bachelorproef v
      §§ Entity Action Views: Een specifiek type view dat gebruikt wordt binnen de database-statements zoals READ, CREATE, UPDATE en DELETE. Ze dienen als buffer voor de database-operatie.
      \newline
      § Structurele categorieën
-     §§ Group Views: Dit zijn “repeating views” of arrays. Een Group View bevat één of meer Entity- of Work Views en stelt de applicatie in staat om lijsten met records te verwerken.
+     §§ Group Views: Dit zijn 'repeating views' of arrays. Een Group View bevat één of meer Entity- of Work Views en stelt de applicatie in staat om lijsten met records te verwerken.
      §§ Recursive Views: Hoewel minder vaak gebruikt, kunnen views recursief worden gedefinieerd voor boomstructuren of hiërarchische data.
  \end{easylist}
  
@@ -119,7 +119,7 @@ Dit hoofdstuk biedt het theoretische kader waarop de rest van de bachelorproef v
  reeds in gebruik zijn.
 
  In tegenstelling tot CA~Gen is PL/I geen modelgedreven omgeving maar een klassieke procedurele taal: ontwikkelaars 
- schrijven expliciet alle declaraties, controlestructuren en database-interacties uit in broncode. De belangrijkste 
+ schrijven expliciet alle declaraties, controlestructuren en database-interacties uit in broncode \autocite{IBM2025}. De belangrijkste 
  taalkenmerken die relevant zijn voor de migratie zijn:
 
  \begin{itemize}
