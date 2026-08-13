@@ -30,15 +30,11 @@
 \maketitle
 
 \begin{abstract}
-Veel organisaties vertrouwen nog op bedrijfskritische applicaties die ontwikkeld zijn met CA Gen. Hoewel deze systemen stabiel functioneren, neemt de beschikbare expertise af en worden onderhoud en verdere ontwikkeling steeds moeilijker. Binnen ArcelorMittal is de Batch Annealing Furnace (BAF)-module de laatste CA Gen-component binnen de lijnplanning die nog naar PL/I moet worden gemigreerd. Eerdere migraties werden succesvol uitgevoerd, maar zonder een vastgelegde en herbruikbare methode.
+Veel organisaties zijn nog afhankelijk van bedrijfskritische applicaties die ontwikkeld werden met CA Gen, een verouderde ontwikkelomgeving waarvoor steeds minder expertise beschikbaar is. Hierdoor nemen de onderhoudskosten en risico’s toe. Binnen ArcelorMittal vormt de Batch Annealing Furnace (BAF)-module de laatste component van de lijnplanning die nog niet van CA Gen naar PL/I werd gemigreerd. Hoewel eerdere migraties succesvol waren, ontbrak een gestructureerde en gedocumenteerde aanpak die herbruikbaar is voor toekomstige projecten.
 
-Dit onderzoek ontwikkelt daarom een high-level migratieframework voor de gecontroleerde migratie van CA~Gen-applicaties naar PL/I. De centrale onderzoeksvraag luidt: Hoe kan een high-level framework worden opgesteld om CA~Gen-applicaties succesvol te migreren naar PL/I-code? Het framework bestaat uit vier onderdelen: een analysefase, vertaalrichtlijnen tussen CA Gen en PL/I, best practices en valkuilen, en een validatiestrategie gebaseerd op de Parallel Run-aanpak.
+Om deze uitdaging aan te pakken, ontwikkelt dit onderzoek een high-level migratieframework voor de gecontroleerde omzetting van CA Gen-applicaties naar PL/I. Het framework bestaat uit vier kerncomponenten: een analysefase voor het onderzoeken van CA Gen-modellen, vertaalrichtlijnen tussen CA Gen-constructen en hun PL/I-equivalenten, een verzameling best practices en valkuilen, en een validatiestrategie gebaseerd op de Parallel Run-methode.
 
-Via een design-science benadering werd het framework iteratief opgebouwd op basis van documentanalyse, literatuurstudie, reverse engineering en een proof-of-concept (PoC). Hiervoor werd een CA Gen-module gemigreerd naar PL/I.
-
-De validatie via een Parallel Run toonde aan dat de gemigreerde PL/I-module functioneel vergelijkbare output oplevert als het CA~Gen-origineel. Vastgestelde verschillen waren beperkt en terug te voeren op detailfouten in de logica. Dit bevestigt dat het framework een solide basis biedt voor gecontroleerde migraties.
-
-Het onderzoek concludeert dat een framework opgebouwd uit analyse, vertaalschema’s, best practices en validatie effectief richting geeft aan het migratieproces van CA Gen naar PL/I. Het biedt ArcelorMittal een gestructureerde, herhaalbare aanpak die het risico op kennisverlies vermindert en de efficiëntie van toekomstige migraties verhoogt. Daarnaast zijn de analyse-, validatie- en best-practicecomponenten taalagnostisch en inzetbaar voor andere legacy-migraties mits aanpassing van de vertaaltabellen en context.
+Het framework werd iteratief ontwikkeld volgens een design-science aanpak, ondersteund door documentanalyse, literatuuronderzoek, reverse engineering en een proof-of-concept waarbij een CA Gen-module effectief naar PL/I werd gemigreerd. De validatie toonde aan dat de nieuwe implementatie functioneel vergelijkbare output produceert als het oorspronkelijke systeem. De resultaten bevestigen dat het framework een praktische en herhaalbare leidraad biedt voor migraties, het risico op kennisverlies vermindert en ook toepasbaar kan zijn op andere legacy-migraties mits aangepaste vertaaltabellen.
 \end{abstract}
 
 \begin{multicols}{2} % This is how many columns your poster will be broken into, a portrait poster is generally split into 2 columns
@@ -63,7 +59,11 @@ Het framework bestaat uit vier grote onderdelen. De analysefase, hier wordt de m
   \captionof{figure}{High-level schema van het framework}
 \end{center}
 
-
+\begin{center}
+    \captionsetup{type=figure}
+    \includegraphics[width=1.0\linewidth]{framework-visueel.png}
+    \captionof{figure}{Visuele voorstelling van het framework.}
+\end{center}
 
 \section{Conclusies}
 

@@ -24,9 +24,49 @@ paar van de dingen die CA Gen achterliggend doet:
 \begin{itemize}
     \item IMS database interacties
     \item SQL interacties
-    \item vertalen van bussiness-namen naar technische namen die de 
+    \item vertalen van business-namen naar technische namen die de 
     mainframe kent
     \item optimalisaties die de toolset zelf doet van flows
+\end{itemize}
+
+Wat AI en automatisering wel kunnen ondersteunen is het vertalen van
+standaard CA Gen-constructen naar procedurele PL/I-voorzetten. In de
+praktijk blijven semantische keuzes, datamodelrelaties en host-specifieke
+naamgeving nog steeds verantwoordelijkheden voor menselijke experts.
+
+\subsection{Een AI-ondersteunde migratieworkflow}
+\label{sec:automatisatie-workflow}
+
+Een realistische aanpak is een hybride workflow waarin tooling en AI
+ondersteunen, maar geen volledige conversie afdwingen. Deze workflow kan
+er als volgt uitzien:
+\begin{enumerate}
+    \item \textbf{Extractie en contextverzameling}: CA Gen Action Blocks,
+    Views, EAB-interfaces en datamodelrelaties worden verzameld.
+    \item \textbf{Normalisatie naar een tussentijdige representatie}: CA Gen-
+    constructen worden omgezet naar een gestructureerde tussenvorm waarin
+    sleutelbegrippen als CURRENT, DESIRED, SOME en THAT expliciet zijn.
+    \item \textbf{Regelgebaseerde mapping en AI-vertaling}: eenvoudige
+    constructen worden door regelgebaseerde mappings omgezet; AI helpt bij
+    complexere vertalingen, commentaar en boilerplate SQL.
+    \item \textbf{Review en validatie door experts}: een CA Gen/PL/I-expert
+    controleert de output, valideert naamgeving en datamodelrelaties, en
+    voert een parallel run uit of vergelijkt functionele output.
+\end{enumerate}
+
+\subsection{Welke context AI nodig heeft}
+\label{sec:automatisatie-context}
+
+Voor een bruikbare AI-ondersteuning is context essentieel. Zonder deze
+context ontstaat vaak syntactisch correcte, maar semantisch onvolledige
+code. Belangrijke invoer voor AI zijn onder meer:
+\begin{itemize}
+    \item de exacte pseudo-code uit de CA Gen Action Blocks
+    \item de definitie van Import/Export/Local/Work/Group Views
+    \item de koppeling tussen businessnamen en technische host-namen
+    \item databaserelaties en referentiële voorwaarden
+    \item het gebruik van EABs en externe modules
+    \item regels voor SQL-mapping en DB2-constructen
 \end{itemize}
 
 \subsection{Voorbeeld code generatie door Copilot}
@@ -354,6 +394,8 @@ PROC;
 \label{sec:verschillen-in-automatisatie}
 
 Er zitten heel wat verschillen tussen de AI-gegenereerde code en de code van de expert. Het grootste verschil dat direct opvalt is de naamgeving van alle variabelen. Dit is ook logisch want developpers programmeren in de CA GEN-toolset met businessnamen die CA Gen automatisch aan de hand van de host-encyclopedie omzet naar technische namen die de mainframe wel kent. AI kan deze vertalingen niet maken omdat AI geen toegang heeft tot de host-encyclopedie. Ook deelt de expert logica op over verschillende procedures, vooral SQL-blokken, om code leesbaarder te maken.
+
+In de praktijk betekent dit dat AI vooral geschikt is voor de eerste vertaalslag: syntactische omzetting, standaard SQL-templates en boilerplate-code. De uiteindelijke beoordeling moet altijd door een expert gebeuren, met specifieke aandacht voor datamodel-integriteit, host-naamgeving en foutafhandeling.
 
 \section{Conclusie}
 \label{sec:automatisatie-conclusie}
