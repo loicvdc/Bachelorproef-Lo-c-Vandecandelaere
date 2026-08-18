@@ -1,0 +1,150 @@
+/* --------------------------------------------------------------------
+   CA Gen → PL/I vertaling
+   Bron: sid_verwerking_ab_gestart_rb
+   Gebaseerd op business-glossary.md
+   -------------------------------------------------------------------- */
+
+SID_VERWERKING_AB_GESTART_RB: PROC;
+
+   DCL SQLCODE               FIXED BIN(31,0);
+   DCL SQLSTATE              CHAR(5);
+
+   DCL MTSTBO_REC            LIKE MTSTBO;
+   DCL MAT_REC               LIKE MAT;
+   DCL MATWR_REC             LIKE MATWR;
+
+   DCL LOC_IMP_MAT056_WZ54601 LIKE LOC_IMP_MAT056_WZ54601;
+   DCL LOC_EXP_MAT056_WZ54601 LIKE LOC_EXP_MAT056_WZ54601;
+   DCL LOC_EXP_IND_MAT056    LIKE LOC_EXP_IND_MAT056;
+   DCL LOC_EXP_WZ30911       LIKE LOC_EXP_WZ30911;
+
+   DCL GLOC_MAT              CHAR(200);
+   DCL GLOC_MAT_FT           CHAR(200);
+
+   DCL EXIT_STATE            CHAR(32);
+
+   /* ----------------------------------------------------------------
+      EXIT STATE IS sid_verwerking_ab_gestart_rb WITH ROLLBACK
+      ---------------------------------------------------------------- */
+   EXIT_STATE = 'sid_verwerking_ab_gestart_rb';
+
+   /* ----------------------------------------------------------------
+      READ mtstbo
+         WHERE SOME mat IS CURRENT imp_ro
+           AND DESIRED mtstbo cod_frm_gg_eh_mat IS EQUAL TO THAT mat cod_frm_gg
+           AND DESIRED mtstbo nr_eh_mat_dl IS EQUAL TO THAT mat cod_nr_eh_mat
+           AND DESIRED mtstbo nr_eh_mat_dl IS EQUAL TO THAT mat nr_eh_mat
+           AND DESIRED mtstbo cod_prc_cre_dl_mat IS EQUAL TO CURRENT imp_ro cod_prc_l_ro
+           AND SOME matwr is_laatste_proces_voor CURRENT imp_ro
+           AND THAT matwr nr_wr_eh_mat IS EQUAL TO DESIRED mtstbo nr_prc_cre_dl_mat
+           AND DESIRED mtstbo ty_dl_mat IS EQUAL TO "M"
+      ---------------------------------------------------------------- */
+   EXEC SQL
+      SELECT *
+        INTO :MTSTBO_REC
+        FROM MTSTBO
+       WHERE MTSTBO.COD_FRM_GG_EH_MAT = :MAT_REC.COD_FRM_GG
+         AND MTSTBO.NR_EH_MAT_DL      = :MAT_REC.COD_NR_EH_MAT
+         AND MTSTBO.NR_EH_MAT_DL      = :MAT_REC.NR_EH_MAT
+         AND MTSTBO.COD_PRC_CRE_DL_MAT= :IMP_RO.COD_PRC_L_RO
+         AND MTSTBO.TY_DL_MAT         = 'M'
+         AND EXISTS (
+               SELECT 1
+                 FROM MATWR
+                WHERE MATWR.NR_WR_EH_MAT = MTSTBO.NR_PRC_CRE_DL_MAT
+                  AND MATWR.IS_LAATSTE_PROCES_VOOR = :IMP_RO
+             );
+   END EXEC;
+
+   IF SQLCODE = 0 THEN
+      ;
+   ELSE IF SQLCODE = 100 THEN
+      EXIT_STATE = 'mtstbo_nf';
+      ROLLBACK;
+      GOTO EXIT_PROC;
+   ELSE
+      ROLLBACK;
+      GOTO EXIT_PROC;
+   END IF;
+
+   /* WHEN successful */
+   DO WHILE (MTSTBO_REC.COD_EH_MAT_DL ^= 'W');
+
+      /* SET loc_imp_mat056_wz54601 cod_frm_gg TO "S" */
+      LOC_IMP_MAT056_WZ54601.COD_FRM_GG = 'S';
+      LOC_IMP_MAT056_WZ54601.COD_NR_RO   = 'K';
+      LOC_IMP_MAT056_WZ54601.NR_RO       = MTSTBO_REC.NR_EH_MAT_DL;
+      LOC_IMP_MAT056_WZ54601.NR_PRC_RO   = MTSTBO_REC.NR_PRC_CRE_DL_MAT;
+      LOC_IMP_MAT056_WZ54601.DT_CRE_RO   = MTSTBO_REC.DT_CRE_EH_MAT_DL;
+
+      /* USE eab_oproep_mat056_lees_prcskin */
+      CALL EAB_OPROEP_MAT056_LEES_PRCSKIN(
+           INPUT  LOC_IMP_MAT056_WZ54601,
+           OUTPUT LOC_EXP_MAT056_WZ54601,
+                 LOC_EXP_IND_MAT056,
+                 LOC_EXP_WZ30911);
+
+      IF LOC_EXP_WZ30911.COD_TG = 1
+      & LOC_EXP_WZ30911.COD_RD = 0 THEN DO;
+
+         /* SET gloc_mat TO concat(...) */
+         GLOC_MAT =
+            'Oproep eab_oproep_mat055_lees_prcskin gelukt Return: ' ||
+            LOC_IMP_MAT056_WZ54601.COD_FRM_GG ||
+            LOC_IMP_MAT056_WZ54601.COD_NR_RO ||
+            LOC_IMP_MAT056_WZ54601.NR_RO;
+
+         GLOC_MAT_FT =
+            LOC_IMP_MAT056_WZ54601.COD_FRM_GG ||
+            LOC_IMP_MAT056_WZ54601.COD_NR_RO ||
+            LOC_IMP_MAT056_WZ54601.NR_RO;
+
+         /* USE eab_druk_foutlijn_materiaal
+            WHICH IMPORTS: Group View grl_foutlijn_mat TO Group View gri_foutlijn_mat
+         */
+         CALL EAB_DRUK_FOUTLIJN_MATERIAAL(
+              INPUT GRL_FOUTLIJN_MAT);
+
+         IF EXP_STAMBOOM_GG.INT_BSN_BSTUYPRD.PCT_LG_SKP_NA = 0 THEN DO;
+            IF LOC_EXP_IND_MAT056.MAT_IND_WZ54601.I_LG_SKP ^= -1 THEN
+               EXP_STAMBOOM_GG.INT_BSN_BSTUYPRD.PCT_LG_SKP_NA =
+                  LOC_EXP_MAT056_WZ54601.LG_SKP;
+         END;
+
+         IF EXP_STAMBOOM_GG.INT_BSN_BSTUYPRD.BRK_EMUL_SKP = ' ' THEN
+            EXP_STAMBOOM_GG.INT_BSN_BSTUYPRD.BRK_EMUL_SKP =
+               LOC_EXP_MAT056_WZ54601.EMUL_BRK_SKP;
+      END;
+
+      IF MTSTBO_REC.NR_DL_MOE = '' THEN
+         GOTO EXIT_PROC;
+
+      /* READ mtstbo
+           WHERE DESIRED mtstbo cod_dl_mat IS EQUAL TO CURRENT mtstbo cod_dl_moe
+             AND DESIRED mtstbo nr_dl_mat IS EQUAL TO CURRENT mtstbo nr_dl_moe
+      */
+      EXEC SQL
+         SELECT *
+           INTO :MTSTBO_REC
+           FROM MTSTBO
+          WHERE MTSTBO.COD_DL_MAT = :MTSTBO_REC.COD_DL_MOE
+            AND MTSTBO.NR_DL_MAT  = :MTSTBO_REC.NR_DL_MOE;
+      END EXEC;
+
+      IF SQLCODE = 0 THEN
+         ;
+      ELSE IF SQLCODE = 100 THEN
+         GOTO EXIT_PROC;
+      ELSE
+         ROLLBACK;
+         GOTO EXIT_PROC;
+      END IF;
+
+   END;
+
+   GOTO EXIT_PROC;
+
+EXIT_PROC:
+   RETURN;
+
+END SID_VERWERKING_AB_GESTART_RB;

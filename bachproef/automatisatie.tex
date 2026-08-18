@@ -5,61 +5,99 @@
 \chapter{\IfLanguageName{dutch}{Automatisatie}{Automation}}%
 \label{ch:automatisatie}
 
-Dit hoofdstuk gaat kort in op de mogelijkheden om het 
-migratieproces
+Dit hoofdstuk gaat kort in op de mogelijkheden om het migratieproces
 van CA Gen naar PL/I te automatiseren. Hoewel het volledige proces niet
-geautomatiseerd kan worden, zijn er verschillende stappen die 
-geautomatiseerd kunnen worden om de efficiëntie te verhogen en 
-menselijke fouten te verminderen.
+volledig geautomatiseerd kan worden, zijn er wel verschillende stappen
+waarbij tooling en AI een duidelijke meerwaarde kunnen bieden. De kern is
+namelijk dat een CA Gen-migratie niet alleen een syntactische omzetting is
+van pseudo-code naar PL/I, maar ook een semantische transformatie waarbij
+bedrijfslogica, datamodelrelaties en host-specifieke naamgeving moeten
+worden geïnterpreteerd.
+
+\section{Wat zegt de literatuur?}
+\label{sec:literatuur-automatisatie}
+Tegenwoordig gebruiken meer en meer organisaties AI, meer bepaalt agents, om hun te assisteren bij bedrijfsmigraties.
+Volgens \textcite{Bueters2026} en \textcite{Uptodate2026} zijn Google en SAP pioneers op dit vlak. Google gebruikte
+een multi-agentarchitectuur waarbij iedere agent een specifieke verantwoordelijkheid had, om Microsoft 365-licenties
+om te zetten naar juiste Google Workspace-edities. Hierbij werd zelf gebruik gemaakt van een agent voor automatische kwaliteitscontrole, hierbij werd dan de analyse steeds opnieuw uitgevoerd totdat het resultaat voldoet aan de vooraf bepaalde kwaliteitsnorm. SAP zet dan weer zeven agents in voor grote migraties naar moderne SAP-omgevingen te versnellen. Volgens SAP, kunnen het gebruik van deze agents de inspanning en doorlooptijd van migraties met ongeveer 50% verminderen. 
 
 \section{Wat kan geautomatiseerd worden en wat niet?}
 \label{sec:automatisatie-mogelijkheden}
 
-Waarom kan momenteel niet het volledige migratieproces geautomatiseerd
-worden? De belangrijkste reden is dat CA Gen achterliggend heel veel
-doet waar de gebruiker geen zicht op heeft. De toolset is als het 
-ware een black box. Hierdoor missen automatisatie-tools en AI te veel
-context om een volledige migratie te kunnen uitvoeren. Dit zijn een 
-paar van de dingen die CA Gen achterliggend doet:
+Waarom kan het volledige migratieproces momenteel niet volledig worden
+automatiseerd? De belangrijkste reden is dat CA Gen achterliggend veel
+logica verwerkt die niet expliciet in de Action Blocks of Views staat.
+De toolset is in die zin een black box: de ontwikkelaar ziet de
+uitdrukking van de businesslogica, maar niet alle impliciete
+transformaties die de runtime en de host-encyclopedie achter de schermen
+uitvoeren. Hierdoor missen automatisatie-tools en AI vaak de context die
+nodig is om een complete migratie zonder menselijke controle uit te
+voeren. Enkele voorbeelden van deze verborgen kennis zijn:
 \begin{itemize}
     \item IMS database interacties
-    \item SQL interacties
-    \item vertalen van business-namen naar technische namen die de 
-    mainframe kent
-    \item optimalisaties die de toolset zelf doet van flows
+    \item SQL interacties en joinlogica
+    \item vertaling van business-namen naar technische host-namen
+    \item optimisaties die de toolset zelf op flows en dataflows uitvoert
 \end{itemize}
 
-Wat AI en automatisering wel kunnen ondersteunen is het vertalen van
-standaard CA Gen-constructen naar procedurele PL/I-voorzetten. In de
-praktijk blijven semantische keuzes, datamodelrelaties en host-specifieke
-naamgeving nog steeds verantwoordelijkheden voor menselijke experts.
+Wat AI en automatisering wel goed kunnen ondersteunen, is het vertalen van
+standaard CA Gen-constructen naar procedurele PL/I-voorzetten. Daarbij
+blijven semantische keuzes, datamodelrelaties en host-specifieke
+naamgeving verantwoordelijkheid van menselijke experts. Met andere
+woorden: automatisering kan de eerste vertaalslag ondersteunen, maar kan
+niet de volledige interpretatie van het CA Gen-model vervangen.
+
+Een concreet voorbeeld hiervan is de volgende CA Gen-constructie:
+\begin{minted}[fontsize=\small]
+READ mtstbo
+    WHERE SOME mat IS CURRENT imp_ro
+      AND DESIRED mtstbo cod_frm_gg_eh_mat IS EQUAL TO THAT mat cod_frm_gg
+      AND DESIRED mtstbo ty_dl_mat IS EQUAL TO "M"
+\end{minted}
+
+Deze regel is voor een menselijke CA Gen-expert begrijpelijk omdat de
+semantiek van CURRENT, DESIRED, SOME en THAT in relatie staat tot de
+view-definities en het datamodel. Een AI-systeem kan deze constructie
+syntactisch omzetten, maar het kan zonder context niet altijd de juiste
+host-relatie of de juiste join-interpretatie garanderen.
 
 \subsection{Een AI-ondersteunde migratieworkflow}
 \label{sec:automatisatie-workflow}
 
 Een realistische aanpak is een hybride workflow waarin tooling en AI
-ondersteunen, maar geen volledige conversie afdwingen. Deze workflow kan
-er als volgt uitzien:
+ondersteunen, maar geen volledige conversie afdwingen. De workflow is
+niet bedoeld om CA Gen volledig te vervangen, maar om de eerste vertaalslag
+te versnellen en de kans op fouten te verkleinen. In praktijk ziet zo'n
+proces er als volgt uit:
 \begin{enumerate}
     \item \textbf{Extractie en contextverzameling}: CA Gen Action Blocks,
     Views, EAB-interfaces en datamodelrelaties worden verzameld.
     \item \textbf{Normalisatie naar een tussentijdige representatie}: CA Gen-
     constructen worden omgezet naar een gestructureerde tussenvorm waarin
     sleutelbegrippen als CURRENT, DESIRED, SOME en THAT expliciet zijn.
-    \item \textbf{Regelgebaseerde mapping en AI-vertaling}: eenvoudige
-    constructen worden door regelgebaseerde mappings omgezet; AI helpt bij
-    complexere vertalingen, commentaar en boilerplate SQL.
+    \item \textbf{Regelgebaseerde mapping en AI-vertaling}: standaard
+    patronen worden door vaste mappings omgezet; AI ondersteunt bij
+    complexere vertalingen, SQL-boilerplate en documentatie.
     \item \textbf{Review en validatie door experts}: een CA Gen/PL/I-expert
-    controleert de output, valideert naamgeving en datamodelrelaties, en
-    voert een parallel run uit of vergelijkt functionele output.
+    controleert de output, valideert naamgeving, datamodelrelaties en
+    foutafhandeling, en vergelijkt de functionaliteit met een parallelle
+    run of een referentie-implementatie.
 \end{enumerate}
+
+Deze aanpak is realistisch omdat ze de sterke punten van beide werelden
+combineert: regelgebaseerde tooling is goed in herhalende syntactische
+transformaties, terwijl menselijke experts nog steeds nodig zijn voor de
+semantische interpretatie van het model.
 
 \subsection{Welke context AI nodig heeft}
 \label{sec:automatisatie-context}
 
 Voor een bruikbare AI-ondersteuning is context essentieel. Zonder deze
 context ontstaat vaak syntactisch correcte, maar semantisch onvolledige
-code. Belangrijke invoer voor AI zijn onder meer:
+code. In andere woorden: AI kan een fragment goed omzetten naar PL/I-syntax,
+maar zonder de juiste datamodel- en hostcontext kan de output niet
+garanderen dat de businesslogica ook echt identiek is. Belangrijke invoer
+voor AI zijn onder meer:
 \begin{itemize}
     \item de exacte pseudo-code uit de CA Gen Action Blocks
     \item de definitie van Import/Export/Local/Work/Group Views
@@ -69,14 +107,39 @@ code. Belangrijke invoer voor AI zijn onder meer:
     \item regels voor SQL-mapping en DB2-constructen
 \end{itemize}
 
+Dit is ook de reden waarom AI in de praktijk vaak het beste werkt als
+ondersteunende tool. Zonder toegang tot de host-encyclopedie en het
+onderliggende datamodel kan zij geen betrouwbare interpretatie maken van
+gebruikersnamen, view-koppelingen en implicit business rules. Een
+syntactisch perfecte PL/I-vertaling is dan nog steeds geen correcte
+migratie.
+
 \subsection{Voorbeeld code generatie door Copilot}
 
-Wat wel kan geautomatiseerd kan worden met AI is het vertalen van de 
-pseudo-code in de Action Blocks naar PL/I code. In het onderstaande
-voorbeeld wordt een stukje pseudo-code uit een Action Block genomen
-en gevraagd aan Copilot om dit te vertalen naar PL/I code, met als 
-context de hoofdstukken van deze bachelorproef die gaan rond de syntax
-van PL/I en de mapping van CA Gen constructies naar PL/I constructies.
+Wat wel kan geautomatiseerd worden met AI, is het vertalen van pseudo-code
+uit CA Gen Action Blocks naar PL/I-code. In het onderstaande voorbeeld
+wordt een stuk CA Gen-logica genomen en omgezet naar een PL/I-voorzet, met
+als context de hoofdstukken van deze bachelorproef over PL/I-syntax en de
+mapping van CA Gen-constructies naar PL/I-constructies. Het voorbeeld laat
+het nut van AI zien, maar ook meteen de beperking: de output is waardevol
+als eerste draft, maar nog niet automatisch production-ready zonder
+expertreview.
+
+Een tweede voorbeeld dat deze beperking goed illustreert, is de CA Gen-actie
+voor het volgen van een moeder-kindrelatie:
+\begin{minted}[fontsize=\small]
+IF mtstbo nr_dl_moe IS NULL
+    ESCAPE
+
+READ mtstbo
+    WHERE DESIRED mtstbo cod_dl_mat IS EQUAL TO CURRENT mtstbo cod_dl_moe
+      AND DESIRED mtstbo nr_dl_mat  IS EQUAL TO CURRENT mtstbo nr_dl_moe
+\end{minted}
+
+Hier bepaalt de semantiek van CURRENT en DESIRED, samen met de relatie in
+het datamodel, welke record als ouderrecord moet worden opgehaald. AI kan
+het patroon herkennen, maar kan zonder modelcontext niet altijd de juiste
+host-naamgeving en null-behandeling verifiëren.
 
 \begin{center}
     \captionof{listing}{CA Gen pseudo-code die werd vertaald naar PL/I code door Copilot.}
@@ -393,23 +456,40 @@ PROC;
 \section{Verschillen}
 \label{sec:verschillen-in-automatisatie}
 
-Er zitten heel wat verschillen tussen de AI-gegenereerde code en de code van de expert. Het grootste verschil dat direct opvalt is de naamgeving van alle variabelen. Dit is ook logisch want developpers programmeren in de CA GEN-toolset met businessnamen die CA Gen automatisch aan de hand van de host-encyclopedie omzet naar technische namen die de mainframe wel kent. AI kan deze vertalingen niet maken omdat AI geen toegang heeft tot de host-encyclopedie. Ook deelt de expert logica op over verschillende procedures, vooral SQL-blokken, om code leesbaarder te maken.
+Er zitten concrete verschillen tussen de AI-gegenereerde code en de code
+van de expert. Het meest opvallende verschil is de naamgeving: in CA Gen
+worden businessnamen door de toolset vertaald naar technische host-namen
+op basis van de encyclopedie van het mainframesysteem. AI genereert in
+veel gevallen namen die functioneel begrijpelijk zijn, maar niet
+automatisch consistent zijn met de hostnaamgeving van het bestaande
+platform. Daarnaast structureert de expert de logica vaak in meerdere
+procedures, met duidelijke SQL-blokken en expliciete foutafhandeling,
+terwijl AI eerder één compacte, generieke vertaling produceert.
 
-In de praktijk betekent dit dat AI vooral geschikt is voor de eerste vertaalslag: syntactische omzetting, standaard SQL-templates en boilerplate-code. De uiteindelijke beoordeling moet altijd door een expert gebeuren, met specifieke aandacht voor datamodel-integriteit, host-naamgeving en foutafhandeling.
+De kern van het verschil is dus niet alleen stijl, maar ook context. De
+expert codeert binnen het volledige model van datamanipulatie,
+referentiële regels en runtime-gedrag; AI werkt meestal vanuit een
+fragment of een abstracte problem description. Daarom is AI vooral geschikt
+voor de eerste vertaalslag: syntactische omzetting, standaard SQL-templates
+en boilerplate-code. De uiteindelijke beoordeling moet altijd door een
+expert gebeuren, met specifieke aandacht voor datamodel-integriteit,
+host-naamgeving en foutafhandeling.
 
 \section{Conclusie}
 \label{sec:automatisatie-conclusie}
 
 Het volledige migratieproces van CA Gen naar PL/I kan momenteel niet
 volledig worden geautomatiseerd. Wel kunnen specifieke stappen zoals
-pseudo-codevertaling, SQL-mapping en herhalende routines ondersteund
-worden met tooling en AI om de efficiëntie te verhogen en fouten te
-verminderen.
+pseudo-codevertaling, SQL-mapping en herhalende routines aanzienlijk
+worden ondersteund met tooling en AI om de efficiëntie te verhogen en de
+kans op menselijke fouten te verkleinen.
 
 AI kan een nuttige hulp zijn bij het genereren van PL/I-code en het
-verduidelijken van complexe CA Gen-constructies, maar menselijke
-controle blijft noodzakelijk voor context, datamodelrelaties en
-mainframe-optimalisaties. Daarom blijft de meest realistische aanpak een
-hybride proces: automatisering ondersteunt de migratie, terwijl experts
-de resultaten verifiëren en bijsturen.
+verduidelijken van complexe CA Gen-constructies, maar menselijke controle
+blijft noodzakelijk voor context, datamodelrelaties en mainframe-
+optimalisaties. De meest realistische aanpak is daarom een hybride
+migratieproces: automatisering versnelt de eerste vertaalslag, terwijl
+experts de semantische validatie, naamgeving en foutafhandeling uitvoeren.
+Zodoende is AI geen vervanging voor de CA Gen-expert, maar een accelerator
+van het migratieproces.
 
