@@ -89,6 +89,182 @@ combineert: regelgebaseerde tooling is goed in herhalende syntactische
 transformaties, terwijl menselijke experts nog steeds nodig zijn voor de
 semantische interpretatie van het model.
 
+
+\section{De nieuwe vertaal-agent}
+\label{sec:nieuwe-vertaal-agent}
+
+Op basis van bovenstaande workflow werd een nieuwe vertaal-agent uitgewerkt.
+Deze agent is geen algemene chatbot die op basis van een korte prompt PL/I
+genereert, maar een gespecialiseerde assistent voor de migratie van CA Gen naar
+PL/I. Zijn belangrijkste doel is het verkleinen van de afstand tussen de
+oorspronkelijke Action Block en een eerste PL/I-implementatie die door een
+expert kan worden nagekeken. De agent moet dus vooral consistent, controleerbaar
+en expliciet werken. Wanneer informatie ontbreekt, moet hij dat aangeven in
+plaats van zelf een datamodelrelatie, veldlengte of hostnaam te verzinnen.
+
+\subsection{Doel en afbakening}
+\label{sec:doel-afbakening-vertaal-agent}
+
+De vertaal-agent ondersteunt drie taken. Ten eerste analyseert hij de
+CA Gen-broncode en identificeert hij de gebruikte constructies, views,
+variabelen, entity actions, EAB-aanroepen en exitstates. Ten tweede vertaalt
+hij herkende patronen naar de overeenkomstige PL/I-constructies. Ten derde
+levert hij naast de gegenereerde code een overzicht van aannames,
+onzekerheden en punten die menselijke validatie vereisen.
+
+De agent neemt daarmee niet de verantwoordelijkheid over voor de uiteindelijke
+migratie. Hij beslist bijvoorbeeld niet zelfstandig welke relatie in de
+Encyclopedia overeenkomt met een constructie als \texttt{SOME mat IS CURRENT
+imp\_ro}. Evenmin bepaalt hij op basis van een veldnaam alleen het datatype of
+de lengte van een PL/I-variabele. Zulke beslissingen moeten worden afgeleid uit
+het datamodel, de bestaande PLAPO-codebase of de interface van de aangeroepen
+module. De agent kan wel de ontbrekende informatie benoemen en een concrete
+vraag voor de expert formuleren.
+
+\subsection{Kennisbasis van de agent}
+\label{sec:kennisbasis-vertaal-agent}
+
+De kwaliteit van de vertaling wordt in belangrijke mate bepaald door de
+context die aan de agent wordt meegegeven. Daarom werkt de agent met een
+kleine, versieerbare kennisbasis in plaats van met alleen algemene kennis van
+CA Gen en PL/I. Deze kennisbasis bevat onder andere:
+\begin{itemize}
+    \item een business-glossary met de betekenis van entiteiten, attributen,
+    procedures en technische namen;
+    \item een referentie voor CA Gen-syntax, waaronder \texttt{CURRENT},
+    \texttt{DESIRED}, \texttt{SOME}, \texttt{THAT}, \texttt{READ},
+    \texttt{USE}, \texttt{ESCAPE} en exitstates;
+    \item een mappingtabel die CA Gen-constructies koppelt aan PL/I- en
+    Embedded SQL-patronen;
+    \item regels voor het mappen van Views, Group Views, datatypes,
+    null-indicatoren en Import/Export-parameterstructuren;
+    \item conventies voor foutafhandeling, cursors, naamgeving en het behoud
+    van bestaande EAB-interfaces;
+    \item best practices en bekende valkuilen uit eerder gemigreerde modules.
+    \item een worked-examples-gedeelte waarin concrete vertalingen van CA Gen naar PL/I worden gedocumenteerd. Het is de
+    bedoeling dat na iedere succesvolle vertaling dit wordt toegevoegd aan dit bestand, zodat de agent steeds meer voorbeelden heeft om op terug te vallen.
+\end{itemize}
+
+Deze opdeling heeft twee voordelen. De vertaallogica kan worden aangepast
+zonder de volledige agent opnieuw te ontwerpen, en een expert kan nagaan op
+basis van welke regel een bepaald codefragment werd gegenereerd. De
+kennisbestanden fungeren zo niet alleen als context voor de agent, maar ook als
+documentatie van de gehanteerde migratieconventies.
+
+\subsection{Werking van de vertaal-agent}
+\label{sec:werking-vertaal-agent}
+
+De vertaling verloopt in verschillende stappen. Eerst leest de agent de
+volledige Action Block en maakt hij een inventaris van de relevante elementen.
+Daarbij kijkt hij niet alleen naar individuele statements, maar ook naar de
+volgorde van de acties en de omliggende controleflow. Een \texttt{READ} binnen
+een \texttt{WHILE}-lus heeft bijvoorbeeld andere gevolgen dan een eenmalige
+\texttt{READ}, en een \texttt{READ EACH} op een Group View vereist een cursor
+met een fetch-lus.
+
+Vervolgens normaliseert de agent de bron naar een tussentijdse representatie.
+In deze stap worden onder meer de volgende relaties expliciet gemaakt:
+\begin{itemize}
+    \item welke velden afkomstig zijn uit een Import, Export, Local of Work
+    View;
+    \item welke CA Gen-variabelen naar dezelfde PL/I-structuur verwijzen;
+    \item welke \texttt{CURRENT}, \texttt{DESIRED} en \texttt{THAT}-velden
+    een relatie of filtervoorwaarde uit het datamodel uitdrukken;
+    \item welke \texttt{USE}-actie een CAB of EAB aanroept en welke views
+    expliciet als parameters moeten worden doorgegeven;
+    \item welke exitstates, foutpaden en \texttt{ESCAPE}-niveaus in de
+    uiteindelijke PL/I-code behouden moeten blijven.
+\end{itemize}
+
+Daarna past de agent eerst regelgebaseerde mappings toe. Een eenvoudige
+\texttt{SET}-actie wordt bijvoorbeeld een PL/I-toewijzing, een \texttt{IF}-blok
+wordt een PL/I-voorwaarde en een \texttt{USE} wordt een expliciete
+\texttt{CALL}. Voor databaseacties genereert de agent een \texttt{EXEC SQL}
+\texttt{SELECT}, \texttt{INSERT}, \texttt{UPDATE} of \texttt{DELETE}. Als een
+actie niet door een vaste mapping kan worden afgedekt, mag AI helpen om een
+voorstel te maken, maar wordt dat voorstel als onzeker gemarkeerd.
+
+In de laatste stap controleert de agent zijn eigen resultaat aan de hand van
+de kennisbasis. Hij controleert bijvoorbeeld of alle gebruikte velden zijn
+gedeclareerd, of optionele velden een indicator hebben, of Group Views een
+maximumkardinaliteit en teller gebruiken en of een \texttt{ESCAPE} over meerdere
+lusniveaus met een passend label naar \texttt{LEAVE} is vertaald. Deze controle
+is geen bewijs dat de code functioneel correct is, maar voorkomt wel een aantal
+veelvoorkomende syntactische en structurele fouten.
+
+\subsection{Verwachte output}
+\label{sec:output-vertaal-agent}
+
+De output van de agent bestaat uit meer dan alleen een PL/I-codeblok. Voor
+iedere vertaling worden idealiter vier onderdelen opgeleverd:
+\begin{enumerate}
+    \item een samenvatting van de herkende CA Gen-logica en de gebruikte
+    constructies;
+    \item de voorgestelde PL/I-code, inclusief declaraties, procedureflow,
+    parameterstructuren en Embedded SQL;
+    \item een mappingoverzicht waarin belangrijke CA Gen-statements aan hun
+    PL/I-equivalent worden gekoppeld;
+    \item een reviewlijst met aannames, ontbrekende context, niet-vertaalde
+    fragmenten en punten die tegen de Encyclopedia of de bestaande codebase
+    moeten worden gecontroleerd.
+\end{enumerate}
+
+Voor de expert is vooral dat laatste onderdeel belangrijk. Een codegenerator
+die een plausibel resultaat produceert zonder zijn onzekerheden te tonen,
+maakt review moeilijker. De vertaal-agent moet onzekerheid daarom als een
+eerste klas resultaat behandelen. Een niet-bevestigde joinvoorwaarde of een
+onduidelijke null-semantiek wordt expliciet vermeld en niet stilzwijgend
+vervangen door een aanname.
+
+\subsection{Voorbeeld van een vertaalbeslissing}
+\label{sec:voorbeeld-vertaalbeslissing}
+
+Bij de vertaling van een CA Gen-actie zoals
+\begin{minted}[fontsize=\small]
+READ mtstbo
+    WHERE DESIRED mtstbo cod_dl_mat IS EQUAL TO CURRENT mtstbo cod_dl_moe
+      AND DESIRED mtstbo nr_dl_mat IS EQUAL TO CURRENT mtstbo nr_dl_moe
+\end{minted}
+herkent de agent een zoekactie die de moederrecord van het huidige
+\texttt{mtstbo}-record moet ophalen. De vaste mapping vertaalt dit naar een
+\texttt{SELECT} op \texttt{MTSTBO}, waarbij de twee huidige moederverwijzingen
+als hostvariabelen worden gebruikt. De agent moet daarbij ook de behandeling
+van \texttt{SQLCODE = 100} opnemen, omdat \texttt{WHEN not found} in CA Gen
+overeenkomt met een expliciet PL/I-foutpad of een gelabelde \texttt{LEAVE}.
+
+De agent mag echter niet veronderstellen dat een lege string altijd de juiste
+representatie van \texttt{NULL} is. Dat onderscheid heeft gevolgen voor de
+controle vóór de zoekactie en voor de SQL-indicator. Wanneer de beschikbare
+context niet vastlegt hoe \texttt{nr\_dl\_moe} wordt opgeslagen, rapporteert de
+agent dit als reviewpunt. Dit voorbeeld toont de gewenste balans: de
+mechanische omzetting wordt versneld, terwijl een semantisch risico zichtbaar
+blijft voor de expert.
+
+\subsection{Beperkingen en menselijke controle}
+\label{sec:beperkingen-vertaal-agent}
+
+De agent blijft afhankelijk van correcte en volledige invoer. Een onvolledige
+View-definitie, een ontbrekende Encyclopedia-relatie of een niet-beschikbare
+EAB-interface kan niet betrouwbaar worden gereconstrueerd uit de Action Block
+alleen. Ook kunnen bestaande PL/I-conventies afwijken van de algemene
+mappingregels. Daarom moet de gegenereerde code minstens op vier niveaus
+worden nagekeken:
+\begin{itemize}
+    \item syntactische compilatie van PL/I en Embedded SQL;
+    \item volledigheid van declaraties, views en moduleparameters;
+    \item overeenstemming van SQL-joinlogica, null-behandeling en
+    kardinaliteitsgrenzen met het datamodel;
+    \item functionele vergelijking met de oorspronkelijke CA Gen-module,
+    bijvoorbeeld via testgevallen of een parallelle run.
+\end{itemize}
+
+De nieuwe vertaal-agent is bijgevolg geen vervanging van de CA Gen- of
+PL/I-expert. Zijn meerwaarde ligt in het systematisch uitvoeren van repetitieve
+analyses, het toepassen van dezelfde mappings op meerdere modules en het
+zichtbaar maken van onzekerheden. De uiteindelijke semantische goedkeuring
+blijft bij een expert die toegang heeft tot de Encyclopedia, de technische
+omgeving en de functionele verwachtingen van de gemigreerde module.
+
 \subsection{Welke context AI nodig heeft}
 \label{sec:automatisatie-context}
 
